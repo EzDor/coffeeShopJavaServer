@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.utils;
 
 import com.legendary.coffeeShop.dao.entities.User;
+import com.legendary.coffeeShop.dao.entities.UserSatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,31 +21,35 @@ public class MyUserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return isUserActive();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return isUserActive();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return isUserActive();
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return isUserActive();
+    }
+
+    private boolean isUserActive(){
+        return user.getStatus() == UserSatus.ACTIVE;
     }
 }
