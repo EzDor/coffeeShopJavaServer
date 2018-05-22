@@ -34,16 +34,11 @@ ext {
 
 dependencies {
     //Spring Boot Configuration
+    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-data-rest:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
-
-    //Apache CFX Configuration
-    compile("org.apache.cxf:cxf-spring-boot-starter-jaxrs:${apacheCXFJaxRsVersion}")
-    compile("org.apache.cxf:cxf-rt-rs-service-description-swagger:${apacheCXFJaxRsVersion}")
-    compile("org.apache.cxf:cxf-bundle-parent:${apacheCXFJaxRsVersion}")
-    compile("com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider")
 
     //compile("org.flywaydb:flyway-core:${flywayVersion}")
     compile("org.postgresql:postgresql")

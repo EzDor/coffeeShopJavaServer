@@ -1,21 +1,27 @@
 package com.legendary.coffeeShop.controller;
 
+import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.GeneratorType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+@RestController
+@RequestMapping("login_log")
+public class LoginController {
 
-@Path("/login_log")
-public interface LoginController {
+    @Autowired
+    private CommonConstants commonConstants;
 
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/")
-    Status check();
+    @GetMapping
+    @ResponseBody
+    public Status check() {
+        System.out.println("Check successful. constans:" + commonConstants.getTestCommonConstants());
+        Status status = new Status(Status.OK, "msg");
+        return status;
+    }
 }

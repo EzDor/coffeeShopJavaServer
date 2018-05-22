@@ -12,15 +12,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @Slf4j
 @EntityScan("com.legendary.coffeeShop.dao.entities")
-public class CoffeeShopApplication extends SpringBootServletInitializer {
+public class CoffeeShopApplication{
 
     public static void main(String[] args) {
         SpringApplication.run(CoffeeShopApplication.class, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(CoffeeShopApplication.class);
     }
 
 }
