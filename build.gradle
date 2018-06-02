@@ -27,25 +27,27 @@ repositories {
 
 
 ext {
-    flywayVersion = '5.0.7'
-    apacheCXFJaxRsVersion = '3.2.2'
-    lombokVersion = '1.16.20'
+    jwtVersion = "0.9.0"
+    lombokVersion = "1.16.20"
 }
 
 dependencies {
     //Spring Boot Configuration
-    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-data-rest:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
+    compile("org.springframework.security.oauth:spring-security-oauth2:${springBootVersion}")
 
-    //compile("org.flywaydb:flyway-core:${flywayVersion}")
+    compile("io.jsonwebtoken:jjwt:${jwtVersion}")
+
+    //compileOnly("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
+
     compile("org.postgresql:postgresql")
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
 
-    //runtime("com.h2database:h2")
+
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

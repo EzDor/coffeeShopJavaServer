@@ -19,11 +19,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "first_name")
+    private String firstName;
 
-    @Column
-    private String name;
-
-    @Column
+    @Column(name = "last_name")
     private String lastName;
 
     @NotBlank
@@ -33,6 +32,8 @@ public class User {
     @Column
     private UserSatus status;
 
+    @NotBlank
+    @Column
     private String password;
 
     @Column(name = "creation_time")
