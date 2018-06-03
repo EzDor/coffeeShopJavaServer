@@ -1,6 +1,6 @@
 package com.legendary.coffeeShop.dao.entities;
 
-public enum UserSatus {
+public enum UserStatus {
     ACTIVE,
     DISCARDED
 }

@@ -2,8 +2,6 @@ package com.legendary.coffeeShop.dao.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +28,7 @@ public class User {
     private String username;
 
     @Column
-    private UserSatus status;
+    private UserStatus status;
 
     @NotBlank
     @Column
@@ -39,4 +37,6 @@ public class User {
     @Column(name = "creation_time")
     private Timestamp creationTime;
 
+    @Column(name = "is_admin")
+    private boolean isAdmin;
 }

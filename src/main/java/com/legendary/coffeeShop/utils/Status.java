@@ -15,7 +15,6 @@ public class Status {
     private String status;
     private String type;
     private String msg;
-    // Used only by fine uploader
     private boolean success = false;
     private String error;
     private Map<String, Object> data = new HashMap<String, Object>();
@@ -41,6 +40,12 @@ public class Status {
 
         if (status.equals(OK))
             success = true;
+    }
+
+    public Status(Exception exception){
+        this.status = ERROR;
+        this.type = exception.getClass().toString();
+        this.msg = exception.getMessage();
     }
 
     public void setMsg(String msg) {

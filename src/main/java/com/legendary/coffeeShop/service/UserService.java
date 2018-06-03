@@ -2,22 +2,20 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.UserForm;
 import com.legendary.coffeeShop.dao.entities.User;
-import com.legendary.coffeeShop.dao.entities.UserSatus;
+import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
+import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import static java.util.Collections.emptyList;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -26,39 +24,35 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
+    private CommonConstants commonConstants;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameAndStatus(username, UserSatus.ACTIVE);
+        User user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
+        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(getUserPermission(user));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorityList);
     }
 
-    private List<SimpleGrantedAuthority> getAuthority() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    }
-
-    public List<User> findAll() {
-        List<User> list = new ArrayList<>();
-        userRepository.findAll().iterator().forEachRemaining(list::add);
-        return list;
-    }
-
-//    public void delete(long id) {
-//        userRepository.delete(id);
-//    }
 
     public Status createUser(UserForm userForm) {
         User user = new User();
-        user.setUsername(userForm.getUsername());
+        user.setUsername(userForm.getUsername().toLowerCase());
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
-        user.setStatus(UserSatus.ACTIVE);
+        user.setStatus(UserStatus.ACTIVE);
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setAdmin(false);
         userRepository.save(user);
         return new Status(Status.OK);
+    }
+
+    private String getUserPermission(User user) {
+        return user.isAdmin() ? commonConstants.getAdminPermission() : commonConstants.getUserPermission();
     }
 }

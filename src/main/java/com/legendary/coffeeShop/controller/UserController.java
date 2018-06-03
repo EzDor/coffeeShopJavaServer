@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.InputMismatchException;
+
 
 @RestController
 @RequestMapping("users")
@@ -24,7 +26,12 @@ public class UserController {
     @PostMapping("/signUp")
     @ResponseBody
     public Status addNewUser(@RequestBody UserForm userForm) {
-        validationService.validateUserForm(userForm);
+        try {
+            validationService.validateUserForm(userForm);
+        } catch (InputMismatchException err) {
+            return new Status(err);
+        }
+
         return userService.createUser(userForm);
     }
 

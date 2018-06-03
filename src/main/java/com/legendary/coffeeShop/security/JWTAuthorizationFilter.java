@@ -1,9 +1,11 @@
 package com.legendary.coffeeShop.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -12,49 +14,42 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-
-import static com.legendary.coffeeShop.security.SecurityConstants.HEADER_STRING;
-import static com.legendary.coffeeShop.security.SecurityConstants.SECRET;
+import java.util.List;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
-    @Autowired
-    private SecurityConstants securityConstants;
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req,
-                                    HttpServletResponse res,
-                                    FilterChain chain) throws IOException, ServletException {
-        String header = req.getHeader(HEADER_STRING);
+    protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
 
-        if (header == null) {
-            chain.doFilter(req, res);
-            return;
+        String header = servletRequest.getHeader(SecurityConstants.HEADER_STRING);
+        if (header != null) {
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(servletRequest);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(req, res);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(HEADER_STRING);
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader(SecurityConstants.HEADER_STRING);
         if (token != null) {
             // parse the token.
-            String user = Jwts.parser()
-                    .setSigningKey(SECRET.getBytes())
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SecurityConstants.SECRET.getBytes())
                     .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+                    .getBody();
+
+            String user = claims.getSubject();
+            String role = claims.get(SecurityConstants.CLAIM_ROLES, String.class);
+
+            List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(role);
 
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                return new UsernamePasswordAuthenticationToken(user, null, authorityList);
             }
         }
         return null;

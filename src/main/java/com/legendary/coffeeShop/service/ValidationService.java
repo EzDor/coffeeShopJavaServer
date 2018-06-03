@@ -1,15 +1,12 @@
 package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.UserForm;
-import com.legendary.coffeeShop.dao.entities.User;
-import com.legendary.coffeeShop.dao.entities.UserSatus;
+import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.sql.Timestamp;
 import java.util.InputMismatchException;
 
 @Service
@@ -19,16 +16,25 @@ public class ValidationService {
     private UserRepository userRepository;
 
     public void validateUserForm(UserForm userForm) {
-        if (isEmptyUsernameOrPassword(userForm)) {
-            throw new InputMismatchException("User should contain username and password");
+        if (isEmptyUsernameOrPassword(userForm) || isNotValidUsernameOrPassword(userForm)) {
+            throw new InputMismatchException("Username and password are missing or invalid.");
         }
-        if (userRepository.findByUsernameAndStatus(userForm.getUsername(), UserSatus.ACTIVE) != null) {
+        if (isUserNameAlreadyExists(userForm)) {
             throw new InputMismatchException("Username already exist");
         }
     }
 
     private boolean isEmptyUsernameOrPassword(UserForm userForm) {
-        return StringUtils.isEmpty(userForm.getUsername()) || StringUtils.isEmpty(userForm.getUsername());
+        return StringUtils.isEmpty(userForm.getUsername()) || StringUtils.isEmpty(userForm.getPassword());
     }
+
+    private boolean isNotValidUsernameOrPassword(UserForm userForm) {
+        return StringUtils.containsWhitespace(userForm.getUsername()) || StringUtils.containsWhitespace(userForm.getPassword()) || !userForm.getUsername().matches("\\w+");
+    }
+
+    private boolean isUserNameAlreadyExists(UserForm userForm) {
+        return userRepository.findByUsernameAndStatus(userForm.getUsername().toLowerCase(), UserStatus.ACTIVE) != null;
+    }
+
 
 }
