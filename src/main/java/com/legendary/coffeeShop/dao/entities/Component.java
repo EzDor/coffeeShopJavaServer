@@ -28,4 +28,7 @@ public class Component {
     @Column
     private ComponentStatus status;
 
+    @Column
+    private int amount;
+
 }
