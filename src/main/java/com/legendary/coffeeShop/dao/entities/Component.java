@@ -23,7 +23,7 @@ public class Component {
     private double price;
 
     @Column(name = "product_type")
-    private Set<ProductType> productTypes;
+    private Set<String> productTypes;
 
     @Column
     private ComponentStatus status;

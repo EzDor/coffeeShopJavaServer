@@ -24,18 +24,14 @@ public class Product {
     @Column
     private String name;
 
-    @Column(name = "product_type")
-    private ProductType productType;
-
     @Column
     private List<Component> components;
 
-    @Column
-    private double price;
-
+    @Column(name = "product_details")
+    private ProductDetails productDetails;
 
     public double getTotalProductPrice() {
-        double totalProductPrice = price;
+        double totalProductPrice = productDetails.getPrice();
         for (Component component : components) {
             totalProductPrice += component.getPrice();
         }
