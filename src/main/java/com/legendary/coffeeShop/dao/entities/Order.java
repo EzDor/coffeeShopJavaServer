@@ -32,13 +32,4 @@ public class Order {
     @Column(name = "order_status")
     private OderStatus orderStatus;
 
-    public double getTotalOrderPrice() {
-        double totalOrderPrice = 0;
-        for (Product product : products) {
-            totalOrderPrice += product.getTotalProductPrice();
-        }
-
-        return totalOrderPrice;
-    }
-
 }

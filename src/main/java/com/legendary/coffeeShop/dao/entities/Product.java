@@ -30,13 +30,7 @@ public class Product {
     @Column(name = "product_details")
     private ProductDetails productDetails;
 
-    public double getTotalProductPrice() {
-        double totalProductPrice = productDetails.getPrice();
-        for (Component component : components) {
-            totalProductPrice += component.getPrice();
-        }
-
-        return totalProductPrice;
-    }
+    @Column
+    private double price;
 
 }
