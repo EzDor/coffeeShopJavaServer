@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,11 +19,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_orders", nullable = false)
     private User user;
 
-    @Column
-    private List<Product> products;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    private Set<Product> products = new HashSet<>();
 
     @Column(name = "creation_time")
     private Timestamp creationTime;
