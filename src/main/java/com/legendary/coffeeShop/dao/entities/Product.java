@@ -3,13 +3,9 @@ package com.legendary.coffeeShop.dao.entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.List;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -24,19 +20,12 @@ public class Product {
     @Column
     private String name;
 
-    @Column
-    private List<Component> components;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "product_components", joinColumns = {@JoinColumn(name = "product_id")}, inverseJoinColumns = {@JoinColumn(name = "component_id")})
+    private Set<Component> components = new HashSet<>();
 
-    @Column(name = "product_details")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_details_id", nullable = false)
     private ProductDetails productDetails;
-
-    public double getTotalProductPrice() {
-        double totalProductPrice = productDetails.getPrice();
-        for (Component component : components) {
-            totalProductPrice += component.getPrice();
-        }
-
-        return totalProductPrice;
-    }
 
 }

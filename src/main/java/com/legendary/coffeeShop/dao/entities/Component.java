@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,8 +23,9 @@ public class Component {
     @Column
     private double price;
 
-    @Column(name = "product_type")
-    private Set<String> productTypes;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "product_types", joinColumns = {@JoinColumn(name = "component_id")}, inverseJoinColumns = {@JoinColumn(name = "product_type_id")})
+    private Set<ProductDetails> productTypes = new HashSet<>();
 
     @Column
     private ComponentStatus status;
