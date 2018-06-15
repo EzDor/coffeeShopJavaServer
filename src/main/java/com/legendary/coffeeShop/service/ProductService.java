@@ -1,4 +1,4 @@
-package com.legendary.coffeeShop.controller;
+package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.dao.entities.ProductDetails;
 import com.legendary.coffeeShop.dao.repositories.ProduceDetailsRepository;
