@@ -10,8 +10,8 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "components")
-public class Component {
+@Table(name = "order_items")
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,17 +20,12 @@ public class Component {
     @Column
     private String name;
 
-    @Column
-    private double price;
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "product_types", joinColumns = {@JoinColumn(name = "component_id")}, inverseJoinColumns = {@JoinColumn(name = "product_type_id")})
-    private Set<Product> productTypes = new HashSet<>();
+    @JoinTable(name = "item_components", joinColumns = {@JoinColumn(name = "product_id")}, inverseJoinColumns = {@JoinColumn(name = "component_id")})
+    private Set<Component> components = new HashSet<>();
 
-    @Column
-    private ComponentStatus status;
-
-    @Column
-    private int amount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
 }

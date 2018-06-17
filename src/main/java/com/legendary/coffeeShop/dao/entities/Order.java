@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,7 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private Set<Product> products = new HashSet<>();
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     @Column(name = "creation_time")
     private Timestamp creationTime;
@@ -33,6 +32,6 @@ public class Order {
     private Timestamp updateTime;
 
     @Column(name = "order_status")
-    private OderStatus orderStatus;
+    private OrderStatus orderStatus;
 
 }

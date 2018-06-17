@@ -1,9 +1,7 @@
 package com.legendary.coffeeShop.service;
 
+import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.UserForm;
-import com.legendary.coffeeShop.dao.entities.UserStatus;
-import com.legendary.coffeeShop.dao.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -12,29 +10,63 @@ import java.util.InputMismatchException;
 @Service
 public class ValidationService {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    /*********************************
+     * Public Functions
+     *********************************/
     public void validateUserForm(UserForm userForm) {
-        if (isEmptyUsernameOrPassword(userForm) || isNotValidUsernameOrPassword(userForm)) {
+        if (isUserInvalid(userForm)) {
             throw new InputMismatchException("Username and password are missing or invalid.");
         }
-        if (isUserNameAlreadyExists(userForm)) {
-            throw new InputMismatchException("Username already exist");
+    }
+
+    public void validateProductForm(ProductForm productForm) {
+        if (isProductInvalid(productForm)) {
+            throw new InputMismatchException("Some product details are missing or invalid.");
         }
     }
 
-    private boolean isEmptyUsernameOrPassword(UserForm userForm) {
-        return StringUtils.isEmpty(userForm.getUsername()) || StringUtils.isEmpty(userForm.getPassword());
+    /*********************************
+     * Private Functions
+     *********************************/
+    private boolean isUserInvalid(UserForm userForm) {
+        return isEmptyStringIncluded(userForm.getUsername(), userForm.getPassword())
+                || isContainsWhitespace(userForm.getUsername(), userForm.getPassword())
+                || isContainsNotAllowedCharacters(userForm.getUsername());
     }
 
-    private boolean isNotValidUsernameOrPassword(UserForm userForm) {
-        return StringUtils.containsWhitespace(userForm.getUsername()) || StringUtils.containsWhitespace(userForm.getPassword()) || !userForm.getUsername().matches("\\w+");
+    private boolean isProductInvalid(ProductForm productForm) {
+        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
+                || isContainsWhitespace(productForm.getProductType())
+                || isContainsNotAllowedCharacters(productForm.getProductType());
+
     }
 
-    private boolean isUserNameAlreadyExists(UserForm userForm) {
-        return userRepository.findByUsernameAndStatus(userForm.getUsername().toLowerCase(), UserStatus.ACTIVE) != null;
+
+    private boolean isEmptyStringIncluded(String... strings) {
+        for (String string : strings) {
+            if (StringUtils.isEmpty(string)) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    private boolean isContainsWhitespace(String... strings) {
+        for (String string : strings) {
+            if (StringUtils.containsWhitespace(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isContainsNotAllowedCharacters(String... strings) {
+        for (String string : strings) {
+            if (!string.matches("\\w+")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

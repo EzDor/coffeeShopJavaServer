@@ -3,29 +3,39 @@ package com.legendary.coffeeShop.dao.entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "display_name")
+    private String displayName;
+
     @Column
-    private String name;
+    private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "product_components", joinColumns = {@JoinColumn(name = "product_id")}, inverseJoinColumns = {@JoinColumn(name = "component_id")})
-    private Set<Component> components = new HashSet<>();
+    @Column(name = "product_type")
+    @NotBlank
+    private String productType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_details_id", nullable = false)
-    private ProductDetails productDetails;
+    @Column
+    private double price;
+
+    @Column
+    private ProductStatus status;
 
 }

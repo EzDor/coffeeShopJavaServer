@@ -1,12 +1,11 @@
 package com.legendary.coffeeShop.controller.form;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ProductDetailsForm {
+public class ProductForm {
 
     private String displayName;
 
@@ -15,4 +14,6 @@ public class ProductDetailsForm {
     private String description;
 
     private double price;
+
+    private String productTypeToUpdate;
 }
