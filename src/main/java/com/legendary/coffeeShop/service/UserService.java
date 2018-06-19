@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.UserForm;
+import com.legendary.coffeeShop.controller.form.NewUserForm;
+import com.legendary.coffeeShop.controller.form.UpdateUserForm;
 import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
@@ -36,7 +37,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
+        User user = getUser(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
@@ -45,7 +46,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public Status createUser(UserForm userForm) {
+    public Status createUser(NewUserForm userForm) {
         if (getUser(userForm.getUsername()) != null) {
             return new Status(Status.ERROR, "Cannot create user, username " + userForm.getUsername() + " is already exist");
         }
@@ -58,13 +59,13 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public Status updateUser(UserForm userForm) {
+    public Status updateUser(UpdateUserForm userForm) {
         User user = getUser(userForm.getUsernameToUpdate());
-        if (user == null) {
-            return new Status(Status.ERROR, "Cannot update user, user with username " + userForm.getUsernameToUpdate() + " is not found");
+        if (user == null || !passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
+            return new Status(Status.ERROR, "Cannot update user, username or password are incorrect");
         }
 
-        user = prepareUser(user, userForm);
+        user = prepareUser(user, userForm.getUpdatedUserDetails());
         userRepository.save(user);
         return new Status(Status.OK, "user is updated successfully.");
 
@@ -75,7 +76,7 @@ public class UserService implements UserDetailsService {
      * Private Functions
      *********************************/
 
-    private User prepareUser(User user, UserForm userForm) {
+    private User prepareUser(User user, NewUserForm userForm) {
         user.setUsername(userForm.getUsername().toLowerCase());
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());

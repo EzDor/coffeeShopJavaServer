@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
-import com.legendary.coffeeShop.controller.form.UserForm;
+import com.legendary.coffeeShop.controller.form.NewUserForm;
+import com.legendary.coffeeShop.controller.form.UpdateUserForm;
 import com.legendary.coffeeShop.service.UserService;
 import com.legendary.coffeeShop.service.ValidationService;
 import com.legendary.coffeeShop.utils.Status;
@@ -25,7 +26,7 @@ public class UserController {
 
     @PostMapping("/signUp")
     @ResponseBody
-    public Status addNewUser(@RequestBody UserForm userForm) {
+    public Status addNewUser(@RequestBody NewUserForm userForm) {
         try {
             validationService.validateUserForm(userForm);
         } catch (InputMismatchException err) {
@@ -33,6 +34,17 @@ public class UserController {
         }
 
         return userService.createUser(userForm);
+    }
+
+    @PostMapping("/update")
+    @ResponseBody
+    public Status updateUser(@RequestBody UpdateUserForm userForm){
+        try {
+            validationService.validateUserForm(userForm.getUpdatedUserDetails());
+        } catch (InputMismatchException err) {
+            return new Status(err);
+        }
+        return userService.updateUser(userForm);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.controller.form.UserForm;
+import com.legendary.coffeeShop.controller.form.NewUserForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -13,8 +13,8 @@ public class ValidationService {
     /*********************************
      * Public Functions
      *********************************/
-    public void validateUserForm(UserForm userForm) {
-        if (isUserInvalid(userForm)) {
+    public void validateUserForm(NewUserForm newUserForm) {
+        if (isUserInvalid(newUserForm)) {
             throw new InputMismatchException("Username and password are missing or invalid.");
         }
     }
@@ -28,10 +28,10 @@ public class ValidationService {
     /*********************************
      * Private Functions
      *********************************/
-    private boolean isUserInvalid(UserForm userForm) {
-        return isEmptyStringIncluded(userForm.getUsername(), userForm.getPassword())
-                || isContainsWhitespace(userForm.getUsername(), userForm.getPassword())
-                || isContainsNotAllowedCharacters(userForm.getUsername());
+    private boolean isUserInvalid(NewUserForm newUserForm) {
+        return isEmptyStringIncluded(newUserForm.getUsername(), newUserForm.getPassword())
+                || isContainsWhitespace(newUserForm.getUsername(), newUserForm.getPassword())
+                || isContainsNotAllowedCharacters(newUserForm.getUsername());
     }
 
     private boolean isProductInvalid(ProductForm productForm) {
