@@ -6,6 +6,7 @@ import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +34,7 @@ public class ProductController {
         return productService.getProducts();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
     public Status createProduct(@RequestBody ProductForm productForm) {
@@ -44,6 +46,7 @@ public class ProductController {
         return productService.createProduct(productForm);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
     public Status updateProduct(@RequestBody ProductForm productForm) {
