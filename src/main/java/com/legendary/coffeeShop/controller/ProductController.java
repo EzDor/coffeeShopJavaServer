@@ -57,4 +57,11 @@ public class ProductController {
         }
         return productService.updateProduct(productForm);
     }
+
+
+    @GetMapping("/product")
+    @ResponseBody
+    public Set<Product> getAllProducts() {
+        return  productService.getProducts();
+    }
 }

@@ -78,5 +78,4 @@ public class ProductService {
         }
         return productRepository.findByProductTypeAndStatus(productType.toLowerCase(), ProductStatus.ACTIVE);
     }
-
 }
