@@ -27,7 +27,7 @@ public class ProductController {
     @Autowired
     private ValidationService validationService;
 
-    @GetMapping
+    @GetMapping("/all")
     @ResponseBody
     public Set<Product> getProducts() {
 
@@ -56,12 +56,5 @@ public class ProductController {
             return new Status(err);
         }
         return productService.updateProduct(productForm);
-    }
-
-
-    @GetMapping("/product")
-    @ResponseBody
-    public Set<Product> getAllProducts() {
-        return  productService.getProducts();
     }
 }
