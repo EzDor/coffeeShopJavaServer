@@ -27,10 +27,9 @@ public class ProductController {
     @Autowired
     private ValidationService validationService;
 
-    @GetMapping("/all")
+    @GetMapping
     @ResponseBody
     public Set<Product> getProducts() {
-
         return productService.getProducts();
     }
 

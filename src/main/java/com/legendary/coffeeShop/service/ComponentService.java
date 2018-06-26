@@ -26,7 +26,7 @@ public class ComponentService {
      *********************************/
 
     public Set<Component> getSaladIngredients() {
-        return new HashSet<>(ComponentRepository.findByComponentType(""));
+        return new HashSet<>(ComponentRepository.findByAmountEquals("a"));
     }
 
 
