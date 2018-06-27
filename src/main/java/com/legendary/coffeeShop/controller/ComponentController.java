@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/component")
 public class ComponentController {
 
     @Autowired
@@ -21,10 +21,10 @@ public class ComponentController {
     @Autowired
     private ValidationService validationService;
 
-    @GetMapping("/saladIngredients")
+    @GetMapping("/type")
     @ResponseBody
-    public Set<Component> getSaladIngredients() {
+    public Set<Component> getComponentByType() {
 
-        return componentService.getSaladIngredients();
+        return componentService.getComponentByType();
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Set;
 
 public interface ComponentRepository extends JpaRepository<Component, Long> {
-    Set<Component> findByAmountEquals(String componentType);
+    Set<Component> findByProductTypesEquals(String componentType);
 }
