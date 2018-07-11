@@ -27,24 +27,25 @@ public class ComponentService {
      * Public Functions
      *********************************/
 
-    public Set<Component> getComponentByType() {
-        return new HashSet<>(componentRepository.findByProductTypesEquals("a"));
+    public Set<Component> getComponentByType(String prodType) {
+        return new HashSet<>(componentRepository.findByProductTypesContains(prodType));
     }
 
     public Status createComponent(ComponentForm componentForm) {
         Component component = prepareComponent(new Component(), componentForm);
         componentRepository.save(component);
-        return new Status(Status.OK, "Component is created successfully.");
+        return new Status(Status.OK, "Component created successfully.");
     }
 
     public Status updateComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component == null) {
-            return new Status(Status.ERROR, "Cannot update component, component with name " + componentForm.getName() + " is not found");
+            return new Status(Status.ERROR, "Cannot update component, component with name " +
+                    componentForm.getName() + " is not found");
         }
         component = prepareComponent(component, componentForm);
         componentRepository.save(component);
-        return new Status(Status.OK, "component is updated successfully.");
+        return new Status(Status.OK, "component updated successfully.");
 
     }
 
