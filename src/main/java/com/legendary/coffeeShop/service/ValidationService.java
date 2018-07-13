@@ -51,20 +51,20 @@ public class ValidationService {
     }
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
-        return StringUtils.isEmpty(componentForm.getName()) ||
-                ! isStringInStatus(componentForm.getStatus())
-                // @TODO : Add more validation
+        return StringUtils.isEmpty(componentForm.getName())
+                || statusNotInComponentStatuses(componentForm.getStatus())
+                || componentForm.getAmount() < 0
+                || componentForm.getPrice() < 0
                 ;
     }
 
-    private boolean isStringInStatus(ComponentStatus str) {
+    private boolean statusNotInComponentStatuses(ComponentStatus str) {
         for (ComponentStatus status : ComponentStatus.values()) {
             if (status.equals(str)) {
-                return true;
+                return false;
             }
         }
-
-        return false;
+        return true;
     }
 
     private boolean isEmptyStringIncluded(String... strings) {
