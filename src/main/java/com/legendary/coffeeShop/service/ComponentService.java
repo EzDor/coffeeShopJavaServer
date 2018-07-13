@@ -64,7 +64,7 @@ public class ComponentService {
         if(StringUtils.isEmpty(componenName)){
             return null;
         }
-        return componentRepository.findByProductNameEquals(componenName.toLowerCase());
+        return componentRepository.findByNameContains(componenName.toLowerCase());
     }
 
 }
