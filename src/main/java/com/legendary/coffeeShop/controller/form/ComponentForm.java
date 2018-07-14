@@ -17,4 +17,6 @@ public class ComponentForm {
     private double price;
 
     private ComponentStatus status;
+
+    private int productTypeId;
 }
