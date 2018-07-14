@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +24,8 @@ public class ComponentService {
 
     @Autowired
     private CommonConstants commonConstants;
-
+    @Autowired
+    private ProductService productService;
 
     /*********************************
      * Public Functions
@@ -33,8 +37,13 @@ public class ComponentService {
 
     public Status createComponent(ComponentForm componentForm) {
         Component component = prepareComponent(new Component(), componentForm);
-        componentRepository.save(component);
-        return new Status(Status.OK, "Component created successfully.");
+        if (component != null) {
+            componentRepository.save(component);
+            return new Status(Status.OK, "Component created successfully.");
+        }
+        else {
+            return new Status(Status.ERROR, "Component was not created successfully");
+        }
     }
 
     public Status updateComponent(ComponentForm componentForm) {
@@ -58,7 +67,13 @@ public class ComponentService {
         component.setAmount(componentForm.getAmount());
         component.setPrice(componentForm.getPrice());
         component.setStatus(componentForm.getStatus());
-        return component;
+        Product prod = productService.getProductById(componentForm.getProductTypeId());
+        if (prod != null) {
+            component.setProductTypes(new HashSet<>(Arrays.asList(prod)));
+            return component;
+        }
+        return null;
+
     }
     private Component getComponent(String componenName) {
         if(StringUtils.isEmpty(componenName)){
