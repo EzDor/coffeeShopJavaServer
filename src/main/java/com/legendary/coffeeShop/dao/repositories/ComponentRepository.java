@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Set;
 
 public interface ComponentRepository extends JpaRepository<Component, Long> {
-    Set<Component> findByProductTypesContains(String type);
+    Set<Component> findByProductTypesProductTypeContains(String type);
     Component findByNameContains(String componentName);
 }

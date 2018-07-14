@@ -32,7 +32,7 @@ public class ComponentService {
      *********************************/
 
     public Set<Component> getComponentByType(String prodType) {
-        return new HashSet<>(componentRepository.findByProductTypesContains(prodType));
+        return new HashSet<>(componentRepository.findByProductTypesProductTypeContains(prodType));
     }
 
     public Status createComponent(ComponentForm componentForm) {
