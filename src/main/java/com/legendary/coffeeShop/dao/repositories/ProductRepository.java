@@ -10,4 +10,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findByProductTypeAndStatus(String productType, ProductStatus status);
 
     Set<Product> findAllByStatus(ProductStatus status);
+
+    Product findById(int id);
 }
