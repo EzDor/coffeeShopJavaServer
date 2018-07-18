@@ -1,16 +1,16 @@
 package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.dao.entities.Component;
+import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
-import com.legendary.coffeeShop.dao.entities.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,7 +66,7 @@ public class ComponentService {
         component.setName(componentForm.getName());
         component.setAmount(componentForm.getAmount());
         component.setPrice(componentForm.getPrice());
-        component.setStatus(componentForm.getStatus());
+        component.setStatus(ComponentStatus.ACTIVE);
         Product prod = productService.getProductById(componentForm.getProductTypeId());
         if (prod != null) {
             component.setProductTypes(new HashSet<>(Arrays.asList(prod)));

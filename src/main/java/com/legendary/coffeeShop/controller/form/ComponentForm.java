@@ -8,15 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ComponentForm {
 
-    private int id;
-
     private int amount;
 
     private String name;
 
     private double price;
-
-    private ComponentStatus status;
 
     private int productTypeId;
 }
