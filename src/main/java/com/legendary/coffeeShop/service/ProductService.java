@@ -36,6 +36,10 @@ public class ProductService {
         return new HashSet<>(productRepository.findAllByStatus(ProductStatus.ACTIVE));
     }
 
+    public Product getProductById(int id) {
+        return productRepository.findById(id);
+    }
+
     public Status createProduct(ProductForm productForm) {
 
         if (getProduct(productForm.getProductType()) != null) {
@@ -55,7 +59,6 @@ public class ProductService {
         product = prepareProduct(product, productForm);
         productRepository.save(product);
         return new Status(Status.OK, "Product is updated successfully.");
-
     }
 
     /*********************************

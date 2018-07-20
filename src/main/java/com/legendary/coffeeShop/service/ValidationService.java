@@ -1,7 +1,9 @@
 package com.legendary.coffeeShop.service;
 
+import com.legendary.coffeeShop.controller.form.ComponentForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.NewUserForm;
+import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +27,13 @@ public class ValidationService {
         }
     }
 
+    public void validateComponentForm(ComponentForm componentForm) {
+        if (isComponentInvalid(componentForm)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
+
     /*********************************
      * Private Functions
      *********************************/
@@ -41,6 +50,22 @@ public class ValidationService {
 
     }
 
+    private boolean isComponentInvalid(ComponentForm componentForm) {
+        return StringUtils.isEmpty(componentForm.getName())
+                || statusNotInComponentStatuses(componentForm.getStatus())
+                || componentForm.getAmount() < 0
+                || componentForm.getPrice() < 0
+                ;
+    }
+
+    private boolean statusNotInComponentStatuses(ComponentStatus str) {
+        for (ComponentStatus status : ComponentStatus.values()) {
+            if (status.equals(str)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private boolean isEmptyStringIncluded(String... strings) {
         for (String string : strings) {

@@ -30,7 +30,6 @@ public class ProductController {
     @GetMapping
     @ResponseBody
     public Set<Product> getProducts() {
-
         return productService.getProducts();
     }
 
