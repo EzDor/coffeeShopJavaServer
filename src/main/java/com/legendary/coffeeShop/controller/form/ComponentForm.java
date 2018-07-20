@@ -1,6 +1,5 @@
 package com.legendary.coffeeShop.controller.form;
 
-import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
