@@ -52,6 +52,7 @@ public class ValidationService {
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
         return StringUtils.isEmpty(componentForm.getName())
+                || StringUtils.isEmpty(componentForm.getProductDisplayName())
                 || componentForm.getAmount() < 0
                 || componentForm.getPrice() < 0
                 ;

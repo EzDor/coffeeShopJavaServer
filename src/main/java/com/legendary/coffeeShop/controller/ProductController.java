@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -24,7 +25,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseBody
-    public Set<Product> getProducts() {
+    public List<Product> getProducts() {
         return productService.getProducts();
     }
 

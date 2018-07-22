@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -32,8 +33,12 @@ public class ProductService {
      * Public Functions
      *********************************/
 
-    public Set<Product> getProducts() {
-        return new HashSet<>(productRepository.findAllByStatus(ProductStatus.ACTIVE));
+    public List<Product> getProducts() {
+        return productRepository.findAllByStatus(ProductStatus.ACTIVE);
+    }
+
+    public List<Product> getProductsByName(List<String> displayNames) {
+        return productRepository.findByDisplayNameIn(displayNames);
     }
 
     public Product getProductById(int id) {

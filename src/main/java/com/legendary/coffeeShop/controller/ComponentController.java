@@ -39,4 +39,16 @@ public class ComponentController {
         }
         return componentService.createComponent(componentForm);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/update")
+    @ResponseBody
+    public Status updateComponent(@RequestBody ComponentForm componentForm) {
+        try {
+            validationService.validateComponentForm(componentForm);
+        } catch (InputMismatchException err) {
+            return new Status(err);
+        }
+        return componentService.updateComponent(componentForm);
+    }
 }

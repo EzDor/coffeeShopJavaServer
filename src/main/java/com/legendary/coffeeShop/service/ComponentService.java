@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -67,9 +68,10 @@ public class ComponentService {
         component.setAmount(componentForm.getAmount());
         component.setPrice(componentForm.getPrice());
         component.setStatus(ComponentStatus.ACTIVE);
-        Product prod = productService.getProductById(componentForm.getProductTypeId());
-        if (prod != null) {
-            component.setProductTypes(new HashSet<>(Arrays.asList(prod)));
+        List<Product> products = productService.getProductsByName(componentForm.getProductDisplayName());
+        if (products != null) {
+            component.getProductTypes().addAll(products);
+            component.setProductTypes(component.getProductTypes());
             return component;
         }
         return null;
