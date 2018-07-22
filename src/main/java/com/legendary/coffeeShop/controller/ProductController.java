@@ -7,12 +7,7 @@ import com.legendary.coffeeShop.service.ValidationService;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
 import java.util.Set;
@@ -56,4 +51,13 @@ public class ProductController {
         }
         return productService.updateProduct(productForm);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{displayName}")
+    @ResponseBody
+    public Status deleteProduct(@PathVariable String displayName) {
+        return productService.deleteProduct(displayName);
+    }
+
+
 }

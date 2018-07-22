@@ -15,5 +15,4 @@ public class ProductForm {
 
     private double price;
 
-    private String productTypeToUpdate;
 }

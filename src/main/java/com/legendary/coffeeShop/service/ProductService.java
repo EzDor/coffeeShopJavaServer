@@ -42,23 +42,29 @@ public class ProductService {
 
     public Status createProduct(ProductForm productForm) {
 
-        if (getProduct(productForm.getProductType()) != null) {
-            return new Status(Status.ERROR, "Cannot create product, productType " + productForm.getProductType() + " is already exist");
+        if (getProduct(productForm.getDisplayName()) != null) {
+            return new Status(Status.ERROR, "Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
         }
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product is created successfully.");
+        return new Status(Status.OK, "Product was created successfully.");
     }
 
     public Status updateProduct(ProductForm productForm) {
-        Product product = getProduct(productForm.getProductTypeToUpdate());
+        Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
-            return new Status(Status.ERROR, "Cannot update product, product with productType " + productForm.getProductTypeToUpdate() + " is not found");
+            return new Status(Status.ERROR, "Cannot update product, product with name " + productForm.getDisplayName() + " is not found");
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product is updated successfully.");
+        return new Status(Status.OK, "Product was updated successfully.");
+    }
+
+    public Status deleteProduct(String displayName) {
+        Product product = getProduct(displayName);
+        productRepository.delete(product);
+        return new Status(Status.OK, "Product was deleted successfully.");
     }
 
     /*********************************
@@ -75,11 +81,11 @@ public class ProductService {
     }
 
 
-    private Product getProduct(String productType) {
-        if(StringUtils.isEmpty(productType)){
+    private Product getProduct(String productDisplayName) {
+        if(StringUtils.isEmpty(productDisplayName)){
             return null;
         }
-        return productRepository.findByProductTypeAndStatus(productType.toLowerCase(), ProductStatus.ACTIVE);
+        return productRepository.findByDisplayName(productDisplayName);
     }
 
 }
