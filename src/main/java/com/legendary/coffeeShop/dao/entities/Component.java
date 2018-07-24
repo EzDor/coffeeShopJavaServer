@@ -32,5 +32,6 @@ public class Component {
 
     @Column
     private int amount;
+    
 
 }

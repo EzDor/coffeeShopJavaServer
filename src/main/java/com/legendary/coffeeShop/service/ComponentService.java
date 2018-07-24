@@ -37,7 +37,11 @@ public class ComponentService {
     }
 
     public Status createComponent(ComponentForm componentForm) {
-        Component component = prepareComponent(new Component(), componentForm);
+        Component component = getComponent(componentForm.getName());
+        if (component != null ) {
+            return new Status(Status.ERROR, "Component with this name already exists");
+        }
+        component = prepareComponent(new Component(), componentForm);
         if (component != null) {
             componentRepository.save(component);
             return new Status(Status.OK, "Component created successfully.");
@@ -57,6 +61,18 @@ public class ComponentService {
         componentRepository.save(component);
         return new Status(Status.OK, "component updated successfully.");
 
+    }
+
+    public Status deleteComponent(String name) {
+        Component component = getComponent(name);
+        if (component == null) {
+            return new Status(Status.ERROR, "Couldn't find component with name" + name);
+        }
+        // DELETE PRODUCT_TYPE
+        component.getProductTypes().remove(this);
+        componentRepository.delete(component);
+
+        return new Status(Status.OK, "component deleted successfully.");
     }
 
     /*********************************
@@ -81,7 +97,7 @@ public class ComponentService {
         if(StringUtils.isEmpty(componenName)){
             return null;
         }
-        return componentRepository.findByNameContains(componenName.toLowerCase());
+        return componentRepository.findByNameEqualsIgnoreCase(componenName);
     }
 
 }

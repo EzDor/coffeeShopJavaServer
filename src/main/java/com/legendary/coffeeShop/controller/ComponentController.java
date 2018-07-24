@@ -51,4 +51,11 @@ public class ComponentController {
         }
         return componentService.updateComponent(componentForm);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{name}")
+    @ResponseBody
+    public Status updateComponent(@PathVariable String name) {
+        return componentService.deleteComponent(name);
+    }
 }
