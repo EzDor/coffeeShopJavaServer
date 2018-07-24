@@ -81,7 +81,11 @@ public class ProductService {
         product.setDisplayName(productForm.getDisplayName());
         product.setDescription(productForm.getDescription());
         product.setPrice(productForm.getPrice());
-        product.setStatus(ProductStatus.ACTIVE);
+        String status = productForm.getProductStatus();
+        if ( status == null)
+            product.setStatus(ProductStatus.ACTIVE);
+        else
+            product.setStatus(ProductStatus.valueOf(status));
         return product;
     }
 

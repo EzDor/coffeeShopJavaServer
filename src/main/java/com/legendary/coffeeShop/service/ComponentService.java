@@ -80,10 +80,13 @@ public class ComponentService {
      *********************************/
 
     private Component prepareComponent(Component component, ComponentForm componentForm) {
+        double price = componentForm.getPrice();
         component.setName(componentForm.getName());
         component.setAmount(componentForm.getAmount());
-        component.setPrice(componentForm.getPrice());
-        component.setStatus(ComponentStatus.ACTIVE);
+        component.setPrice(price);
+        String status = componentForm.getComponentStatus();
+        component.setStatus(getComponentStatus(status, price));
+
         List<Product> products = productService.getProductsByName(componentForm.getProductDisplayName());
         if (products != null) {
             component.getProductTypes().addAll(products);
@@ -98,6 +101,19 @@ public class ComponentService {
             return null;
         }
         return componentRepository.findByNameEqualsIgnoreCase(componenName);
+    }
+
+    private ComponentStatus getComponentStatus(String status, double price) {
+        if (price ==0){
+            if (status == null || ComponentStatus.valueOf(status) == ComponentStatus.ACTIVE)
+                return ComponentStatus.OUT_OF_STOCK;
+            else
+                return ComponentStatus.valueOf(status);
+        }
+        else if (status != null)
+                return ComponentStatus.valueOf(status);
+        else
+            return ComponentStatus.ACTIVE;
     }
 
 }
