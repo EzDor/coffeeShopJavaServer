@@ -2,8 +2,10 @@ package com.legendary.coffeeShop.service;
 
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
+import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.entities.ProductStatus;
+import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
@@ -11,10 +13,8 @@ import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 public class ProductService {
@@ -27,6 +27,9 @@ public class ProductService {
 
     @Autowired
     private CommonConstants commonConstants;
+
+    @Autowired
+    private ComponentRepository componentRepository;
 
 
     /*********************************
@@ -70,6 +73,11 @@ public class ProductService {
         Product product = getProduct(displayName);
         productRepository.delete(product);
         return new Status(Status.OK, "Product was deleted successfully.");
+    }
+
+    public List<Component> getProductComponents(String prodType) {
+        Product product = getProduct(prodType);
+        return componentRepository.findByProductTypes_id(product.getId());
     }
 
     /*********************************

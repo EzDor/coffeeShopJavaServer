@@ -5,16 +5,12 @@ import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
-import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 public class ComponentService {
@@ -24,17 +20,11 @@ public class ComponentService {
     private ComponentRepository componentRepository;
 
     @Autowired
-    private CommonConstants commonConstants;
-    @Autowired
     private ProductService productService;
 
     /*********************************
      * Public Functions
      *********************************/
-
-    public Set<Component> getComponentByType(String prodType) {
-        return new HashSet<>(componentRepository.findByProductTypesProductTypeContains(prodType));
-    }
 
     public Status createComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
@@ -68,7 +58,6 @@ public class ComponentService {
         if (component == null) {
             return new Status(Status.ERROR, "Couldn't find component with name" + name);
         }
-        // DELETE PRODUCT_TYPE
         component.getProductTypes().remove(this);
         componentRepository.delete(component);
 
