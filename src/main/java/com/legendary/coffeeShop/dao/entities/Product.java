@@ -22,7 +22,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "display_name")
+    @Column(name = "display_name", unique = true)
     private String displayName;
 
     @Column

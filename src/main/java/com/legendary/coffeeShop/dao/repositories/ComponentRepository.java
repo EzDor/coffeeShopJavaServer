@@ -7,5 +7,7 @@ import java.util.Set;
 
 public interface ComponentRepository extends JpaRepository<Component, Long> {
     Set<Component> findByProductTypesProductTypeContains(String type);
-    Component findByNameContains(String componentName);
+    Component findByNameEqualsIgnoreCase(String componentName);
+
+
 }

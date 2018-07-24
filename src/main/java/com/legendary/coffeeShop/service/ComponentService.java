@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -36,7 +37,11 @@ public class ComponentService {
     }
 
     public Status createComponent(ComponentForm componentForm) {
-        Component component = prepareComponent(new Component(), componentForm);
+        Component component = getComponent(componentForm.getName());
+        if (component != null ) {
+            return new Status(Status.ERROR, "Component with this name already exists");
+        }
+        component = prepareComponent(new Component(), componentForm);
         if (component != null) {
             componentRepository.save(component);
             return new Status(Status.OK, "Component created successfully.");
@@ -58,6 +63,18 @@ public class ComponentService {
 
     }
 
+    public Status deleteComponent(String name) {
+        Component component = getComponent(name);
+        if (component == null) {
+            return new Status(Status.ERROR, "Couldn't find component with name" + name);
+        }
+        // DELETE PRODUCT_TYPE
+        component.getProductTypes().remove(this);
+        componentRepository.delete(component);
+
+        return new Status(Status.OK, "component deleted successfully.");
+    }
+
     /*********************************
      * Private Functions
      *********************************/
@@ -67,9 +84,10 @@ public class ComponentService {
         component.setAmount(componentForm.getAmount());
         component.setPrice(componentForm.getPrice());
         component.setStatus(ComponentStatus.ACTIVE);
-        Product prod = productService.getProductById(componentForm.getProductTypeId());
-        if (prod != null) {
-            component.setProductTypes(new HashSet<>(Arrays.asList(prod)));
+        List<Product> products = productService.getProductsByName(componentForm.getProductDisplayName());
+        if (products != null) {
+            component.getProductTypes().addAll(products);
+            component.setProductTypes(component.getProductTypes());
             return component;
         }
         return null;
@@ -79,7 +97,7 @@ public class ComponentService {
         if(StringUtils.isEmpty(componenName)){
             return null;
         }
-        return componentRepository.findByNameContains(componenName.toLowerCase());
+        return componentRepository.findByNameEqualsIgnoreCase(componenName);
     }
 
 }

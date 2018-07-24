@@ -3,6 +3,8 @@ package com.legendary.coffeeShop.controller.form;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class ComponentForm {
@@ -13,5 +15,5 @@ public class ComponentForm {
 
     private double price;
 
-    private int productTypeId;
+    private List<String> productDisplayName;
 }
