@@ -60,7 +60,7 @@ public class ProductController {
         return productService.deleteProduct(displayName);
     }
 
-    @GetMapping("/type/{prodType}")
+    @GetMapping("/components/{prodType}")
     @ResponseBody
     public List<Component> getComponentByType(@PathVariable String prodType) {
         return productService.getProductComponents(prodType);
