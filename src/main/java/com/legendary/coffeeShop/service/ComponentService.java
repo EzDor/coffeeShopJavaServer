@@ -78,8 +78,10 @@ public class ComponentService {
 
         List<Product> products = productService.getProductsByName(componentForm.getProductDisplayName());
         if (products != null) {
-            component.getProductTypes().addAll(products);
-            component.setProductTypes(component.getProductTypes());
+            List<Product> currentProducts = component.getProductTypes();
+            if (currentProducts != null)
+                products.addAll(component.getProductTypes());
+            component.setProductTypes(products);
             return component;
         }
         return null;

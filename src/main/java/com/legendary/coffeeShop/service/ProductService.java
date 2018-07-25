@@ -13,6 +13,8 @@ import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sun.font.CompositeFont;
+
 import java.util.List;
 
 
@@ -37,15 +39,11 @@ public class ProductService {
      *********************************/
 
     public List<Product> getProducts() {
-        return productRepository.findAllByStatus(ProductStatus.ACTIVE);
+        return productRepository.findByStatusEquals(ProductStatus.ACTIVE);
     }
 
     public List<Product> getProductsByName(List<String> displayNames) {
         return productRepository.findByDisplayNameIn(displayNames);
-    }
-
-    public Product getProductById(int id) {
-        return productRepository.findById(id);
     }
 
     public Status createProduct(ProductForm productForm) {
