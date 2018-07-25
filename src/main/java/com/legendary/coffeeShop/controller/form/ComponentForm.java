@@ -16,4 +16,6 @@ public class ComponentForm {
     private double price;
 
     private List<String> productDisplayName;
+
+    private String componentStatus;
 }

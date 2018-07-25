@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
+import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/product")
@@ -60,5 +60,9 @@ public class ProductController {
         return productService.deleteProduct(displayName);
     }
 
-
+    @GetMapping("/components/{prodType}")
+    @ResponseBody
+    public List<Component> getComponentByType(@PathVariable String prodType) {
+        return productService.getProductComponents(prodType);
+    }
 }

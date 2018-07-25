@@ -15,4 +15,6 @@ public class ProductForm {
 
     private double price;
 
+    private String productStatus;
+
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +24,7 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private List<OrderItem> orderItems;
 
     @Column(name = "creation_time")
     private Timestamp creationTime;
