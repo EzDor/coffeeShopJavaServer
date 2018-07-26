@@ -2,9 +2,13 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.dao.entities.Order;
 import com.legendary.coffeeShop.dao.entities.OrderStatus;
+import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.dao.repositories.OrderRepository;
+import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 
 @Service
 public class OrderService {
@@ -12,12 +16,27 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public Order getOrder(int id){
-        // check if there is open order
-        Order order = orderRepository.findByUserAAndOrderStatus(id, OrderStatus.IN_PROGRESS);
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public Order getOrder(String username){
+        User user = userRepository.findByUsername(username);
+        // check if there is an open order
+        Order order = orderRepository.findByUserAAndOrderStatus(user, OrderStatus.IN_PROGRESS);
         if (order != null) {
             return order;
         }
-        return new Order();
+        order = prepareOrder(new Order(), user);
+        orderRepository.save(order);
+        return order;
+    }
+
+    private Order prepareOrder(Order order, User user) {
+        order.setUser(user);
+        order.setCreationTime(new Timestamp(System.currentTimeMillis()));
+        order.setOrderStatus(OrderStatus.IN_PROGRESS);
+        order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        return order;
     }
 }
