@@ -6,6 +6,6 @@ import com.legendary.coffeeShop.dao.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    Order findByUserAAndOrderStatus(User user, OrderStatus status);
+    Order findByUserAndOrderStatus(User user, OrderStatus status);
 }
 

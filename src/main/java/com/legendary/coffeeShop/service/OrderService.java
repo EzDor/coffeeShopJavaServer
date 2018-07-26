@@ -23,7 +23,7 @@ public class OrderService {
     public Order getOrder(String username){
         User user = userRepository.findByUsername(username);
         // check if there is an open order
-        Order order = orderRepository.findByUserAAndOrderStatus(user, OrderStatus.IN_PROGRESS);
+        Order order = orderRepository.findByUserAndOrderStatus(user, OrderStatus.IN_PROGRESS);
         if (order != null) {
             return order;
         }
