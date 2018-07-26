@@ -1,10 +1,12 @@
 package com.legendary.coffeeShop.service;
 
+import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.Order;
 import com.legendary.coffeeShop.dao.entities.OrderStatus;
 import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.dao.repositories.OrderRepository;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
+import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,17 @@ public class OrderService {
 
     public List<Order> getAllOrders(String username) {
         return orderRepository.findByUser(userRepository.findByUsername(username));
+    }
+
+    public Status updateOrder(int id, List<OrderForm> ordersForm){
+        Order order = orderRepository.findById(id);
+        if (order == null)
+            return new Status(Status.ERROR, String.format("Could not find order with id %d", id));
+
+        for (OrderForm orderForm: ordersForm) {
+            order.setOrderItems(null);
+        }
+        return new Status(Status.OK, "Order updated successfully");
     }
 
     private Order prepareOrder(Order order, User user) {
