@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -30,6 +31,10 @@ public class OrderService {
         order = prepareOrder(new Order(), user);
         orderRepository.save(order);
         return order;
+    }
+
+    public List<Order> getAllOrders(String username) {
+        return orderRepository.findByUser(userRepository.findByUsername(username));
     }
 
     private Order prepareOrder(Order order, User user) {
