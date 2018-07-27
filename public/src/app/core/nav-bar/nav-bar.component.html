@@ -1,0 +1,5 @@
+<div class="nav-bar">
+  <img class="logo" src="/assets/images/some-logo.png" alt="Some Logo" />
+  <div class="nav-item"><a [routerLink]="['/home']">Home</a></div>
+  <app-account-menu [user]="currentUser" (signedOut)="handleSignOut()"></app-account-menu>
+</div>
