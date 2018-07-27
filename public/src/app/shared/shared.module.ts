@@ -1,10 +1,12 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
+import {LoadingSpinnerComponent} from './loading-spinner.componnent';
+
 @NgModule({
   imports: [CommonModule],
-  exports: [],
-  declarations: [],
+  exports: [LoadingSpinnerComponent, CommonModule],
+  declarations: [LoadingSpinnerComponent],
   providers: []
 })
 

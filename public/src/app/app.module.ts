@@ -1,24 +1,30 @@
-import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule} from '@angular/router';
+import {ReactiveFormsModule, FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+
+import {appRoutes} from './routers';
+import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
-import {ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {HomeModule} from './home/home.module';
+import {AccountMenuComponent} from './core/account-menu.component';
 
-import {AppComponent} from './app.component';
-import { LoginComponent } from './login/login.component';
-import { UserComponent } from './user/user.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    LoginComponent,
-    UserComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    HomeModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
