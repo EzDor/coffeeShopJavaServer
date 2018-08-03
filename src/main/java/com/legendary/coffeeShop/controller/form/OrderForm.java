@@ -11,5 +11,7 @@ public class OrderForm {
 
     private String productName;
 
-    private List<String> componentsName;
+    private List<String> componentsNames;
+
+    private int price;
 }

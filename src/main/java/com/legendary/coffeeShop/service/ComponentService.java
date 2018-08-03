@@ -76,7 +76,7 @@ public class ComponentService {
         String status = componentForm.getComponentStatus();
         component.setStatus(getComponentStatus(status, price));
 
-        List<Product> products = productService.getProductsByName(componentForm.getProductDisplayName());
+        List<Product> products = productService.getProductsByNames(componentForm.getProductDisplayName());
         if (products != null) {
             List<Product> currentProducts = component.getProductTypes();
             if (currentProducts != null)
@@ -87,7 +87,7 @@ public class ComponentService {
         return null;
 
     }
-    private Component getComponent(String componenName) {
+    public Component getComponent(String componenName) {
         if(StringUtils.isEmpty(componenName)){
             return null;
         }

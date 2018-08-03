@@ -42,7 +42,7 @@ public class ProductService {
         return productRepository.findByStatusEquals(ProductStatus.ACTIVE);
     }
 
-    public List<Product> getProductsByName(List<String> displayNames) {
+    public List<Product> getProductsByNames(List<String> displayNames) {
         return productRepository.findByDisplayNameIn(displayNames);
     }
 
@@ -96,7 +96,7 @@ public class ProductService {
     }
 
 
-    private Product getProduct(String productDisplayName) {
+    public Product getProduct(String productDisplayName) {
         if(StringUtils.isEmpty(productDisplayName)){
             return null;
         }

@@ -34,7 +34,7 @@ public class OrderController {
 
     @PostMapping("/update/{orderId}")
     @ResponseBody
-    public Status updateOrder(@PathVariable int id, @RequestBody List<OrderForm> orderForm) {
-        return orderService.updateOrder(id, orderForm);
+    public Status updateOrder(@PathVariable int orderId, @RequestBody List<OrderForm> orderForm) {
+        return orderService.updateOrder(orderId, orderForm);
     }
 }
