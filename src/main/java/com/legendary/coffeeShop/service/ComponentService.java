@@ -64,6 +64,14 @@ public class ComponentService {
         return new Status(Status.OK, "component deleted successfully.");
     }
 
+
+    public Component getComponent(String componentName) {
+        if(StringUtils.isEmpty(componentName)){
+            return null;
+        }
+        return componentRepository.findByNameEqualsIgnoreCase(componentName);
+    }
+
     /*********************************
      * Private Functions
      *********************************/
@@ -86,12 +94,6 @@ public class ComponentService {
         }
         return null;
 
-    }
-    public Component getComponent(String componenName) {
-        if(StringUtils.isEmpty(componenName)){
-            return null;
-        }
-        return componentRepository.findByNameEqualsIgnoreCase(componenName);
     }
 
     private ComponentStatus getComponentStatus(String status, double price) {

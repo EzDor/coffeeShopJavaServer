@@ -78,6 +78,13 @@ public class ProductService {
         return componentRepository.findByProductTypes_id(product.getId());
     }
 
+    public Product getProduct(String productDisplayName) {
+        if(StringUtils.isEmpty(productDisplayName)){
+            return null;
+        }
+        return productRepository.findByDisplayName(productDisplayName);
+    }
+
     /*********************************
      * Private Functions
      *********************************/
@@ -93,14 +100,6 @@ public class ProductService {
         else
             product.setStatus(ProductStatus.valueOf(status));
         return product;
-    }
-
-
-    public Product getProduct(String productDisplayName) {
-        if(StringUtils.isEmpty(productDisplayName)){
-            return null;
-        }
-        return productRepository.findByDisplayName(productDisplayName);
     }
 
 }
