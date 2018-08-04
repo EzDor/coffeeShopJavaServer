@@ -77,7 +77,7 @@ public class ValidationService {
 
     private boolean productTypeNotExists(String productType) {
         for (ProductType pType : ProductType.values()) {
-            if (pType.name().equals(productType)) {
+            if (pType.name().equals(productType.toUpperCase())) {
                 return false;
             }
         }
