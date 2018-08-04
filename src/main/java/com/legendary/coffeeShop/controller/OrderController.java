@@ -38,13 +38,6 @@ public class OrderController {
         return orderService.updateOrder(orderId, orderForm);
     }
 
-
-    @DeleteMapping("/{OrderItemId}")
-    @ResponseBody
-    public Status deleteProduct(@PathVariable int OrderItemId) {
-        return orderService.deleteProduct(orderId, OrderItemId);
-    }
-
     @PostMapping("/close/{orderId}")
     @ResponseBody
     public Status closeOrder(@PathVariable int orderId) {

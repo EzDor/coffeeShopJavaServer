@@ -2,7 +2,6 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.*;
-import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
 import com.legendary.coffeeShop.dao.repositories.OrderRepository;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
