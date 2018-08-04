@@ -6,8 +6,9 @@ import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,28 +47,33 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public Status createUser(NewUserForm userForm) {
+    public ResponseEntity createUser(NewUserForm userForm) {
         if (getUser(userForm.getUsername()) != null) {
-            return new Status(Status.ERROR, "Cannot create user, username " + userForm.getUsername() + " is already exist");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot create user, username " + userForm.getUsername() + " is already exist");
         }
 
         User user = new User();
         user = prepareUser(user, userForm);
         userRepository.save(user);
-        return new Status(Status.OK);
+        return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
 
     }
 
 
-    public Status updateUser(UpdateUserForm userForm) {
+    public ResponseEntity updateUser(UpdateUserForm userForm) {
         User user = getUser(userForm.getUsernameToUpdate());
-        if (user == null || !passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
-            return new Status(Status.ERROR, "Cannot update user, username or password are incorrect");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot update user, user not found");
+        }
+        if (!passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot update user, username or password are incorrect");
         }
 
         user = prepareUser(user, userForm.getUpdatedUserDetails());
         userRepository.save(user);
-        return new Status(Status.OK, "user is updated successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("user is updated successfully.");
 
     }
 

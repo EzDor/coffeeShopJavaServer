@@ -4,8 +4,9 @@ import com.legendary.coffeeShop.controller.form.NewUserForm;
 import com.legendary.coffeeShop.controller.form.UpdateUserForm;
 import com.legendary.coffeeShop.service.UserService;
 import com.legendary.coffeeShop.service.ValidationService;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +27,11 @@ public class UserController {
 
     @PostMapping("/signUp")
     @ResponseBody
-    public Status addNewUser(@RequestBody NewUserForm userForm) {
+    public ResponseEntity addNewUser(@RequestBody NewUserForm userForm) {
         try {
             validationService.validateUserForm(userForm);
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
 
         return userService.createUser(userForm);
@@ -38,11 +39,11 @@ public class UserController {
 
     @PostMapping("/update")
     @ResponseBody
-    public Status updateUser(@RequestBody UpdateUserForm userForm){
+    public ResponseEntity updateUser(@RequestBody UpdateUserForm userForm){
         try {
             validationService.validateUserForm(userForm.getUpdatedUserDetails());
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
         return userService.updateUser(userForm);
     }
