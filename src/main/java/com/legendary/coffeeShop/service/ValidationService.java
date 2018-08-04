@@ -76,14 +76,13 @@ public class ValidationService {
     }
 
     private boolean productTypeNotExists(String productType) {
-        ProductType.valueOf(productType.toUpperCase());
-            for (ProductType pType : ProductType.values()) {
-                if (pType.name().equals(productType)) {
-                    return false;
-                }
+        for (ProductType pType : ProductType.values()) {
+            if (pType.name().equals(productType)) {
+                return false;
             }
-            return true;
         }
+        return true;
+    }
 
     private boolean isContainsNotAllowedCharacters(String... strings) {
         for (String string : strings) {
