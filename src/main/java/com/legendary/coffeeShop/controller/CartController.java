@@ -4,6 +4,7 @@ package com.legendary.coffeeShop.controller;
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.Order;
 import com.legendary.coffeeShop.dao.entities.OrderStatus;
+import com.legendary.coffeeShop.service.OrderItemService;
 import com.legendary.coffeeShop.service.OrderService;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,14 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/order")
-public class OrderController {
+@RequestMapping("/cart")
+public class CartController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderItemService orderItemService;
 
     @GetMapping("/{username}")
     @ResponseBody
@@ -48,5 +52,11 @@ public class OrderController {
     @ResponseBody
     public Status cancelOrder(@PathVariable int orderId) {
         return orderService.closeOrder(orderId, OrderStatus.CANCELED);
+    }
+
+    @DeleteMapping("/{orderItemId}")
+    @ResponseBody
+    public Status removeItem(@PathVariable int orderItemId) {
+        return orderItemService.removeOrderItem(orderItemId);
     }
 }

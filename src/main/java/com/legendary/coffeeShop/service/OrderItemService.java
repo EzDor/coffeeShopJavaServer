@@ -12,7 +12,7 @@ public class OrderItemService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    public Status deleteOrderItem(int orderItemId) {
+    public Status removeOrderItem(int orderItemId) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId);
         if (orderItem == null) {
             return new Status(Status.ERROR, String.format("Could not find order item with id %d", orderItemId));
