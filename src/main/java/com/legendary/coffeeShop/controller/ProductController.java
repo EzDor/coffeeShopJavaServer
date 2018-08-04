@@ -29,6 +29,12 @@ public class ProductController {
         return productService.getProducts();
     }
 
+    @GetMapping("/{productType}")
+    @ResponseBody
+    public List<Product> getProductsByType(@PathVariable String productType) {
+        return productService.getProductsByType(productType);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
@@ -60,9 +66,9 @@ public class ProductController {
         return productService.deleteProduct(displayName);
     }
 
-    @GetMapping("/components/{prodType}")
+    @GetMapping("/components/{productName}")
     @ResponseBody
-    public List<Component> getComponentByType(@PathVariable String prodType) {
-        return productService.getProductComponents(prodType);
+    public List<Component> getComponentByType(@PathVariable String productName) {
+        return productService.getProductComponents(productName);
     }
 }

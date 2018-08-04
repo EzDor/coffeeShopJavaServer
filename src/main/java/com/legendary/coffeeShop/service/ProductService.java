@@ -22,9 +22,6 @@ import java.util.List;
 public class ProductService {
 
     @Autowired
-    private OrderItemRepository orderItemRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -44,6 +41,10 @@ public class ProductService {
 
     public List<Product> getProductsByNames(List<String> displayNames) {
         return productRepository.findByDisplayNameIn(displayNames);
+    }
+
+    public List<Product> getProductsByType(String productType) {
+        return productRepository.findByProductType(productType);
     }
 
     public Status createProduct(ProductForm productForm) {
@@ -73,8 +74,8 @@ public class ProductService {
         return new Status(Status.OK, "Product was deleted successfully.");
     }
 
-    public List<Component> getProductComponents(String prodType) {
-        Product product = getProduct(prodType);
+    public List<Component> getProductComponents(String productName) {
+        Product product = getProduct(productName);
         return componentRepository.findByProductTypes_id(product.getId());
     }
 

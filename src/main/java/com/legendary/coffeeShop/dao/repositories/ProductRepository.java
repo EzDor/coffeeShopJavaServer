@@ -10,5 +10,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findByDisplayName(String displayName);
     List<Product> findByDisplayNameIn(List<String> displayNames);
     List<Product> findByStatusEquals(ProductStatus status);
-    Product findById(int id);
+    List<Product> findByProductType(String productType);
 }
