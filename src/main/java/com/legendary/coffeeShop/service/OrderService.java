@@ -3,8 +3,9 @@ package com.legendary.coffeeShop.service;
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.*;
 import com.legendary.coffeeShop.dao.repositories.OrderRepository;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -43,10 +44,11 @@ public class OrderService {
         return orderRepository.findByUser(userService.getUser(username));
     }
 
-    public Status updateOrder(int orderId, List<OrderForm> ordersForm){
+    public ResponseEntity updateOrder(int orderId, List<OrderForm> ordersForm){
         Order order = orderRepository.findById(orderId);
         if (order == null)
-            return new Status(Status.ERROR, String.format("Could not find order with id %d", orderId));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(String.format("Could not find order with id %d", orderId));
 
         List<OrderItem> orderItems = getOrderItems(ordersForm);
         List<OrderItem> currentOrderItems = order.getOrderItems();
@@ -56,17 +58,18 @@ public class OrderService {
         order.setOrderItems(orderItems);
         order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         orderRepository.save(order);
-        return new Status(Status.OK, "Order updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
     }
 
-    public Status closeOrder(int orderId, OrderStatus orderStatus) {
+    public ResponseEntity closeOrder(int orderId, OrderStatus orderStatus) {
         Order order = orderRepository.findById(orderId);
         if (order == null) {
-            return new Status(Status.ERROR, String.format("Could not find order with id %d", orderId));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(String.format("Could not find order with id %d", orderId));
         }
         order.setOrderStatus(orderStatus);
         orderRepository.save(order);
-        return new Status(Status.OK, "Order updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
     }
 
     /*********************************
