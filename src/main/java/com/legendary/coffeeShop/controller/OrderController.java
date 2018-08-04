@@ -3,10 +3,10 @@ package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.Order;
+import com.legendary.coffeeShop.dao.entities.OrderStatus;
 import com.legendary.coffeeShop.service.OrderService;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +36,24 @@ public class OrderController {
     @ResponseBody
     public Status updateOrder(@PathVariable int orderId, @RequestBody List<OrderForm> orderForm) {
         return orderService.updateOrder(orderId, orderForm);
+    }
+
+
+    @DeleteMapping("/{OrderItemId}")
+    @ResponseBody
+    public Status deleteProduct(@PathVariable int OrderItemId) {
+        return orderService.deleteProduct(orderId, OrderItemId);
+    }
+
+    @PostMapping("/close/{orderId}")
+    @ResponseBody
+    public Status closeOrder(@PathVariable int orderId) {
+        return orderService.closeOrder(orderId, OrderStatus.DONE);
+    }
+
+    @DeleteMapping("/{orderId}")
+    @ResponseBody
+    public Status cancelOrder(@PathVariable int orderId) {
+        return orderService.closeOrder(orderId, OrderStatus.CANCELED);
     }
 }

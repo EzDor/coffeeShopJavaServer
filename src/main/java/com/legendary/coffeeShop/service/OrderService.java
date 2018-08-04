@@ -2,6 +2,7 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.*;
+import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
 import com.legendary.coffeeShop.dao.repositories.OrderRepository;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,10 @@ public class OrderService {
         return orderRepository.findByUser(userService.getUser(username));
     }
 
-    public Status updateOrder(int id, List<OrderForm> ordersForm){
-        Order order = orderRepository.findById(id);
+    public Status updateOrder(int orderId, List<OrderForm> ordersForm){
+        Order order = orderRepository.findById(orderId);
         if (order == null)
-            return new Status(Status.ERROR, String.format("Could not find order with id %d", id));
+            return new Status(Status.ERROR, String.format("Could not find order with id %d", orderId));
 
         List<OrderItem> orderItems = getOrderItems(ordersForm);
         List<OrderItem> currentOrderItems = order.getOrderItems();
@@ -59,6 +60,15 @@ public class OrderService {
         return new Status(Status.OK, "Order updated successfully");
     }
 
+    public Status closeOrder(int orderId, OrderStatus orderStatus) {
+        Order order = orderRepository.findById(orderId);
+        if (order == null) {
+            return new Status(Status.ERROR, String.format("Could not find order with id %d", orderId));
+        }
+        order.setOrderStatus(orderStatus);
+        orderRepository.save(order);
+        return new Status(Status.OK, "Order updated successfully");
+    }
 
     /*********************************
      * Private Functions
