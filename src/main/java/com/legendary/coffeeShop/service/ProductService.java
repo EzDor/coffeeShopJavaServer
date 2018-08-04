@@ -5,6 +5,7 @@ import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.entities.ProductStatus;
+import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
@@ -44,7 +45,7 @@ public class ProductService {
     }
 
     public List<Product> getProductsByType(String productType) {
-        return productRepository.findByProductType(productType);
+        return productRepository.findByProductType(ProductType.valueOf(productType));
     }
 
     public Status createProduct(ProductForm productForm) {
@@ -91,7 +92,7 @@ public class ProductService {
      *********************************/
 
     private Product prepareProduct(Product product, ProductForm productForm) {
-        product.setProductType(productForm.getProductType());
+        product.setProductType(ProductType.valueOf(productForm.getProductType().toUpperCase()));
         product.setDisplayName(productForm.getDisplayName());
         product.setDescription(productForm.getDescription());
         product.setPrice(productForm.getPrice());

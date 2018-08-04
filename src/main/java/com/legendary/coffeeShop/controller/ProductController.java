@@ -3,6 +3,7 @@ package com.legendary.coffeeShop.controller;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
+import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
 import com.legendary.coffeeShop.utils.Status;
