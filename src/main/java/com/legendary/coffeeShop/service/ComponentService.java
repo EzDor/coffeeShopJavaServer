@@ -5,8 +5,9 @@ import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.util.List;
@@ -26,42 +27,48 @@ public class ComponentService {
      * Public Functions
      *********************************/
 
-    public Status createComponent(ComponentForm componentForm) {
+    public ResponseEntity createComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component != null ) {
-            return new Status(Status.ERROR, "Component with this name already exists");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Component with this name already exists");
         }
         component = prepareComponent(new Component(), componentForm);
         if (component != null) {
             componentRepository.save(component);
-            return new Status(Status.OK, "Component created successfully.");
+            return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
         }
         else {
-            return new Status(Status.ERROR, "Component was not created successfully");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Component was not created successfully");
         }
     }
 
-    public Status updateComponent(ComponentForm componentForm) {
+    public ResponseEntity updateComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component == null) {
-            return new Status(Status.ERROR, "Cannot update component, component with name " +
-                    componentForm.getName() + " is not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot update component, component with name " +
+                    componentForm.getName() + " was not found");
         }
         component = prepareComponent(component, componentForm);
         componentRepository.save(component);
-        return new Status(Status.OK, "component updated successfully.");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("component updated successfully.");
 
     }
 
-    public Status deleteComponent(String name) {
+    public ResponseEntity deleteComponent(String name) {
         Component component = getComponent(name);
         if (component == null) {
-            return new Status(Status.ERROR, "Couldn't find component with name" + name);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Couldn't find component with name" + name);
         }
         component.getProductTypes().remove(this);
         componentRepository.delete(component);
 
-        return new Status(Status.OK, "component deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("component deleted successfully.");
     }
 
 

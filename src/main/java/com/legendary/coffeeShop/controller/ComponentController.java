@@ -3,8 +3,9 @@ package com.legendary.coffeeShop.controller;
 import com.legendary.coffeeShop.controller.form.ComponentForm;
 import com.legendary.coffeeShop.service.ComponentService;
 import com.legendary.coffeeShop.service.ValidationService;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,11 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public Status createComponent(@RequestBody ComponentForm componentForm) {
+    public ResponseEntity createComponent(@RequestBody ComponentForm componentForm) {
         try {
             validationService.validateComponentForm(componentForm);
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
         return componentService.createComponent(componentForm);
     }
@@ -35,11 +36,11 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
-    public Status updateComponent(@RequestBody ComponentForm componentForm) {
+    public ResponseEntity updateComponent(@RequestBody ComponentForm componentForm) {
         try {
             validationService.validateComponentForm(componentForm);
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
         return componentService.updateComponent(componentForm);
     }
@@ -47,7 +48,7 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{name}")
     @ResponseBody
-    public Status updateComponent(@PathVariable String name) {
+    public ResponseEntity updateComponent(@PathVariable String name) {
         return componentService.deleteComponent(name);
     }
 }
