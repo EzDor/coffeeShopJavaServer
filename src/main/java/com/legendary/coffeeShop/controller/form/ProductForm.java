@@ -1,5 +1,6 @@
 package com.legendary.coffeeShop.controller.form;
 
+import com.legendary.coffeeShop.dao.entities.ProductType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -64,6 +64,14 @@ public class ComponentService {
         return new Status(Status.OK, "component deleted successfully.");
     }
 
+
+    public Component getComponent(String componentName) {
+        if(StringUtils.isEmpty(componentName)){
+            return null;
+        }
+        return componentRepository.findByNameEqualsIgnoreCase(componentName);
+    }
+
     /*********************************
      * Private Functions
      *********************************/
@@ -76,7 +84,7 @@ public class ComponentService {
         String status = componentForm.getComponentStatus();
         component.setStatus(getComponentStatus(status, price));
 
-        List<Product> products = productService.getProductsByName(componentForm.getProductDisplayName());
+        List<Product> products = productService.getProductsByNames(componentForm.getProductDisplayName());
         if (products != null) {
             List<Product> currentProducts = component.getProductTypes();
             if (currentProducts != null)
@@ -86,12 +94,6 @@ public class ComponentService {
         }
         return null;
 
-    }
-    private Component getComponent(String componenName) {
-        if(StringUtils.isEmpty(componenName)){
-            return null;
-        }
-        return componentRepository.findByNameEqualsIgnoreCase(componenName);
     }
 
     private ComponentStatus getComponentStatus(String status, double price) {

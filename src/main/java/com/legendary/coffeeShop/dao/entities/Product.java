@@ -25,8 +25,8 @@ public class Product {
     private String description;
 
     @Column(name = "product_type")
-    @NotBlank
-    private String productType;
+    @NotNull
+    private ProductType productType;
 
     @Column
     private double price;

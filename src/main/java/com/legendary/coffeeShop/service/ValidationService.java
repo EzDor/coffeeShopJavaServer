@@ -3,7 +3,7 @@ package com.legendary.coffeeShop.service;
 import com.legendary.coffeeShop.controller.form.ComponentForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.NewUserForm;
-import com.legendary.coffeeShop.dao.entities.ComponentStatus;
+import com.legendary.coffeeShop.dao.entities.ProductType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -45,8 +45,7 @@ public class ValidationService {
 
     private boolean isProductInvalid(ProductForm productForm) {
         return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
-                || isContainsWhitespace(productForm.getProductType())
-                || isContainsNotAllowedCharacters(productForm.getProductType());
+                || productTypeNotExists(productForm.getProductType());
 
     }
 
@@ -74,6 +73,15 @@ public class ValidationService {
             }
         }
         return false;
+    }
+
+    private boolean productTypeNotExists(String productType) {
+        for (ProductType pType : ProductType.values()) {
+            if (pType.name().equals(productType)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isContainsNotAllowedCharacters(String... strings) {

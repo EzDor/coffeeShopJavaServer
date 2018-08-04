@@ -3,6 +3,7 @@ package com.legendary.coffeeShop.controller;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
+import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
 import com.legendary.coffeeShop.utils.Status;
@@ -27,6 +28,12 @@ public class ProductController {
     @ResponseBody
     public List<Product> getProducts() {
         return productService.getProducts();
+    }
+
+    @GetMapping("/{productType}")
+    @ResponseBody
+    public List<Product> getProductsByType(@PathVariable String productType) {
+        return productService.getProductsByType(productType);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -60,9 +67,9 @@ public class ProductController {
         return productService.deleteProduct(displayName);
     }
 
-    @GetMapping("/components/{prodType}")
+    @GetMapping("/components/{productName}")
     @ResponseBody
-    public List<Component> getComponentByType(@PathVariable String prodType) {
-        return productService.getProductComponents(prodType);
+    public List<Component> getComponentByType(@PathVariable String productName) {
+        return productService.getProductComponents(productName);
     }
 }

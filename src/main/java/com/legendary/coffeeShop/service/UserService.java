@@ -72,6 +72,10 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public User getUser(String username) {
+        return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
+    }
+
     /*********************************
      * Private Functions
      *********************************/
@@ -89,10 +93,6 @@ public class UserService implements UserDetailsService {
 
     private String getUserPermission(User user) {
         return user.isAdmin() ? commonConstants.getAdminPermission() : commonConstants.getUserPermission();
-    }
-
-    private User getUser(String username) {
-        return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
     }
 
 }

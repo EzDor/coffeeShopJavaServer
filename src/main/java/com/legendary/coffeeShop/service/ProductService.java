@@ -5,6 +5,7 @@ import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.entities.ProductStatus;
+import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
@@ -20,9 +21,6 @@ import java.util.List;
 
 @Service
 public class ProductService {
-
-    @Autowired
-    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -42,8 +40,12 @@ public class ProductService {
         return productRepository.findByStatusEquals(ProductStatus.ACTIVE);
     }
 
-    public List<Product> getProductsByName(List<String> displayNames) {
+    public List<Product> getProductsByNames(List<String> displayNames) {
         return productRepository.findByDisplayNameIn(displayNames);
+    }
+
+    public List<Product> getProductsByType(String productType) {
+        return productRepository.findByProductType(ProductType.valueOf(productType));
     }
 
     public Status createProduct(ProductForm productForm) {
@@ -73,9 +75,16 @@ public class ProductService {
         return new Status(Status.OK, "Product was deleted successfully.");
     }
 
-    public List<Component> getProductComponents(String prodType) {
-        Product product = getProduct(prodType);
+    public List<Component> getProductComponents(String productName) {
+        Product product = getProduct(productName);
         return componentRepository.findByProductTypes_id(product.getId());
+    }
+
+    public Product getProduct(String productDisplayName) {
+        if(StringUtils.isEmpty(productDisplayName)){
+            return null;
+        }
+        return productRepository.findByDisplayName(productDisplayName);
     }
 
     /*********************************
@@ -83,7 +92,7 @@ public class ProductService {
      *********************************/
 
     private Product prepareProduct(Product product, ProductForm productForm) {
-        product.setProductType(productForm.getProductType());
+        product.setProductType(ProductType.valueOf(productForm.getProductType().toUpperCase()));
         product.setDisplayName(productForm.getDisplayName());
         product.setDescription(productForm.getDescription());
         product.setPrice(productForm.getPrice());
@@ -93,14 +102,6 @@ public class ProductService {
         else
             product.setStatus(ProductStatus.valueOf(status));
         return product;
-    }
-
-
-    private Product getProduct(String productDisplayName) {
-        if(StringUtils.isEmpty(productDisplayName)){
-            return null;
-        }
-        return productRepository.findByDisplayName(productDisplayName);
     }
 
 }
