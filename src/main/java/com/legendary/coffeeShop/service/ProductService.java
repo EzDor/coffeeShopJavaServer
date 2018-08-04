@@ -12,6 +12,8 @@ import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sun.font.CompositeFont;
@@ -59,14 +61,15 @@ public class ProductService {
         return new Status(Status.OK, "Product was created successfully.");
     }
 
-    public Status updateProduct(ProductForm productForm) {
+    public ResponseEntity updateProduct(ProductForm productForm) {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
-            return new Status(Status.ERROR, "Cannot update product, product with name " + productForm.getDisplayName() + " is not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot update product, product with name " + productForm.getDisplayName() + " is not found");
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product was updated successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
     }
 
     public Status deleteProduct(String displayName) {
