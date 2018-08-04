@@ -2,7 +2,6 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.dao.entities.OrderItem;
 import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
