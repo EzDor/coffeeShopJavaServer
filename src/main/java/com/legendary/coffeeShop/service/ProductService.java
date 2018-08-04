@@ -8,15 +8,12 @@ import com.legendary.coffeeShop.dao.entities.ProductStatus;
 import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
-import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sun.font.CompositeFont;
 
 import java.util.List;
 
@@ -50,15 +47,16 @@ public class ProductService {
         return productRepository.findByProductType(ProductType.valueOf(productType));
     }
 
-    public Status createProduct(ProductForm productForm) {
+    public ResponseEntity createProduct(ProductForm productForm) {
 
         if (getProduct(productForm.getDisplayName()) != null) {
-            return new Status(Status.ERROR, "Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
         }
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product was created successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
     }
 
     public ResponseEntity updateProduct(ProductForm productForm) {
@@ -72,10 +70,10 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
     }
 
-    public Status deleteProduct(String displayName) {
+    public ResponseEntity deleteProduct(String displayName) {
         Product product = getProduct(displayName);
         productRepository.delete(product);
-        return new Status(Status.OK, "Product was deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
     }
 
     public List<Component> getProductComponents(String productName) {

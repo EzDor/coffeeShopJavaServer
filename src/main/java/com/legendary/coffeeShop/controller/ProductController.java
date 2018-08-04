@@ -3,10 +3,8 @@ package com.legendary.coffeeShop.controller;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
-import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +39,11 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public Status createProduct(@RequestBody ProductForm productForm) {
+    public ResponseEntity createProduct(@RequestBody ProductForm productForm) {
         try {
             validationService.validateProductForm(productForm);
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
         return productService.createProduct(productForm);
     }
@@ -65,7 +63,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{displayName}")
     @ResponseBody
-    public Status deleteProduct(@PathVariable String displayName) {
+    public ResponseEntity deleteProduct(@PathVariable String displayName) {
         return productService.deleteProduct(displayName);
     }
 
