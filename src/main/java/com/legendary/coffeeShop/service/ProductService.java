@@ -25,9 +25,6 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CommonConstants commonConstants;
-
-    @Autowired
     private ComponentRepository componentRepository;
 
 
@@ -78,14 +75,17 @@ public class ProductService {
 
     public List<Component> getProductComponents(String productName) {
         Product product = getProduct(productName);
+        if (product == null) {
+           throw null;
+        }
         return componentRepository.findByProductTypes_id(product.getId());
     }
 
-    public Product getProduct(String productDisplayName) {
-        if(StringUtils.isEmpty(productDisplayName)){
+    public Product getProduct(String productName) {
+        if(StringUtils.isEmpty(productName)){
             return null;
         }
-        return productRepository.findByDisplayName(productDisplayName);
+        return productRepository.findByDisplayName(productName);
     }
 
     /*********************************
