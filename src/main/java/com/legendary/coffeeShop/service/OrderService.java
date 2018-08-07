@@ -28,20 +28,27 @@ public class OrderService {
     @Autowired
     private ComponentService componentService;
 
-    public Order getOrder(String username){
+    public ResponseEntity getOrder(String username){
         User user = userService.getUser(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User " + username + " not found");
+        }
         // check if there is an open order
         Order order = orderRepository.findByUserAndOrderStatus(user, OrderStatus.IN_PROGRESS);
         if (order != null) {
-            return order;
+            return ResponseEntity.status(HttpStatus.OK).body(order);
         }
         order = prepareOrder(new Order(), user);
         orderRepository.save(order);
-        return order;
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
-    public List<Order> getAllOrders(String username) {
-        return orderRepository.findByUser(userService.getUser(username));
+    public ResponseEntity getAllOrders(String username) {
+        User user = userService.getUser(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User " + username + " not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(orderRepository.findByUser(user));
     }
 
     public ResponseEntity updateOrder(int orderId, List<OrderForm> ordersForm){

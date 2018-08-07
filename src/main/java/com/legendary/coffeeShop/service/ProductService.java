@@ -73,19 +73,18 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
     }
 
-    public List<Component> getProductComponents(String productName) {
+    public ResponseEntity getProductComponents(String productName) {
         Product product = getProduct(productName);
         if (product == null) {
-           throw null;
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product " + productName + " not found.");
         }
-        return componentRepository.findByProductTypes_id(product.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(componentRepository.findByProductTypes_id(product.getId()));
     }
 
     public Product getProduct(String productName) {
-        if(StringUtils.isEmpty(productName)){
-            return null;
-        }
-        return productRepository.findByDisplayName(productName);
+        Product p = productRepository.findByDisplayName(productName);
+        return p;
     }
 
     /*********************************

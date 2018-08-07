@@ -32,8 +32,14 @@ public class ProductController {
 
     @GetMapping("/{productType}")
     @ResponseBody
-    public List<Product> getProductsByType(@PathVariable String productType) {
-        return productService.getProductsByType(productType);
+    public ResponseEntity getProductsByType(@PathVariable String productType) {
+        try {
+            validationService.validateProductType(productType);
+        } catch (InputMismatchException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(productService.getProductsByType(productType));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -69,7 +75,7 @@ public class ProductController {
 
     @GetMapping("/components/{productName}")
     @ResponseBody
-    public List<Component> getComponentByType(@PathVariable String productName) {
+    public ResponseEntity getProductComponents(@PathVariable String productName) {
         return productService.getProductComponents(productName);
     }
 }

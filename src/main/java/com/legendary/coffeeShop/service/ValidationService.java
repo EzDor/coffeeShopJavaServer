@@ -33,6 +33,12 @@ public class ValidationService {
         }
     }
 
+    public void validateProductType(String productType) {
+        if (isproductTypeNotExists(productType)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
 
     /*********************************
      * Private Functions
@@ -45,7 +51,7 @@ public class ValidationService {
 
     private boolean isProductInvalid(ProductForm productForm) {
         return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
-                || productTypeNotExists(productForm.getProductType());
+                || isproductTypeNotExists(productForm.getProductType());
 
     }
 
@@ -75,7 +81,7 @@ public class ValidationService {
         return false;
     }
 
-    private boolean productTypeNotExists(String productType) {
+    private boolean isproductTypeNotExists(String productType) {
         for (ProductType pType : ProductType.values()) {
             if (pType.name().equals(productType.toUpperCase())) {
                 return false;

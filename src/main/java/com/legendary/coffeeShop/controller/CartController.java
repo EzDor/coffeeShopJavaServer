@@ -25,14 +25,14 @@ public class CartController {
 
     @GetMapping("/{username}")
     @ResponseBody
-    public Order getOrder(@PathVariable String username) {
+    public ResponseEntity getOrder(@PathVariable String username) {
         return orderService.getOrder(username);
     }
 
 
     @GetMapping("/all/{username}")
     @ResponseBody
-    public List<Order> getAllOrders(@PathVariable String username) {
+    public ResponseEntity getAllOrders(@PathVariable String username) {
         return orderService.getAllOrders(username);
     }
 
