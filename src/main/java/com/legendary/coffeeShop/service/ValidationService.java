@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.NewUserForm;
 import com.legendary.coffeeShop.dao.entities.ProductType;
@@ -34,7 +35,13 @@ public class ValidationService {
     }
 
     public void validateProductType(String productType) {
-        if (isproductTypeNotExists(productType)) {
+        if (isProductTypeNotExists(productType)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
+    public void validateOrderForm(OrderForm orderForm) {
+        if (isOrderInvalid(orderForm)) {
             throw new InputMismatchException("Some component details are missing or invalid.");
         }
     }
@@ -51,15 +58,22 @@ public class ValidationService {
 
     private boolean isProductInvalid(ProductForm productForm) {
         return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
-                || isproductTypeNotExists(productForm.getProductType());
+                || isProductTypeNotExists(productForm.getProductType());
 
     }
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
         return StringUtils.isEmpty(componentForm.getName())
-                || StringUtils.isEmpty(componentForm.getProductDisplayName())
+                || isEmptyStringIncluded((String[])componentForm.getProductDisplayName().toArray())
                 || componentForm.getAmount() < 0
                 || componentForm.getPrice() < 0
+                ;
+    }
+
+    private boolean isOrderInvalid(OrderForm orderForm) {
+        return isEmptyStringIncluded(orderForm.getProductName())
+                || isEmptyStringIncluded((String[])orderForm.getComponentsNames().toArray())
+                || orderForm.getPrice() < 0
                 ;
     }
 
@@ -81,7 +95,7 @@ public class ValidationService {
         return false;
     }
 
-    private boolean isproductTypeNotExists(String productType) {
+    private boolean isProductTypeNotExists(String productType) {
         for (ProductType pType : ProductType.values()) {
             if (pType.name().equals(productType.toUpperCase())) {
                 return false;
