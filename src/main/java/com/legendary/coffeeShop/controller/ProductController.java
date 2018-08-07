@@ -1,7 +1,6 @@
 package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -38,7 +37,7 @@ public class ProductController {
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductsByType(productType));
     }
 

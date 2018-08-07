@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
 
     public ResponseEntity createUser(NewUserForm userForm) {
         if (getUser(userForm.getUsername()) != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Cannot create user, username " + userForm.getUsername() + " is already exist");
         }
 
@@ -73,7 +73,7 @@ public class UserService implements UserDetailsService {
 
         user = prepareUser(user, userForm.getUpdatedUserDetails());
         userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body("user is updated successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("user updated successfully.");
 
     }
 

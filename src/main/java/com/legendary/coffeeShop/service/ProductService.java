@@ -41,7 +41,7 @@ public class ProductService {
     }
 
     public List<Product> getProductsByType(String productType) {
-        return productRepository.findByProductType(ProductType.valueOf(productType));
+        return productRepository.findByProductType(ProductType.valueOf(productType.toUpperCase()));
     }
 
     public ResponseEntity createProduct(ProductForm productForm) {
@@ -100,7 +100,7 @@ public class ProductService {
         if ( status == null)
             product.setStatus(ProductStatus.ACTIVE);
         else
-            product.setStatus(ProductStatus.valueOf(status));
+            product.setStatus(ProductStatus.valueOf(status.toUpperCase()));
         return product;
     }
 
