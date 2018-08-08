@@ -60,7 +60,7 @@ public class ProductService {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cannot update product, product with name " + productForm.getDisplayName() + " is not found");
+                    .body("Cannot update product, product with name " + productForm.getDisplayName() + " was not found");
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
@@ -69,6 +69,10 @@ public class ProductService {
 
     public ResponseEntity deleteProduct(String displayName) {
         Product product = getProduct(displayName);
+        if (product == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot delete product, product with name " + displayName + " was not found");
+        }
         productRepository.delete(product);
         return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
     }
@@ -83,8 +87,7 @@ public class ProductService {
     }
 
     public Product getProduct(String productName) {
-        Product p = productRepository.findByDisplayName(productName);
-        return p;
+        return productRepository.findByDisplayName(productName);
     }
 
     /*********************************
@@ -94,11 +97,24 @@ public class ProductService {
     private Product prepareProduct(Product product, ProductForm productForm) {
         product.setProductType(ProductType.valueOf(productForm.getProductType().toUpperCase()));
         product.setDisplayName(productForm.getDisplayName());
-        product.setDescription(productForm.getDescription());
-        product.setPrice(productForm.getPrice());
+        String description = productForm.getDescription();
+        if (description == null) {
+            description = product.getDescription();
+        }
+        product.setDescription(description);
+        double price = productForm.getPrice();
+        if (price == 0.0) {
+            price = product.getPrice();
+        }
+        product.setPrice(price);
         String status = productForm.getProductStatus();
-        if ( status == null)
-            product.setStatus(ProductStatus.ACTIVE);
+        if (status == null) {
+            ProductStatus productStatus = product.getStatus();
+            if (productStatus == null)
+                product.setStatus(ProductStatus.ACTIVE);
+            else
+                product.setStatus(productStatus);
+        }
         else
             product.setStatus(ProductStatus.valueOf(status.toUpperCase()));
         return product;

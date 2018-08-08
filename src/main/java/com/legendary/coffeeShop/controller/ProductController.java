@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class ProductController {
         return productService.getProducts();
     }
 
-    @GetMapping("/{productType}")
+    @GetMapping("/type/{productType}")
     @ResponseBody
     public ResponseEntity getProductsByType(@PathVariable String productType) {
         try {
@@ -39,6 +40,17 @@ public class ProductController {
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductsByType(productType));
+    }
+
+    @GetMapping("/name/{productName}")
+    @ResponseBody
+    public ResponseEntity getProductsByName(@PathVariable String productName) {
+        Product p = productService.getProduct(productName);
+        if (p == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Product with name " + productName + "was not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(p);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -58,7 +70,7 @@ public class ProductController {
     @ResponseBody
     public ResponseEntity updateProduct(@RequestBody ProductForm productForm) {
         try {
-            validationService.validateProductForm(productForm);
+            validationService.validateUpdateProductForm(productForm);
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }

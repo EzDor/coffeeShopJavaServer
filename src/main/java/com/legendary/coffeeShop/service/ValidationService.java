@@ -28,6 +28,11 @@ public class ValidationService {
         }
     }
 
+    public void validateUpdateProductForm(ProductForm productForm) {
+        if (isUpdateProductInvalid(productForm)) {
+            throw new InputMismatchException("Some product details are missing or invalid.");
+        }
+    }
     public void validateComponentForm(ComponentForm componentForm) {
         if (isComponentInvalid(componentForm)) {
             throw new InputMismatchException("Some component details are missing or invalid.");
@@ -57,9 +62,13 @@ public class ValidationService {
     }
 
     private boolean isProductInvalid(ProductForm productForm) {
-        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
+        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName())
                 || isProductTypeNotExists(productForm.getProductType());
 
+    }
+
+    private boolean isUpdateProductInvalid(ProductForm productForm) {
+        return StringUtils.isEmpty(productForm.getDisplayName());
     }
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
