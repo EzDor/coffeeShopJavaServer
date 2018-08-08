@@ -8,12 +8,10 @@ import com.legendary.coffeeShop.dao.entities.ProductStatus;
 import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
-import com.legendary.coffeeShop.utils.CommonConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -44,46 +42,41 @@ public class ProductService {
         return productRepository.findByProductType(ProductType.valueOf(productType.toUpperCase()));
     }
 
-    public ResponseEntity createProduct(ProductForm productForm) {
-
+    public boolean createProduct(ProductForm productForm) {
         if (getProduct(productForm.getDisplayName()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
+            return false;
         }
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
-        return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
+        return true;
     }
 
-    public ResponseEntity updateProduct(ProductForm productForm) {
+    public boolean updateProduct(ProductForm productForm) {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cannot update product, product with name " + productForm.getDisplayName() + " was not found");
+            return false;
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
-        return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
+        return true;
     }
 
-    public ResponseEntity deleteProduct(String displayName) {
+    public boolean deleteProduct(String displayName) {
         Product product = getProduct(displayName);
         if (product == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cannot delete product, product with name " + displayName + " was not found");
+            return false;
         }
         productRepository.delete(product);
-        return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
+        return true;
     }
 
-    public ResponseEntity getProductComponents(String productName) {
+    public List<Component> getProductComponents(String productName) {
         Product product = getProduct(productName);
         if (product == null) {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product " + productName + " not found.");
+           return null;
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(componentRepository.findByProductTypes_id(product.getId()));
+        return componentRepository.findByProductTypes_id(product.getId());
     }
 
     public Product getProduct(String productName) {

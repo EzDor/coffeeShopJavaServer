@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
+import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -62,7 +63,11 @@ public class ProductController {
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
-        return productService.createProduct(productForm);
+        if (!productService.createProduct(productForm)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -74,19 +79,31 @@ public class ProductController {
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
-        return productService.updateProduct(productForm);
+        if (!productService.updateProduct(productForm)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot update product, product with name " + productForm.getDisplayName() + " was not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{displayName}")
     @ResponseBody
     public ResponseEntity deleteProduct(@PathVariable String displayName) {
-        return productService.deleteProduct(displayName);
+        if (!productService.deleteProduct(displayName)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot delete product, product with name " + displayName + " was not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
     }
 
     @GetMapping("/components/{productName}")
     @ResponseBody
     public ResponseEntity getProductComponents(@PathVariable String productName) {
-        return productService.getProductComponents(productName);
+        List<Component> components = productService.getProductComponents(productName);
+        if (components == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product " + productName + " not found.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(components);
     }
 }
