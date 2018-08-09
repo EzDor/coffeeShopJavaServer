@@ -47,34 +47,27 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public ResponseEntity createUser(NewUserForm userForm) {
+    public boolean createUser(NewUserForm userForm) {
         if (getUser(userForm.getUsername()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Cannot create user, username " + userForm.getUsername() + " is already exist");
+            return false;
         }
 
         User user = new User();
         user = prepareUser(user, userForm);
         userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
+        return true;
 
     }
 
 
-    public ResponseEntity updateUser(UpdateUserForm userForm) {
+    public boolean updateUser(UpdateUserForm userForm) {
         User user = getUser(userForm.getUsernameToUpdate());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot update user, user not found");
+        if (user == null || !passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
+            return false;
         }
-        if (!passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Cannot update user, username or password are incorrect");
-        }
-
         user = prepareUser(user, userForm.getUpdatedUserDetails());
         userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body("user updated successfully.");
-
+        return true;
     }
 
 

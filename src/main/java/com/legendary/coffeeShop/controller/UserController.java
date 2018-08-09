@@ -34,7 +34,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
 
-        return userService.createUser(userForm);
+        if (!userService.createUser(userForm)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot create user, username " + userForm.getUsername() + " already exist");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
+        }
     }
 
     @PostMapping("/update")
@@ -45,7 +51,12 @@ public class UserController {
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
-        return userService.updateUser(userForm);
+        if (!userService.updateUser(userForm)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cannot update user " + userForm.getUsernameToUpdate());
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("User " + userForm.getUsernameToUpdate() + " updated successfully");
     }
 
 }
