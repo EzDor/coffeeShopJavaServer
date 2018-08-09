@@ -32,7 +32,7 @@ public class UserController {
             validationService.validateUserForm(userForm);
             userService.createUser(userForm);
             return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
-        } catch (NoSuchElementException err) {
+        } catch (IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
     }

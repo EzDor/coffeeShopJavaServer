@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,7 +56,7 @@ public class UserService implements UserDetailsService {
      */
     public void createUser(NewUserForm userForm) throws NoSuchElementException {
         if (getUser(userForm.getUsername()) != null) {
-            throw new NoSuchElementException("Cannot create user, username " + userForm.getUsername() + " already exist");
+            throw new IllegalArgumentException("Cannot create user, username " + userForm.getUsername() + " already exist");
         }
         User user = new User();
         user = prepareUser(user, userForm);
@@ -104,6 +105,7 @@ public class UserService implements UserDetailsService {
         user.setLastName(userForm.getLastName());
         user.setStatus(UserStatus.ACTIVE);
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setCreationTime(new Timestamp(System.currentTimeMillis()));
         user.setAdmin(false);
 
         return user;
