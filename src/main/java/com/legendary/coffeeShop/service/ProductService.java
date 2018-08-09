@@ -9,11 +9,10 @@ import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -30,57 +29,86 @@ public class ProductService {
      * Public Functions
      *********************************/
 
+
+    /**
+     * Get product by name
+     */
+    public Product getProduct(String productName) {
+        return productRepository.findByDisplayName(productName);
+    }
+
+    /**
+     * Get all products
+     */
     public List<Product> getProducts() {
         return productRepository.findByStatusEquals(ProductStatus.ACTIVE);
     }
 
+    /**
+     * Get list of products by given list of names
+     */
     public List<Product> getProductsByNames(List<String> displayNames) {
         return productRepository.findByDisplayNameIn(displayNames);
     }
 
+    /**
+     * Get all products of specific type
+     */
     public List<Product> getProductsByType(String productType) {
         return productRepository.findByProductType(ProductType.valueOf(productType.toUpperCase()));
     }
 
-    public boolean createProduct(ProductForm productForm) {
+    /**
+     * Create new product by the given form
+     * @throws NoSuchElementException
+     */
+    public void createProduct(ProductForm productForm) throws IllegalArgumentException {
         if (getProduct(productForm.getDisplayName()) != null) {
-            return false;
+            throw new IllegalArgumentException("Cannot create product, product with name " +
+                    productForm.getDisplayName() + " already exist");
         }
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
-        return true;
     }
 
-    public boolean updateProduct(ProductForm productForm) {
+    /**
+     * Update product with new data
+     * @throws NoSuchElementException  if no product found with the given name
+     */
+    public void updateProduct(ProductForm productForm) throws NoSuchElementException {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
-            return false;
+            throw new NoSuchElementException("Cannot update product, product with name "
+                    + productForm.getDisplayName() + " was not found");
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
-        return true;
     }
 
-    public boolean deleteProduct(String displayName) {
+    /**
+     * Delete product with the given name
+     * @throws NoSuchElementException if no product found with the given name
+     */
+    public void deleteProduct(String displayName) throws NoSuchElementException {
         Product product = getProduct(displayName);
         if (product == null) {
-            return false;
+            throw new NoSuchElementException("Cannot delete product, product with name "
+                    + displayName + " was not found");
         }
         productRepository.delete(product);
-        return true;
     }
 
-    public List<Component> getProductComponents(String productName) {
+    /**
+     * Get components list of the given product name
+     * @throws NoSuchElementException If no product found with given name
+     */
+    public List<Component> getProductComponents(String productName) throws NoSuchElementException {
         Product product = getProduct(productName);
         if (product == null) {
-           return null;
+           throw new NoSuchElementException("Product " + productName + " not found.");
         }
         return componentRepository.findByProductTypes_id(product.getId());
-    }
-
-    public Product getProduct(String productName) {
-        return productRepository.findByDisplayName(productName);
     }
 
     /*********************************

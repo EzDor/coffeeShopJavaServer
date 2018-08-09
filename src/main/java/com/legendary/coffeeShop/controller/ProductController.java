@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/product")
@@ -46,12 +46,12 @@ public class ProductController {
     @GetMapping("/name/{productName}")
     @ResponseBody
     public ResponseEntity getProductsByName(@PathVariable String productName) {
-        Product p = productService.getProduct(productName);
-        if (p == null) {
+        Product product = productService.getProduct(productName);
+        if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Product with name " + productName + "was not found");
+                    .body("Product with name " + productName + " was not found");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(p);
+        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -60,12 +60,12 @@ public class ProductController {
     public ResponseEntity createProduct(@RequestBody ProductForm productForm) {
         try {
             validationService.validateProductForm(productForm);
+            productService.createProduct(productForm);
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-        }
-        if (!productService.createProduct(productForm)){
+        } catch (IllegalArgumentException err){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
+                    .body(err.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
     }
@@ -76,12 +76,12 @@ public class ProductController {
     public ResponseEntity updateProduct(@RequestBody ProductForm productForm) {
         try {
             validationService.validateUpdateProductForm(productForm);
+            productService.updateProduct(productForm);
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-        }
-        if (!productService.updateProduct(productForm)) {
+        } catch (NoSuchElementException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cannot update product, product with name " + productForm.getDisplayName() + " was not found");
+                    .body(err.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
     }
@@ -90,20 +90,25 @@ public class ProductController {
     @DeleteMapping("/{displayName}")
     @ResponseBody
     public ResponseEntity deleteProduct(@PathVariable String displayName) {
-        if (!productService.deleteProduct(displayName)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cannot delete product, product with name " + displayName + " was not found");
+        try {
+            productService.deleteProduct(displayName);
+            return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
+        catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(err.getMessage());
+        }
     }
 
     @GetMapping("/components/{productName}")
     @ResponseBody
     public ResponseEntity getProductComponents(@PathVariable String productName) {
-        List<Component> components = productService.getProductComponents(productName);
-        if (components == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product " + productName + " not found.");
+        try {
+            List<Component> components = productService.getProductComponents(productName);
+            return ResponseEntity.status(HttpStatus.OK).body(components);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(components);
+        catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 }
