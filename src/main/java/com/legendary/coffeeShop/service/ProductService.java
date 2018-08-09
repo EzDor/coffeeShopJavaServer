@@ -74,7 +74,7 @@ public class ProductService {
 
     /**
      * Update product with new data
-     * @throws NoSuchElementException  if no product found with the given name
+     * @throws NoSuchElementException if no product found with the given name
      */
     public void updateProduct(ProductForm productForm) throws NoSuchElementException {
         Product product = getProduct(productForm.getDisplayName());

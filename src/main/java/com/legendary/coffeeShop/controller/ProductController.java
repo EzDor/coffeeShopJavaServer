@@ -61,13 +61,13 @@ public class ProductController {
         try {
             validationService.validateProductForm(productForm);
             productService.createProduct(productForm);
+            return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         } catch (IllegalArgumentException err){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(err.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -77,13 +77,13 @@ public class ProductController {
         try {
             validationService.validateUpdateProductForm(productForm);
             productService.updateProduct(productForm);
+            return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         } catch (NoSuchElementException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(err.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")

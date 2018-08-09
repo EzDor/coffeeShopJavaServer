@@ -6,6 +6,7 @@ import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -47,30 +49,44 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public boolean createUser(NewUserForm userForm) {
+    /**
+     * Create new user from the given form
+     * @throws NoSuchElementException if no product found with the given name
+     */
+    public void createUser(NewUserForm userForm) throws NoSuchElementException {
         if (getUser(userForm.getUsername()) != null) {
-            return false;
+            throw new NoSuchElementException("Cannot create user, username " + userForm.getUsername() + " already exist");
         }
-
         User user = new User();
         user = prepareUser(user, userForm);
         userRepository.save(user);
-        return true;
 
     }
 
 
-    public boolean updateUser(UpdateUserForm userForm) {
+    /**
+     * Update given user according to user form
+     * @throws NoSuchElementException if no product found with the given name
+     * @throws IllegalAccessException if username or password is wrong
+     */
+    public void updateUser(UpdateUserForm userForm) throws NoSuchElementException, IllegalAccessException {
         User user = getUser(userForm.getUsernameToUpdate());
-        if (user == null || !passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
-            return false;
+        if (user == null) {
+            throw new NoSuchElementException("Cannot update user " + userForm.getUsernameToUpdate()
+                    + ". User Not Found");
+        }
+        if (!passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
+            throw new IllegalAccessException("Cannot update user " + userForm.getUsernameToUpdate()
+                    + ". Wrong username or password");
         }
         user = prepareUser(user, userForm.getUpdatedUserDetails());
         userRepository.save(user);
-        return true;
     }
 
 
+    /**
+     * Get user by given name
+     */
     public User getUser(String username) {
         return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
     }
@@ -79,6 +95,9 @@ public class UserService implements UserDetailsService {
      * Private Functions
      *********************************/
 
+    /**
+     * Update User object by the given form
+     */
     private User prepareUser(User user, NewUserForm userForm) {
         user.setUsername(userForm.getUsername().toLowerCase());
         user.setFirstName(userForm.getFirstName());
@@ -90,6 +109,9 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    /**
+     * Check user permission
+     */
     private String getUserPermission(User user) {
         return user.isAdmin() ? commonConstants.getAdminPermission() : commonConstants.getUserPermission();
     }
