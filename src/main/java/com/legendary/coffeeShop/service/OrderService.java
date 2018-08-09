@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class OrderService {
@@ -28,34 +29,33 @@ public class OrderService {
     @Autowired
     private ComponentService componentService;
 
-    public ResponseEntity getOrder(String username){
+    public Order getOrder(String username) throws NoSuchElementException {
         User user = userService.getUser(username);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User " + username + " not found");
+            throw new NoSuchElementException("User " + username + " not found");
         }
         // check if there is an open order
         Order order = orderRepository.findByUserAndOrderStatus(user, OrderStatus.IN_PROGRESS);
         if (order != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(order);
+            return order;
         }
         order = prepareOrder(new Order(), user);
         orderRepository.save(order);
-        return ResponseEntity.status(HttpStatus.OK).body(order);
+        return order;
     }
 
-    public ResponseEntity getAllOrders(String username) {
+    public List<Order> getAllOrders(String username) throws NoSuchElementException{
         User user = userService.getUser(username);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User " + username + " not found");
+            throw new NoSuchElementException("User " + username + " not found");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(orderRepository.findByUser(user));
+        return orderRepository.findByUser(user);
     }
 
-    public ResponseEntity updateOrder(int orderId, List<OrderForm> ordersForm){
+    public void updateOrder(int orderId, List<OrderForm> ordersForm) throws NoSuchElementException  {
         Order order = orderRepository.findById(orderId);
         if (order == null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(String.format("Could not find order with id %d", orderId));
+            throw new NoSuchElementException(String.format("Could not find order with id %d", orderId));
 
         List<OrderItem> orderItems = getOrderItems(ordersForm);
         List<OrderItem> currentOrderItems = order.getOrderItems();
@@ -65,19 +65,16 @@ public class OrderService {
         order.setOrderItems(orderItems);
         order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         orderRepository.save(order);
-        return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
     }
 
-    public ResponseEntity closeOrder(int orderId, OrderStatus orderStatus) {
+    public void closeOrder(int orderId, OrderStatus orderStatus) throws NoSuchElementException {
         // TODO: decrease amount
         Order order = orderRepository.findById(orderId);
         if (order == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(String.format("Could not find order with id %d", orderId));
+            throw new NoSuchElementException(String.format("Could not find order with id %d", orderId));
         }
         order.setOrderStatus(orderStatus);
         orderRepository.save(order);
-        return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
     }
 
     /*********************************

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RestController
@@ -32,14 +33,25 @@ public class CartController {
     @GetMapping("/{username}")
     @ResponseBody
     public ResponseEntity getOrder(@PathVariable String username) {
-        return orderService.getOrder(username);
+        try {
+            Order order = orderService.getOrder(username);
+            return ResponseEntity.status(HttpStatus.OK).body(order);
+        }
+        catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 
 
     @GetMapping("/all/{username}")
     @ResponseBody
     public ResponseEntity getAllOrders(@PathVariable String username) {
-        return orderService.getAllOrders(username);
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrders(username));
+        }
+        catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 
     @PostMapping("/update/{orderId}")
@@ -49,27 +61,44 @@ public class CartController {
             for(OrderForm orderForm : orderForms) {
                 validationService.validateOrderForm(orderForm);
             }
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+            orderService.updateOrder(orderId, orderForms);
+            return ResponseEntity.status(HttpStatus.OK).body("Order with id " + orderId + "updated successfully");
+        } catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
-        return orderService.updateOrder(orderId, orderForms);
     }
 
     @PostMapping("/close/{orderId}")
     @ResponseBody
     public ResponseEntity closeOrder(@PathVariable int orderId) {
-        return orderService.closeOrder(orderId, OrderStatus.DONE);
+        try {
+            orderService.closeOrder(orderId, OrderStatus.DONE);
+            return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
+        } catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
+
     }
 
     @DeleteMapping("/{orderId}")
     @ResponseBody
     public ResponseEntity cancelOrder(@PathVariable int orderId) {
-        return orderService.closeOrder(orderId, OrderStatus.CANCELED);
+        try {
+            orderService.closeOrder(orderId, OrderStatus.CANCELED);
+            return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
+        } catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 
     @DeleteMapping("/{orderItemId}")
     @ResponseBody
     public ResponseEntity removeItem(@PathVariable int orderItemId) {
-        return orderItemService.removeOrderItem(orderItemId);
+        try {
+            orderItemService.removeOrderItem(orderItemId);
+            return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
+        } catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 }
