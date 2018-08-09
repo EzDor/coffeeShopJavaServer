@@ -32,11 +32,8 @@ public class UserController {
             validationService.validateUserForm(userForm);
             userService.createUser(userForm);
             return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
-        } catch (InputMismatchException err) {
+        } catch (NoSuchElementException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
-        } catch (NoSuchElementException err){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(err.getMessage());
         }
     }
 
@@ -50,8 +47,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
         catch (NoSuchElementException | IllegalAccessException err){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(err.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body("User " + userForm.getUsernameToUpdate() + " updated successfully");

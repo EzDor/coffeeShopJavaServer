@@ -73,7 +73,7 @@ public class ValidationService {
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
         return StringUtils.isEmpty(componentForm.getName())
-                || isEmptyStringIncluded((String[])componentForm.getProductDisplayName().toArray())
+                || isEmptyStringIncluded(componentForm.getProductDisplayName().toArray(new String[0]))
                 || componentForm.getAmount() < 0
                 || componentForm.getPrice() < 0
                 ;
@@ -81,7 +81,7 @@ public class ValidationService {
 
     private boolean isOrderInvalid(OrderForm orderForm) {
         return isEmptyStringIncluded(orderForm.getProductName())
-                || isEmptyStringIncluded((String[])orderForm.getComponentsNames().toArray())
+                || isEmptyStringIncluded(orderForm.getComponentsNames().toArray(new String[0]))
                 || orderForm.getPrice() < 0
                 ;
     }

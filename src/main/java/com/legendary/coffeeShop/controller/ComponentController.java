@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/component")
@@ -27,10 +28,11 @@ public class ComponentController {
     public ResponseEntity createComponent(@RequestBody ComponentForm componentForm) {
         try {
             validationService.validateComponentForm(componentForm);
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+            componentService.createComponent(componentForm);
+            return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
+        } catch (InputMismatchException|IllegalArgumentException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
-        return componentService.createComponent(componentForm);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -39,16 +41,22 @@ public class ComponentController {
     public ResponseEntity updateComponent(@RequestBody ComponentForm componentForm) {
         try {
             validationService.validateComponentForm(componentForm);
+            componentService.updateComponent(componentForm);
+            return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
-        return componentService.updateComponent(componentForm);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{name}")
     @ResponseBody
-    public ResponseEntity updateComponent(@PathVariable String name) {
-        return componentService.deleteComponent(name);
+    public ResponseEntity deleteComponent(@PathVariable String name) {
+        try {
+            componentService.deleteComponent(name);
+            return ResponseEntity.status(HttpStatus.OK).body("component deleted successfully.");
+        } catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -27,48 +28,38 @@ public class ComponentService {
      * Public Functions
      *********************************/
 
-    public ResponseEntity createComponent(ComponentForm componentForm) {
+    public void createComponent(ComponentForm componentForm) throws IllegalArgumentException {
         Component component = getComponent(componentForm.getName());
         if (component != null ) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Component with this name already exists");
+            throw new IllegalArgumentException("Component with this name already exists");
         }
         component = prepareComponent(new Component(), componentForm);
         if (component != null) {
             componentRepository.save(component);
-            return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Component was not created successfully");
+            throw new IllegalArgumentException("Component was not created successfully");
         }
     }
 
-    public ResponseEntity updateComponent(ComponentForm componentForm) {
+    public void updateComponent(ComponentForm componentForm) throws NoSuchElementException {
         Component component = getComponent(componentForm.getName());
         if (component == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cannot update component, component with name " +
+            throw new NoSuchElementException("Cannot update component, component with name " +
                     componentForm.getName() + " was not found");
         }
         component = prepareComponent(component, componentForm);
         componentRepository.save(component);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("component updated successfully.");
 
     }
 
-    public ResponseEntity deleteComponent(String name) {
+    public void deleteComponent(String name) throws NoSuchElementException{
         Component component = getComponent(name);
         if (component == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Couldn't find component with name" + name);
+            throw new NoSuchElementException("Couldn't find component with name" + name);
         }
         component.getProductTypes().remove(this);
         componentRepository.delete(component);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("component deleted successfully.");
     }
 
 
@@ -93,6 +84,7 @@ public class ComponentService {
 
         List<Product> products = productService.getProductsByNames(componentForm.getProductDisplayName());
         if (products != null) {
+            // TODO: not working with list of products
             List<Product> currentProducts = component.getProductTypes();
             if (currentProducts != null)
                 products.addAll(component.getProductTypes());

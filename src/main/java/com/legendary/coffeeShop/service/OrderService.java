@@ -69,6 +69,7 @@ public class OrderService {
     }
 
     public ResponseEntity closeOrder(int orderId, OrderStatus orderStatus) {
+        // TODO: decrease amount
         Order order = orderRepository.findById(orderId);
         if (order == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
