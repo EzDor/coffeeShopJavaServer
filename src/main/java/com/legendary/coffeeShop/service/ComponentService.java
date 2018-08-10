@@ -5,11 +5,12 @@ import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -26,45 +27,54 @@ public class ComponentService {
      * Public Functions
      *********************************/
 
-    public Status createComponent(ComponentForm componentForm) {
+    /**
+     * Create component by the given form
+     */
+    public void createComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component != null ) {
-            return new Status(Status.ERROR, "Component with this name already exists");
+            throw new IllegalArgumentException(String.format("Component with name %s already exists",
+                    componentForm.getName()));
         }
         component = prepareComponent(new Component(), componentForm);
         if (component != null) {
             componentRepository.save(component);
-            return new Status(Status.OK, "Component created successfully.");
         }
         else {
-            return new Status(Status.ERROR, "Component was not created successfully");
+            throw new IllegalArgumentException("Component was not created successfully");
         }
     }
 
-    public Status updateComponent(ComponentForm componentForm) {
+    /**
+     * Update existing component with the given new data
+     */
+    public void updateComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component == null) {
-            return new Status(Status.ERROR, "Cannot update component, component with name " +
-                    componentForm.getName() + " is not found");
+            throw new NoSuchElementException(String.format("Cannot update component, component with name %s " +
+                    "was not found", componentForm.getName()));
         }
         component = prepareComponent(component, componentForm);
         componentRepository.save(component);
-        return new Status(Status.OK, "component updated successfully.");
 
     }
 
-    public Status deleteComponent(String name) {
+    /**
+     * Delete component with the given name
+     */
+    public void deleteComponent(String name) {
         Component component = getComponent(name);
         if (component == null) {
-            return new Status(Status.ERROR, "Couldn't find component with name" + name);
+            throw new NoSuchElementException(String.format("Couldn't find component with name %s", name));
         }
         component.getProductTypes().remove(this);
         componentRepository.delete(component);
-
-        return new Status(Status.OK, "component deleted successfully.");
     }
 
 
+    /**
+     * Get component by name
+     */
     public Component getComponent(String componentName) {
         if(StringUtils.isEmpty(componentName)){
             return null;
@@ -86,6 +96,7 @@ public class ComponentService {
 
         List<Product> products = productService.getProductsByNames(componentForm.getProductDisplayName());
         if (products != null) {
+            // TODO: not working with list of products
             List<Product> currentProducts = component.getProductTypes();
             if (currentProducts != null)
                 products.addAll(component.getProductTypes());
@@ -109,4 +120,18 @@ public class ComponentService {
             return ComponentStatus.ACTIVE;
     }
 
+    /**
+     * Decrease component amount by 1
+     */
+    public void decreaseAmount(Component component) {
+        int newAmount = component.getAmount()-1;
+        if (newAmount < 0)
+            throw new IllegalStateException(String.format("Component %s is out of stock", component.getName()));
+
+        if (newAmount == 0) {
+            component.setStatus(ComponentStatus.OUT_OF_STOCK);
+        }
+        component.setAmount(newAmount-1);
+        componentRepository.save(component);
+    }
 }

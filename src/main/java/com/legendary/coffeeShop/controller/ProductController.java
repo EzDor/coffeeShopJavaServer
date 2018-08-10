@@ -3,16 +3,17 @@ package com.legendary.coffeeShop.controller;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
-import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/product")
@@ -30,46 +31,84 @@ public class ProductController {
         return productService.getProducts();
     }
 
-    @GetMapping("/{productType}")
+    @GetMapping("/type/{productType}")
     @ResponseBody
-    public List<Product> getProductsByType(@PathVariable String productType) {
-        return productService.getProductsByType(productType);
+    public ResponseEntity getProductsByType(@PathVariable String productType) {
+        try {
+            validationService.validateProductType(productType);
+        } catch (InputMismatchException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.getProductsByType(productType));
+    }
+
+    @GetMapping("/name/{productName}")
+    @ResponseBody
+    public ResponseEntity getProductsByName(@PathVariable String productName) {
+        Product product = productService.getProduct(productName);
+        if (product == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(String.format("Product with name %s was not found", productName));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public Status createProduct(@RequestBody ProductForm productForm) {
+    public ResponseEntity createProduct(@RequestBody ProductForm productForm) {
         try {
             validationService.validateProductForm(productForm);
+            productService.createProduct(productForm);
+            return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+        } catch (IllegalArgumentException err){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(err.getMessage());
         }
-        return productService.createProduct(productForm);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
-    public Status updateProduct(@RequestBody ProductForm productForm) {
+    public ResponseEntity updateProduct(@RequestBody ProductForm productForm) {
         try {
-            validationService.validateProductForm(productForm);
+            validationService.validateUpdateProductForm(productForm);
+            productService.updateProduct(productForm);
+            return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+        } catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(err.getMessage());
         }
-        return productService.updateProduct(productForm);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{displayName}")
     @ResponseBody
-    public Status deleteProduct(@PathVariable String displayName) {
-        return productService.deleteProduct(displayName);
+    public ResponseEntity deleteProduct(@PathVariable String displayName) {
+        try {
+            productService.deleteProduct(displayName);
+            return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
+        }
+        catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(err.getMessage());
+        }
     }
 
     @GetMapping("/components/{productName}")
     @ResponseBody
-    public List<Component> getComponentByType(@PathVariable String productName) {
-        return productService.getProductComponents(productName);
+    public ResponseEntity getProductComponents(@PathVariable String productName) {
+        try {
+            List<Component> components = productService.getProductComponents(productName);
+            return ResponseEntity.status(HttpStatus.OK).body(components);
+        }
+        catch (NoSuchElementException err) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
     }
 }

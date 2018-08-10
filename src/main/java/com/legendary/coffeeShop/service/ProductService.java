@@ -8,15 +8,11 @@ import com.legendary.coffeeShop.dao.entities.ProductStatus;
 import com.legendary.coffeeShop.dao.entities.ProductType;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
-import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
-import com.legendary.coffeeShop.utils.CommonConstants;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import sun.font.CompositeFont;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -26,9 +22,6 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CommonConstants commonConstants;
-
-    @Autowired
     private ComponentRepository componentRepository;
 
 
@@ -36,71 +29,114 @@ public class ProductService {
      * Public Functions
      *********************************/
 
+
+    /**
+     * Get product by name
+     */
+    public Product getProduct(String productName) {
+        return productRepository.findByDisplayName(productName);
+    }
+
+    /**
+     * Get all products
+     */
     public List<Product> getProducts() {
         return productRepository.findByStatusEquals(ProductStatus.ACTIVE);
     }
 
+    /**
+     * Get list of products by given list of names
+     */
     public List<Product> getProductsByNames(List<String> displayNames) {
         return productRepository.findByDisplayNameIn(displayNames);
     }
 
+    /**
+     * Get all products of specific type
+     */
     public List<Product> getProductsByType(String productType) {
-        return productRepository.findByProductType(ProductType.valueOf(productType));
+        return productRepository.findByProductType(ProductType.valueOf(productType.toUpperCase()));
     }
 
-    public Status createProduct(ProductForm productForm) {
-
+    /**
+     * Create new product by the given form
+     */
+    public void createProduct(ProductForm productForm) {
         if (getProduct(productForm.getDisplayName()) != null) {
-            return new Status(Status.ERROR, "Cannot create product, product with name " + productForm.getDisplayName() + " already exist");
+            throw new IllegalArgumentException(String .format("Cannot create product, product with name %s " +
+                    "already exist", productForm.getDisplayName()));
         }
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product was created successfully.");
     }
 
-    public Status updateProduct(ProductForm productForm) {
+    /**
+     * Update product with new data
+     */
+    public void updateProduct(ProductForm productForm) {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
-            return new Status(Status.ERROR, "Cannot update product, product with name " + productForm.getDisplayName() + " is not found");
+            throw new NoSuchElementException(String.format("Cannot update product, product with name %s " +
+                    "was not found", productForm.getDisplayName()));
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product was updated successfully.");
     }
 
-    public Status deleteProduct(String displayName) {
+    /**
+     * Delete product with the given name
+     */
+    public void deleteProduct(String displayName) {
         Product product = getProduct(displayName);
+        if (product == null) {
+            throw new NoSuchElementException(String.format("Cannot delete product, product with name %s " +
+                    "was not found", displayName));
+        }
         productRepository.delete(product);
-        return new Status(Status.OK, "Product was deleted successfully.");
     }
 
+    /**
+     * Get components list of the given product name
+     */
     public List<Component> getProductComponents(String productName) {
         Product product = getProduct(productName);
-        return componentRepository.findByProductTypes_id(product.getId());
-    }
-
-    public Product getProduct(String productDisplayName) {
-        if(StringUtils.isEmpty(productDisplayName)){
-            return null;
+        if (product == null) {
+           throw new NoSuchElementException(String.format("Product %s not found.", productName));
         }
-        return productRepository.findByDisplayName(productDisplayName);
+        return componentRepository.findByProductTypes_id(product.getId());
     }
 
     /*********************************
      * Private Functions
      *********************************/
 
+    /**
+     * Update product with the given data. If some data doesnt exist in form it won't update this field
+     */
     private Product prepareProduct(Product product, ProductForm productForm) {
         product.setProductType(ProductType.valueOf(productForm.getProductType().toUpperCase()));
         product.setDisplayName(productForm.getDisplayName());
-        product.setDescription(productForm.getDescription());
-        product.setPrice(productForm.getPrice());
+        String description = productForm.getDescription();
+        if (description == null) {
+            description = product.getDescription();
+        }
+        product.setDescription(description);
+        double price = productForm.getPrice();
+        if (price == 0.0) {
+            price = product.getPrice();
+        }
+        product.setPrice(price);
         String status = productForm.getProductStatus();
-        if ( status == null)
-            product.setStatus(ProductStatus.ACTIVE);
+        if (status == null) {
+            ProductStatus productStatus = product.getStatus();
+            if (productStatus == null)
+                product.setStatus(ProductStatus.ACTIVE);
+            else
+                product.setStatus(productStatus);
+        }
         else
-            product.setStatus(ProductStatus.valueOf(status));
+            product.setStatus(ProductStatus.valueOf(status.toUpperCase()));
         return product;
     }
 

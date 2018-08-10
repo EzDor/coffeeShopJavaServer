@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.NewUserForm;
 import com.legendary.coffeeShop.dao.entities.ProductType;
@@ -27,8 +28,25 @@ public class ValidationService {
         }
     }
 
+    public void validateUpdateProductForm(ProductForm productForm) {
+        if (isUpdateProductInvalid(productForm)) {
+            throw new InputMismatchException("Some product details are missing or invalid.");
+        }
+    }
     public void validateComponentForm(ComponentForm componentForm) {
         if (isComponentInvalid(componentForm)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
+    public void validateProductType(String productType) {
+        if (isProductTypeNotExists(productType)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
+    public void validateOrderForm(OrderForm orderForm) {
+        if (isOrderInvalid(orderForm)) {
             throw new InputMismatchException("Some component details are missing or invalid.");
         }
     }
@@ -44,16 +62,27 @@ public class ValidationService {
     }
 
     private boolean isProductInvalid(ProductForm productForm) {
-        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
-                || productTypeNotExists(productForm.getProductType());
+        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName())
+                || isProductTypeNotExists(productForm.getProductType());
 
+    }
+
+    private boolean isUpdateProductInvalid(ProductForm productForm) {
+        return StringUtils.isEmpty(productForm.getDisplayName());
     }
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
         return StringUtils.isEmpty(componentForm.getName())
-                || StringUtils.isEmpty(componentForm.getProductDisplayName())
+                || isEmptyStringIncluded(componentForm.getProductDisplayName().toArray(new String[0]))
                 || componentForm.getAmount() < 0
                 || componentForm.getPrice() < 0
+                ;
+    }
+
+    private boolean isOrderInvalid(OrderForm orderForm) {
+        return isEmptyStringIncluded(orderForm.getProductName())
+                || isEmptyStringIncluded(orderForm.getComponentsNames().toArray(new String[0]))
+                || orderForm.getPrice() < 0
                 ;
     }
 
@@ -75,9 +104,9 @@ public class ValidationService {
         return false;
     }
 
-    private boolean productTypeNotExists(String productType) {
+    private boolean isProductTypeNotExists(String productType) {
         for (ProductType pType : ProductType.values()) {
-            if (pType.name().equals(productType)) {
+            if (pType.name().equals(productType.toUpperCase())) {
                 return false;
             }
         }

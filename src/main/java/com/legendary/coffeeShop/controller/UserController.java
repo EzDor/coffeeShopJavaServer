@@ -4,13 +4,14 @@ import com.legendary.coffeeShop.controller.form.NewUserForm;
 import com.legendary.coffeeShop.controller.form.UpdateUserForm;
 import com.legendary.coffeeShop.service.UserService;
 import com.legendary.coffeeShop.service.ValidationService;
-import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 
 
 @RestController
@@ -26,25 +27,30 @@ public class UserController {
 
     @PostMapping("/signUp")
     @ResponseBody
-    public Status addNewUser(@RequestBody NewUserForm userForm) {
+    public ResponseEntity addNewUser(@RequestBody NewUserForm userForm) {
         try {
             validationService.validateUserForm(userForm);
-        } catch (InputMismatchException err) {
-            return new Status(err);
+            userService.createUser(userForm);
+            return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
+        } catch (IllegalArgumentException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
-
-        return userService.createUser(userForm);
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public Status updateUser(@RequestBody UpdateUserForm userForm){
+    public ResponseEntity updateUser(@RequestBody UpdateUserForm userForm){
         try {
             validationService.validateUserForm(userForm.getUpdatedUserDetails());
+            userService.updateUser(userForm);
         } catch (InputMismatchException err) {
-            return new Status(err);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
         }
-        return userService.updateUser(userForm);
+        catch (NoSuchElementException | IllegalAccessException err){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(String.format("User %s updated successfully", userForm.getUsernameToUpdate()));
     }
 
 }
