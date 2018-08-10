@@ -6,12 +6,9 @@ import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.awt.dnd.InvalidDnDOperationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,7 +27,10 @@ public class ComponentService {
      * Public Functions
      *********************************/
 
-    public void createComponent(ComponentForm componentForm) throws IllegalArgumentException {
+    /**
+     * Create component by the given form
+     */
+    public void createComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component != null ) {
             throw new IllegalArgumentException("Component with this name already exists");
@@ -44,7 +44,10 @@ public class ComponentService {
         }
     }
 
-    public void updateComponent(ComponentForm componentForm) throws NoSuchElementException {
+    /**
+     * Update existing component with the given new data
+     */
+    public void updateComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component == null) {
             throw new NoSuchElementException("Cannot update component, component with name " +
@@ -55,7 +58,10 @@ public class ComponentService {
 
     }
 
-    public void deleteComponent(String name) throws NoSuchElementException{
+    /**
+     * Delete component with the given name
+     */
+    public void deleteComponent(String name) {
         Component component = getComponent(name);
         if (component == null) {
             throw new NoSuchElementException("Couldn't find component with name" + name);
@@ -65,6 +71,9 @@ public class ComponentService {
     }
 
 
+    /**
+     * Get component by name
+     */
     public Component getComponent(String componentName) {
         if(StringUtils.isEmpty(componentName)){
             return null;
@@ -112,16 +121,16 @@ public class ComponentService {
 
     /**
      * Decrease component amount by 1
-     * @throws IllegalStateException if component amount is zero
      */
-    public void decreaseAmount(Component component) throws IllegalStateException {
-        if (component.getAmount() <= 0 )
+    public void decreaseAmount(Component component) {
+        int newAmount = component.getAmount()-1;
+        if (newAmount < 0)
             throw new IllegalStateException("Component " + component.getName() + " is out of stock");
-        int currentAmount = component.getAmount();
-        if (currentAmount == 1) {
+
+        if (newAmount == 0) {
             component.setStatus(ComponentStatus.OUT_OF_STOCK);
         }
-        component.setAmount(component.getAmount()-1);
+        component.setAmount(newAmount-1);
         componentRepository.save(component);
     }
 }

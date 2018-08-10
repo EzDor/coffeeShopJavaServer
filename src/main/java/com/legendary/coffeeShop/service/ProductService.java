@@ -60,9 +60,8 @@ public class ProductService {
 
     /**
      * Create new product by the given form
-     * @throws NoSuchElementException
      */
-    public void createProduct(ProductForm productForm) throws IllegalArgumentException {
+    public void createProduct(ProductForm productForm) {
         if (getProduct(productForm.getDisplayName()) != null) {
             throw new IllegalArgumentException("Cannot create product, product with name " +
                     productForm.getDisplayName() + " already exist");
@@ -74,9 +73,8 @@ public class ProductService {
 
     /**
      * Update product with new data
-     * @throws NoSuchElementException if no product found with the given name
      */
-    public void updateProduct(ProductForm productForm) throws NoSuchElementException {
+    public void updateProduct(ProductForm productForm) {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
             throw new NoSuchElementException("Cannot update product, product with name "
@@ -88,9 +86,8 @@ public class ProductService {
 
     /**
      * Delete product with the given name
-     * @throws NoSuchElementException if no product found with the given name
      */
-    public void deleteProduct(String displayName) throws NoSuchElementException {
+    public void deleteProduct(String displayName) {
         Product product = getProduct(displayName);
         if (product == null) {
             throw new NoSuchElementException("Cannot delete product, product with name "
@@ -101,9 +98,8 @@ public class ProductService {
 
     /**
      * Get components list of the given product name
-     * @throws NoSuchElementException If no product found with given name
      */
-    public List<Component> getProductComponents(String productName) throws NoSuchElementException {
+    public List<Component> getProductComponents(String productName) {
         Product product = getProduct(productName);
         if (product == null) {
            throw new NoSuchElementException("Product " + productName + " not found.");
@@ -115,6 +111,9 @@ public class ProductService {
      * Private Functions
      *********************************/
 
+    /**
+     * Update product with the given data. If some data doesnt exist in form it won't update this field
+     */
     private Product prepareProduct(Product product, ProductForm productForm) {
         product.setProductType(ProductType.valueOf(productForm.getProductType().toUpperCase()));
         product.setDisplayName(productForm.getDisplayName());

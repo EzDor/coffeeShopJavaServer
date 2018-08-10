@@ -4,8 +4,6 @@ import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.dao.entities.*;
 import com.legendary.coffeeShop.dao.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -31,7 +29,10 @@ public class OrderService {
     @Autowired
     private ComponentService componentService;
 
-    public Order getOrder(String username) throws NoSuchElementException {
+    /**
+     * Get current order of specific user, create new one if doesn't exists
+     */
+    public Order getOrder(String username) {
         User user = userService.getUser(username);
         if (user == null) {
             throw new NoSuchElementException("User " + username + " not found");
@@ -46,7 +47,10 @@ public class OrderService {
         return order;
     }
 
-    public List<Order> getAllOrders(String username) throws NoSuchElementException{
+    /**
+     * Get all orders of specific user
+     */
+    public List<Order> getAllOrders(String username) {
         User user = userService.getUser(username);
         if (user == null) {
             throw new NoSuchElementException("User " + username + " not found");
@@ -54,10 +58,10 @@ public class OrderService {
         return orderRepository.findByUser(user);
     }
 
-    public void updateOrder(int orderId, List<OrderForm> ordersForm) throws NoSuchElementException  {
-
-        // TODO: decrease amount
-        // TODO: check if enough in amount
+    /**
+     * Update order with the given order items
+     */
+    public void updateOrder(int orderId, List<OrderForm> ordersForm) {
         Order order = orderRepository.findById(orderId);
         if (order == null)
             throw new NoSuchElementException(String.format("Could not find order with id %d", orderId));
@@ -65,6 +69,7 @@ public class OrderService {
         List<OrderItem> orderItems = getOrderItems(ordersForm);
         List<OrderItem> currentOrderItems = order.getOrderItems();
 
+        // update amount
         for (OrderItem orderItem: orderItems) {
             orderItemService.decreaseAmount(orderItem);
         }
@@ -77,7 +82,10 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public void closeOrder(int orderId, OrderStatus orderStatus) throws NoSuchElementException {
+    /**
+     * Set order status to be the given status
+     */
+    public void setOrderStatus(int orderId, OrderStatus orderStatus) {
         Order order = orderRepository.findById(orderId);
         if (order == null) {
             throw new NoSuchElementException(String.format("Could not find order with id %d", orderId));
@@ -90,6 +98,9 @@ public class OrderService {
      * Private Functions
      *********************************/
 
+    /**
+     * return Order object with initialized fields
+     */
     private Order prepareOrder(Order order, User user) {
         order.setUser(user);
         order.setCreationTime(new Timestamp(System.currentTimeMillis()));
@@ -99,6 +110,9 @@ public class OrderService {
     }
 
 
+    /**
+     * Return list of OrderItems from the given OrderForm
+     */
     private List<OrderItem> getOrderItems(List<OrderForm> ordersForms) {
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderForm orderForm: ordersForms) {

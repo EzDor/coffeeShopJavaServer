@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -62,7 +61,7 @@ public class CartController {
                 validationService.validateOrderForm(orderForm);
             }
             orderService.updateOrder(orderId, orderForms);
-            return ResponseEntity.status(HttpStatus.OK).body("Order with id " + orderId + "updated successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(String.format("Order No. %s updated successfully", orderId));
         } catch (NoSuchElementException|IllegalStateException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
@@ -72,7 +71,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity closeOrder(@PathVariable int orderId) {
         try {
-            orderService.closeOrder(orderId, OrderStatus.DONE);
+            orderService.setOrderStatus(orderId, OrderStatus.DONE);
             return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
         } catch (NoSuchElementException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
@@ -84,7 +83,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity cancelOrder(@PathVariable int orderId) {
         try {
-            orderService.closeOrder(orderId, OrderStatus.CANCELED);
+            orderService.setOrderStatus(orderId, OrderStatus.CANCELED);
             return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
         } catch (NoSuchElementException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());

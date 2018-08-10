@@ -20,9 +20,8 @@ public class OrderItemService {
 
     /**
      * Delete OrderItem row
-     * @throws NoSuchElementException if no order item exists with the given id
      */
-    public void removeOrderItem(int orderItemId) throws NoSuchElementException {
+    public void removeOrderItem(int orderItemId) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId);
         if (orderItem == null) {
             throw new NoSuchElementException(String.format("Could not find order item with id %d", orderItemId));

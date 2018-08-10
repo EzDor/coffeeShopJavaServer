@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
      *********************************/
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user = getUser(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
@@ -52,9 +52,8 @@ public class UserService implements UserDetailsService {
 
     /**
      * Create new user from the given form
-     * @throws NoSuchElementException if no product found with the given name
      */
-    public void createUser(NewUserForm userForm) throws NoSuchElementException {
+    public void createUser(NewUserForm userForm) {
         if (getUser(userForm.getUsername()) != null) {
             throw new IllegalArgumentException("Cannot create user, username " + userForm.getUsername() + " already exist");
         }
@@ -67,10 +66,9 @@ public class UserService implements UserDetailsService {
 
     /**
      * Update given user according to user form
-     * @throws NoSuchElementException if no product found with the given name
      * @throws IllegalAccessException if username or password is wrong
      */
-    public void updateUser(UpdateUserForm userForm) throws NoSuchElementException, IllegalAccessException {
+    public void updateUser(UpdateUserForm userForm) throws IllegalAccessException {
         User user = getUser(userForm.getUsernameToUpdate());
         if (user == null) {
             throw new NoSuchElementException("Cannot update user " + userForm.getUsernameToUpdate()
