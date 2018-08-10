@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.awt.dnd.InvalidDnDOperationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -108,4 +110,18 @@ public class ComponentService {
             return ComponentStatus.ACTIVE;
     }
 
+    /**
+     * Decrease component amount by 1
+     * @throws IllegalStateException if component amount is zero
+     */
+    public void decreaseAmount(Component component) throws IllegalStateException {
+        if (component.getAmount() <= 0 )
+            throw new IllegalStateException("Component " + component.getName() + " is out of stock");
+        int currentAmount = component.getAmount();
+        if (currentAmount == 1) {
+            component.setStatus(ComponentStatus.OUT_OF_STOCK);
+        }
+        component.setAmount(component.getAmount()-1);
+        componentRepository.save(component);
+    }
 }

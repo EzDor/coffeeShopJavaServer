@@ -22,9 +22,11 @@ public class OrderService {
     @Autowired
     private UserService userService;
 
-
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private OrderItemService orderItemService;
 
     @Autowired
     private ComponentService componentService;
@@ -53,12 +55,20 @@ public class OrderService {
     }
 
     public void updateOrder(int orderId, List<OrderForm> ordersForm) throws NoSuchElementException  {
+
+        // TODO: decrease amount
+        // TODO: check if enough in amount
         Order order = orderRepository.findById(orderId);
         if (order == null)
             throw new NoSuchElementException(String.format("Could not find order with id %d", orderId));
 
         List<OrderItem> orderItems = getOrderItems(ordersForm);
         List<OrderItem> currentOrderItems = order.getOrderItems();
+
+        for (OrderItem orderItem: orderItems) {
+            orderItemService.decreaseAmount(orderItem);
+        }
+
         if (currentOrderItems != null) {
             orderItems.addAll(currentOrderItems);
         }
@@ -68,7 +78,6 @@ public class OrderService {
     }
 
     public void closeOrder(int orderId, OrderStatus orderStatus) throws NoSuchElementException {
-        // TODO: decrease amount
         Order order = orderRepository.findById(orderId);
         if (order == null) {
             throw new NoSuchElementException(String.format("Could not find order with id %d", orderId));
@@ -88,6 +97,7 @@ public class OrderService {
         order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         return order;
     }
+
 
     private List<OrderItem> getOrderItems(List<OrderForm> ordersForms) {
         List<OrderItem> orderItems = new ArrayList<>();

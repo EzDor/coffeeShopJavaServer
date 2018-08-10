@@ -63,7 +63,7 @@ public class CartController {
             }
             orderService.updateOrder(orderId, orderForms);
             return ResponseEntity.status(HttpStatus.OK).body("Order with id " + orderId + "updated successfully");
-        } catch (NoSuchElementException err) {
+        } catch (NoSuchElementException|IllegalStateException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
     }
