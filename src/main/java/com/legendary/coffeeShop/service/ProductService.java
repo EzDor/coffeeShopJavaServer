@@ -63,8 +63,8 @@ public class ProductService {
      */
     public void createProduct(ProductForm productForm) {
         if (getProduct(productForm.getDisplayName()) != null) {
-            throw new IllegalArgumentException("Cannot create product, product with name " +
-                    productForm.getDisplayName() + " already exist");
+            throw new IllegalArgumentException(String .format("Cannot create product, product with name %s " +
+                    "already exist", productForm.getDisplayName()));
         }
 
         Product product = prepareProduct(new Product(), productForm);
@@ -77,8 +77,8 @@ public class ProductService {
     public void updateProduct(ProductForm productForm) {
         Product product = getProduct(productForm.getDisplayName());
         if (product == null) {
-            throw new NoSuchElementException("Cannot update product, product with name "
-                    + productForm.getDisplayName() + " was not found");
+            throw new NoSuchElementException(String.format("Cannot update product, product with name %s " +
+                    "was not found", productForm.getDisplayName()));
         }
         product = prepareProduct(product, productForm);
         productRepository.save(product);
@@ -90,8 +90,8 @@ public class ProductService {
     public void deleteProduct(String displayName) {
         Product product = getProduct(displayName);
         if (product == null) {
-            throw new NoSuchElementException("Cannot delete product, product with name "
-                    + displayName + " was not found");
+            throw new NoSuchElementException(String.format("Cannot delete product, product with name %s " +
+                    "was not found", displayName));
         }
         productRepository.delete(product);
     }
@@ -102,7 +102,7 @@ public class ProductService {
     public List<Component> getProductComponents(String productName) {
         Product product = getProduct(productName);
         if (product == null) {
-           throw new NoSuchElementException("Product " + productName + " not found.");
+           throw new NoSuchElementException(String.format("Product %s not found.", productName));
         }
         return componentRepository.findByProductTypes_id(product.getId());
     }

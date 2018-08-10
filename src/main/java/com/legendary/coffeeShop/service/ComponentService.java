@@ -33,7 +33,8 @@ public class ComponentService {
     public void createComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component != null ) {
-            throw new IllegalArgumentException("Component with this name already exists");
+            throw new IllegalArgumentException(String.format("Component with name %s already exists",
+                    componentForm.getName()));
         }
         component = prepareComponent(new Component(), componentForm);
         if (component != null) {
@@ -50,8 +51,8 @@ public class ComponentService {
     public void updateComponent(ComponentForm componentForm) {
         Component component = getComponent(componentForm.getName());
         if (component == null) {
-            throw new NoSuchElementException("Cannot update component, component with name " +
-                    componentForm.getName() + " was not found");
+            throw new NoSuchElementException(String.format("Cannot update component, component with name %s " +
+                    "was not found", componentForm.getName()));
         }
         component = prepareComponent(component, componentForm);
         componentRepository.save(component);
@@ -64,7 +65,7 @@ public class ComponentService {
     public void deleteComponent(String name) {
         Component component = getComponent(name);
         if (component == null) {
-            throw new NoSuchElementException("Couldn't find component with name" + name);
+            throw new NoSuchElementException(String.format("Couldn't find component with name %s", name));
         }
         component.getProductTypes().remove(this);
         componentRepository.delete(component);
@@ -125,7 +126,7 @@ public class ComponentService {
     public void decreaseAmount(Component component) {
         int newAmount = component.getAmount()-1;
         if (newAmount < 0)
-            throw new IllegalStateException("Component " + component.getName() + " is out of stock");
+            throw new IllegalStateException(String.format("Component %s is out of stock", component.getName()));
 
         if (newAmount == 0) {
             component.setStatus(ComponentStatus.OUT_OF_STOCK);

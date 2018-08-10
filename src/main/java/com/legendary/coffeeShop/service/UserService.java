@@ -71,12 +71,12 @@ public class UserService implements UserDetailsService {
     public void updateUser(UpdateUserForm userForm) throws IllegalAccessException {
         User user = getUser(userForm.getUsernameToUpdate());
         if (user == null) {
-            throw new NoSuchElementException("Cannot update user " + userForm.getUsernameToUpdate()
-                    + ". User Not Found");
+            throw new NoSuchElementException(String.format("Cannot update user %s. User Not Found",
+                    userForm.getUsernameToUpdate()));
         }
         if (!passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
-            throw new IllegalAccessException("Cannot update user " + userForm.getUsernameToUpdate()
-                    + ". Wrong username or password");
+            throw new IllegalAccessException(String.format("Cannot update user %s. Wrong username or password",
+                    userForm.getUsernameToUpdate()));
         }
         user = prepareUser(user, userForm.getUpdatedUserDetails());
         userRepository.save(user);

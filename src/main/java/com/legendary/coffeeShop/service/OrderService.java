@@ -35,7 +35,7 @@ public class OrderService {
     public Order getOrder(String username) {
         User user = userService.getUser(username);
         if (user == null) {
-            throw new NoSuchElementException("User " + username + " not found");
+            throw new NoSuchElementException(String.format("User %s not found", username));
         }
         // check if there is an open order
         Order order = orderRepository.findByUserAndOrderStatus(user, OrderStatus.IN_PROGRESS);
@@ -53,7 +53,7 @@ public class OrderService {
     public List<Order> getAllOrders(String username) {
         User user = userService.getUser(username);
         if (user == null) {
-            throw new NoSuchElementException("User " + username + " not found");
+            throw new NoSuchElementException(String.format("User %s not found", username));
         }
         return orderRepository.findByUser(user);
     }
