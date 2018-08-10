@@ -50,7 +50,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK)
-                .body("User " + userForm.getUsernameToUpdate() + " updated successfully");
+                .body(String.format("User %s updated successfully", userForm.getUsernameToUpdate()));
     }
 
 }

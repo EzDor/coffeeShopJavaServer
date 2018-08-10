@@ -20,7 +20,7 @@ public class CheckController {
     @GetMapping("/check")
     @ResponseBody
     public ResponseEntity check() {
-        System.out.println("Check successful. constants:" + commonConstants.getTestCommonConstants());
+        System.out.println(String.format("Check successful. constants:%s", commonConstants.getTestCommonConstants()));
         return ResponseEntity.status(HttpStatus.OK).body("msg");
 
     }
@@ -29,7 +29,7 @@ public class CheckController {
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseBody
     public ResponseEntity checkAdmin() {
-        System.out.println("Check successful. constants:" + commonConstants.getTestCommonConstants());
+        System.out.println(String.format("Check successful. constants:%s", commonConstants.getTestCommonConstants()));
         return ResponseEntity.status(HttpStatus.OK).body("msg");
     }
 }

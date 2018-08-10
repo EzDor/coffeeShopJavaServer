@@ -49,7 +49,7 @@ public class ProductController {
         Product product = productService.getProduct(productName);
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Product with name " + productName + " was not found");
+                    .body(String.format("Product with name %s was not found", productName));
         }
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
