@@ -1,41 +1,110 @@
 form {
   color: #336699;
-  display:flex;
-  flex-wrap:wrap;
-  font-size:18px;
-  justify-content:flex-end;
-  padding:30px;
-  width: 550px;
+  font-size: 18px;
+  padding: 10px;
+  width: 298px;
   margin: 0 auto;
 }
+
 input {
   display: block;
-  font-size:18px;
-  padding-left:10px;
+  font-size: 18px;
+  padding-left: 10px;
+  width: 275px;
 }
+
 button {
   font-size: 24px;
   color: #556b8e;
 }
+
 button:disabled {
   color: #999999;
 }
+
 .header {
   color: #336699;
-  text-align:center;
-  padding-top:20px;
-  margin-top:0;
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 0;
 }
+
 .form-group {
   margin: 10px;
 }
-.save {
-  background-color: #CCDDFF;
-  border-color: #CCDDFF;
+
+.buttons {
+  text-align: right;
+  margin-right: 0px;
 }
-em {float:right; color:#E05C65; padding-left:10px;}
-.error input, .error select, .error textarea {background-color:#E3C3C5;}
-.error ::-webkit-input-placeholder { color: #999; }
-.error :-moz-placeholder { color: #999; }
-.error ::-moz-placeholder { color: #999; }
+
+
+em {
+  float: right;
+  color: #E05C65;
+  padding-left: 10px;
+}
+
+.error input, .error select, .error textarea {
+  background-color: #E3C3C5;
+}
+
+.error ::-webkit-input-placeholder {
+  color: #999;
+}
+
+.error :-moz-placeholder {
+  color: #999;
+}
+
+.error ::-moz-placeholder {
+  color: #999;
+}
+
+
+.mat-card {
+  max-width: 400px;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.signin-content {
+  padding: 60px 1rem;
+}
+
+.full-width-input {
+  width: 100%;
+}
+
+.register-button {
+  display: block;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.login-button {
+  margin-top: 15px;
+}
+
+.please-login-text {
+  margin-top: -10px;
+}
+
+.register-buttons-wrapper {
+  margin-top: 10px;
+}
+
+.register-save-button{
+  margin-left: 5px;
+}
+.register-cancel-button{
+  margin-right: 5px;
+}
+
+.register-logo-wrapper {
+  width: 15%;
+  height: 15%;
+  margin: 10px auto;
+}
+
 

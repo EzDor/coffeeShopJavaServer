@@ -1,6 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {AuthenticationService} from '../auth/auth.service';
+import {Router} from '@angular/router';
+import {first} from 'rxjs/operators';
 
-import {UserRepositoryService} from '../user-repository.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,15 +11,18 @@ import {UserRepositoryService} from '../user-repository.service';
   templateUrl: './nav-bar.component.html'
 })
 
-export class NavBarComponent {
-  constructor(private userRepository: UserRepositoryService) {
+export class NavBarComponent implements OnInit {
+
+  constructor(private authenticationService: AuthenticationService, private router: Router) {
   }
 
-  get currentUser() {
-    return this.userRepository.currentUser;
+  isLoggedIn$: Observable<boolean>;
+
+  ngOnInit() {
+    this.isLoggedIn$ = this.authenticationService.isLoggedIn;
   }
 
-  handleSignOut() {
-    this.userRepository.currentUser = null;
+  onLogout() {
+    this.authenticationService.logout();
   }
 }

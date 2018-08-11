@@ -1,5 +1,12 @@
-<div class="nav-bar">
-  <img class="logo" src="/assets/images/some-logo.png" alt="Some Logo" />
-  <div class="nav-item"><a [routerLink]="['/home']">Home</a></div>
-  <app-account-menu [user]="currentUser" (signedOut)="handleSignOut()"></app-account-menu>
-</div>
+<mat-toolbar class="nav-bar" color="primary" *ngIf="isLoggedIn$ | async as isLoggedIn">
+  <div class="nav-bar-logo">
+    <app-coffee-shop-logo></app-coffee-shop-logo>
+  </div>
+  <span>
+    CoffeeShop
+  </span>
+  <span class="fill-remaining-space"></span>
+  <button mat-button>Menu Option 01</button>
+  <button mat-button>Menu Option 02</button>
+  <button mat-button (click)="onLogout()" *ngIf="isLoggedIn">Logout</button>
+</mat-toolbar>
