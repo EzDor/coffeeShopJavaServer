@@ -92,7 +92,6 @@ public class UserService implements UserDetailsService {
     }
 
     private User getUser(String username) {
-        System.out.println("get user");
         return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
     }
 
