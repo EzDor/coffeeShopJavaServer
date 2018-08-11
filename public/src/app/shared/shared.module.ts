@@ -10,9 +10,9 @@ import {
   MatSidenavModule,
   MatTableModule,
   MatToolbarModule,
-  MatIconModule,
+  MatIconModule, MatGridListModule,
 } from '@angular/material';
-import {CoffeeShopLogoComponent} from '../coffee-shop-logo/coffee-shop-logo.component';
+import {CoffeeShopLogoComponent} from './coffee-shop-logo/coffee-shop-logo.component';
 
 
 @NgModule({
@@ -29,6 +29,7 @@ import {CoffeeShopLogoComponent} from '../coffee-shop-logo/coffee-shop-logo.comp
     MatSidenavModule,
     MatListModule,
     MatIconModule,
+    MatGridListModule,
   ],
   exports: [
     CoffeeShopLogoComponent,
@@ -45,6 +46,7 @@ import {CoffeeShopLogoComponent} from '../coffee-shop-logo/coffee-shop-logo.comp
     MatSidenavModule,
     MatListModule,
     MatIconModule,
+    MatGridListModule,
   ],
   declarations: [
     LoadingSpinnerComponent,
