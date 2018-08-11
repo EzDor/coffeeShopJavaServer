@@ -1,0 +1,51 @@
+<div class="register-logo-wrapper">
+  <app-coffee-shop-logo></app-coffee-shop-logo>
+</div>
+<div class="register-component">
+  <mat-card>
+    <mat-card-content>
+      <h2>Welcome to CoffeeShop</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="registerUser(registerForm.value)">
+        <p class="please-login-text">Please register to continue</p>
+        <mat-form-field class="full-width-input">
+          <input type="text" matInput placeholder="First Name" formControlName="firstName" class="form-control"
+                 required/>
+          <mat-error *ngIf="firstName.invalid && firstName.dirty">
+            Please inform your first name
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input">
+          <input matInput type="text" placeholder="Last Name" formControlName="lastName" required>
+          <mat-error *ngIf="lastName.invalid && lastName.dirty">
+            Please inform your last name
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="text" placeholder="Username" formControlName="username" required>
+          <mat-error *ngIf="username.invalid && username.dirty">
+            Please inform your username
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="password" placeholder="Password" formControlName="password" required>
+          <mat-error *ngIf="password.invalid && password.dirty">
+            Please inform your password
+          </mat-error>
+        </mat-form-field>
+        <div class="register-buttons-wrapper" *ngIf="!saving">
+          <button class="register-cancel-button" mat-raised-button color="warn" type="button" (click)="cancel()"
+                  *ngIf="!saving">Cancel
+          </button>
+          <button class="register-save-button" mat-raised-button color="primary" type="submit" *ngIf="!saving"
+                  [disabled]="registerForm.invalid">Save
+          </button>
+        </div>
+        <app-loading-spinner [loading]="saving"></app-loading-spinner>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+

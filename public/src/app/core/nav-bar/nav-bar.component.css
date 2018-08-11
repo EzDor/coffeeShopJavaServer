@@ -1,0 +1,22 @@
+.angular-logo {
+  margin: 0 4px 3px 0;
+  height: 35px;
+  vertical-align: middle;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+
+}
+
+.nav-bar {
+  opacity: 0.8;
+  background-color: black;
+}
+
+.nav-bar-logo{
+  display: inline-block;
+  height: 100%;
+  width: 10%;
+}
+
