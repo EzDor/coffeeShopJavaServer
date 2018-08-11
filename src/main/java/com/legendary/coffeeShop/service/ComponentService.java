@@ -109,13 +109,13 @@ public class ComponentService {
 
     private ComponentStatus getComponentStatus(String status, double price) {
         if (price ==0){
-            if (status == null || ComponentStatus.valueOf(status) == ComponentStatus.ACTIVE)
+            if (status == null || ComponentStatus.valueOf(status.toUpperCase()) == ComponentStatus.ACTIVE)
                 return ComponentStatus.OUT_OF_STOCK;
             else
-                return ComponentStatus.valueOf(status);
+                return ComponentStatus.valueOf(status.toUpperCase());
         }
         else if (status != null)
-                return ComponentStatus.valueOf(status);
+                return ComponentStatus.valueOf(status.toUpperCase());
         else
             return ComponentStatus.ACTIVE;
     }
