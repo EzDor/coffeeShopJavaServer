@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -64,6 +66,24 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes())
                 .compact();
-        res.addHeader(SecurityConstants.HEADER_STRING, token);
+        prepareResponse(res, user, token);
+        res.addHeader(SecurityConstants.HEADER_STRING, prepareToken(token));
+    }
+
+    private String prepareToken(String token) {
+        return SecurityConstants.TOKEN_PREFIX + " " + token;
+    }
+
+    private void prepareResponse(HttpServletResponse response, org.springframework.security.core.userdetails.User user, String token) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> jsonResponse = new HashMap<>();
+            jsonResponse.put("username", user.getUsername());
+            jsonResponse.put("token", prepareToken(token));
+
+            response.getWriter().write(objectMapper.writeValueAsString(jsonResponse));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

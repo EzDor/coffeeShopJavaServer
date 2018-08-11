@@ -1,7 +1,11 @@
 .app {
-  width: 1000px;
+  height: 100%;
+  width: 100%;
   margin: auto;
+  background: url('../assets/images/Coffee_Beans_Background-727176932.jpg') no-repeat top center;
+  position: fixed;
+
 }
+
 .main {
-  background-color:white;
 }
