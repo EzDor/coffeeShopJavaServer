@@ -1,0 +1,9 @@
+<mat-grid-list class="product-menu-grid-wrapper" [cols]="gridCols" [rowHeight]="rowHeight">
+  <mat-grid-tile
+    *ngFor="let tile of tiles"
+    [colspan]="tile.cols"
+    [rowspan]="tile.rows"
+    >
+    <app-product-menu-card></app-product-menu-card>
+  </mat-grid-tile>
+</mat-grid-list>

@@ -1,0 +1,32 @@
+.product-menu-card-wrapper {
+  max-width: 500px;
+  background-color: rgba(0,0,0, 0.4);
+  border-radius: 5%;
+  color: gainsboro;
+  padding: 15px;
+}
+
+.product-menu-card-image {
+  width: 300px;
+  margin: 0;
+}
+
+.product-menu-card-image-wrapper {
+  height: 250px;
+}
+
+.product-menu-card-wrapper{
+  width: 100%;
+}
+
+.product-menu-card-wrapper {
+  text-align: center;
+}
+
+.product-menu-card-header-wrapper {
+  display: block;
+}
+
+.mat-card-image:first-child {
+  margin: 0;
+}
