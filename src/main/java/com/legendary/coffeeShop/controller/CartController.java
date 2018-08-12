@@ -81,7 +81,7 @@ public class CartController {
 
     @DeleteMapping("/{orderId}")
     @ResponseBody
-    public ResponseEntity cancelOrder(@PathVariable int orderId) {
+    public ResponseEntity deleteOrder(@PathVariable int orderId) {
         try {
             orderService.setOrderStatus(orderId, OrderStatus.CANCELED);
             return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
