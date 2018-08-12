@@ -66,7 +66,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes())
                 .compact();
-        prepareResponse(res, user, token);
+        prepareResponse(res, user, token, claims.get(SecurityConstants.CLAIM_ROLES, String.class));
         res.addHeader(SecurityConstants.HEADER_STRING, prepareToken(token));
     }
 
@@ -74,16 +74,22 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return SecurityConstants.TOKEN_PREFIX + " " + token;
     }
 
-    private void prepareResponse(HttpServletResponse response, org.springframework.security.core.userdetails.User user, String token) {
+    private void prepareResponse(HttpServletResponse response, org.springframework.security.core.userdetails.User user,
+                                 String token, String userRole) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> jsonResponse = new HashMap<>();
             jsonResponse.put(SecurityConstants.USERNAME_KEY, user.getUsername());
             jsonResponse.put(SecurityConstants.TOKEN_KEY, prepareToken(token));
+            jsonResponse.put(SecurityConstants.IS_ADMIN_KEY, isAdmin(userRole));
 
             response.getWriter().write(objectMapper.writeValueAsString(jsonResponse));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isAdmin(String role) {
+        return role.equals(SecurityConstants.ADMIN_ROLE);
     }
 }
