@@ -95,7 +95,7 @@ public class ComponentService {
         component.setStatus(getComponentStatus(status, price));
 
         List<Product> products = productService.getProductsByNames(componentForm.getProductDisplayName());
-        if (products != null) {
+        if (products != null && products.size() > 0) {
             List<Product> currentProducts = component.getProductTypes();
             if (currentProducts != null)
                 products.addAll(component.getProductTypes());
