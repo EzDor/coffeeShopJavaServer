@@ -96,7 +96,6 @@ public class ComponentService {
 
         List<Product> products = productService.getProductsByNames(componentForm.getProductDisplayName());
         if (products != null) {
-            // TODO: not working with list of products
             List<Product> currentProducts = component.getProductTypes();
             if (currentProducts != null)
                 products.addAll(component.getProductTypes());
