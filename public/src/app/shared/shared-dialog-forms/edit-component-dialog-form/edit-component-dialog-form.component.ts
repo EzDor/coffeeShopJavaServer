@@ -5,6 +5,7 @@ import {AdminService} from 'src/app/core/services/admin.service';
 import {Component as Comp} from 'src/app/models/components/component';
 import {ComponentsService} from '../../../core/services/components.service';
 import {ComponentStatus} from '../../../models/components/component-status.enum';
+import {UpdateComponent} from '../../../models/components/update-component';
 
 @Component({
   selector: 'app-edit-component-dialog-form',
@@ -60,24 +61,23 @@ export class EditComponentDialogFormComponent implements OnInit {
    *********************************/
 
   private createComponent(): void {
-    // const newUser: User = this.componentForm.value;
-    // this.componentsService.createUser(newUser).subscribe(
-    //   res => this.editComplete(),
-    //   error => this.showError(error)
-    // );
+    const newComponent: Comp = this.componentForm.value;
+    this.componentsService.createComponent(newComponent).subscribe(
+      res => this.editComplete(),
+      error => this.showError(error)
+    );
   }
 
   private updateUser(): void {
-    // const updatedUser: UpdateUser = {
-    //   updatedUserDetails: this.componentForm.value,
-    //   password: Constants.ADMIN_UPDATE_USER_PASSWORD_KEY,
-    //   usernameToUpdate: this.component.username,
-    // };
-    //
-    // this.componentsService.updateUser(updatedUser).subscribe(
-    //   res => this.successfulResponse(this.componentForm.value),
-    //   error => this.showError(error)
-    // );
+    const updatedComponent: UpdateComponent = {
+      componentTypeToUpdate: this.component.type,
+      updatedComponentDetails: this.componentForm.value
+    };
+
+    this.componentsService.updateComponent(updatedComponent).subscribe(
+      res => this.editComplete(),
+      error => this.showError(error)
+    );
   }
 
   private editComplete(): void {

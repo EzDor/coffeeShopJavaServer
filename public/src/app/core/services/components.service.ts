@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {Constants} from '../../models/constants';
 import {Observable} from 'rxjs';
 import {Component} from '../../models/components/component';
+import {UpdateComponent} from '../../models/components/update-component';
 
 @Injectable({
   providedIn: CoreModule
@@ -18,6 +19,14 @@ export class ComponentsService {
 
   public getComponents(): Observable<Component[]> {
     return this.http.get<Component []>(this.apiPrefix + Constants.GET_COMPONENTS_API_CALL);
+  }
+
+  public createComponent(component: Component) {
+    return this.http.post(this.apiPrefix + Constants.CREATE_COMPONENTS_API_CALL, component);
+  }
+
+  public updateComponent(updatedComponent: UpdateComponent) {
+    return this.http.post(this.apiPrefix + Constants.UPDATE_COMPONENTS_API_CALL, updatedComponent);
   }
 
 }

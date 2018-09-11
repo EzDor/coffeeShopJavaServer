@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
-import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.NewComponentForm;
+import com.legendary.coffeeShop.controller.form.UpdateComponentForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.service.ComponentService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -38,10 +39,10 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public ResponseEntity createComponent(@RequestBody ComponentForm componentForm) {
+    public ResponseEntity createComponent(@RequestBody NewComponentForm newComponentForm) {
         try {
-            validationService.validateComponentForm(componentForm);
-            componentService.createComponent(componentForm);
+            validationService.validateComponentForm(newComponentForm);
+            componentService.createComponent(newComponentForm);
             return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
         } catch (InputMismatchException | IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
@@ -51,10 +52,10 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
-    public ResponseEntity updateComponent(@RequestBody ComponentForm componentForm) {
+    public ResponseEntity updateComponent(@RequestBody UpdateComponentForm updateComponentForm) {
         try {
-            validationService.validateComponentForm(componentForm);
-            componentService.updateComponent(componentForm);
+            validationService.validateComponentForm(updateComponentForm.getUpdatedComponentDetails());
+            componentService.updateComponent(updateComponentForm);
             return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
         } catch (InputMismatchException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);

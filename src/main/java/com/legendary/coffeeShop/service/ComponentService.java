@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.NewComponentForm;
+import com.legendary.coffeeShop.controller.form.UpdateComponentForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
@@ -31,13 +32,13 @@ public class ComponentService {
     /**
      * Create component by the given form
      */
-    public void createComponent(ComponentForm componentForm) {
-        Component component = getComponent(componentForm.getType());
+    public void createComponent(NewComponentForm newComponentForm) {
+        Component component = getComponent(newComponentForm.getType());
         if (component != null) {
             throw new IllegalArgumentException(String.format("Component with name %s already exists",
-                    componentForm.getType()));
+                    newComponentForm.getType()));
         }
-        component = prepareComponent(new Component(), componentForm);
+        component = prepareComponent(new Component(), newComponentForm);
         if (component != null) {
             componentRepository.save(component);
         } else {
@@ -48,13 +49,13 @@ public class ComponentService {
     /**
      * Update existing component with the given new data
      */
-    public void updateComponent(ComponentForm componentForm) {
-        Component component = getComponent(componentForm.getType());
+    public void updateComponent(UpdateComponentForm updateComponentForm) {
+        Component component = getComponent(updateComponentForm.getComponentTypeToUpdate());
         if (component == null) {
             throw new NoSuchElementException(String.format("Cannot update component, component with name %s " +
-                    "was not found", componentForm.getName()));
+                    "was not found", updateComponentForm.getComponentTypeToUpdate()));
         }
-        component = prepareComponent(component, componentForm);
+        component = prepareComponent(component, updateComponentForm.getUpdatedComponentDetails());
         componentRepository.save(component);
 
     }
@@ -89,12 +90,12 @@ public class ComponentService {
      * Private Functions
      *********************************/
 
-    private Component prepareComponent(Component component, ComponentForm componentForm) {
-        double price = componentForm.getPrice();
-        component.setName(componentForm.getName());
-        component.setAmount(componentForm.getAmount());
-        component.setPrice(price);
-        component.setStatus(getComponentStatus(componentForm.getComponentStatus()));
+    private Component prepareComponent(Component component, NewComponentForm newComponentForm) {
+        component.setName(newComponentForm.getName());
+        component.setAmount(newComponentForm.getAmount());
+        component.setPrice(newComponentForm.getPrice());
+        component.setType(newComponentForm.getType());
+        component.setStatus(getComponentStatus(newComponentForm.getComponentStatus()));
 
         return component;
     }

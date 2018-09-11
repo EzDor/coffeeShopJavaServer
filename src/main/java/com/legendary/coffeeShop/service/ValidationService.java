@@ -1,6 +1,6 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.NewComponentForm;
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.NewUserForm;
@@ -34,8 +34,8 @@ public class ValidationService {
         }
     }
 
-    public void validateComponentForm(ComponentForm componentForm) {
-        if (isComponentInvalid(componentForm)) {
+    public void validateComponentForm(NewComponentForm newComponentForm) {
+        if (isComponentInvalid(newComponentForm)) {
             throw new InputMismatchException("Some component details are missing or invalid.");
         }
     }
@@ -72,10 +72,10 @@ public class ValidationService {
         return StringUtils.isEmpty(productForm.getDisplayName());
     }
 
-    private boolean isComponentInvalid(ComponentForm componentForm) {
-        return StringUtils.isEmpty(componentForm.getType())
-                || componentForm.getAmount() < 0
-                || componentForm.getPrice() < 0
+    private boolean isComponentInvalid(NewComponentForm newComponentForm) {
+        return StringUtils.isEmpty(newComponentForm.getType())
+                || newComponentForm.getAmount() < 0
+                || newComponentForm.getPrice() < 0
                 ;
     }
 

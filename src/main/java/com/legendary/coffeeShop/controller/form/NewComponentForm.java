@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class ComponentForm {
+public class NewComponentForm {
 
     private int amount;
 

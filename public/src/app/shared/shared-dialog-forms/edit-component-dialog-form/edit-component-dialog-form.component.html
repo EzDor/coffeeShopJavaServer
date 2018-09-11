@@ -5,7 +5,7 @@
   </button>
 </div>
 <div class="modal-body">
-  <form class="componentForm" [formGroup]="componentForm">
+  <form class="newComponentForm" [formGroup]="componentForm">
     <div class="form-group" aria-invalid="true">
       <label>Name</label>
       <input type="text" class="form-control" formControlName="name" placeholder="Enter component name" required
@@ -34,7 +34,7 @@
     <div class="form-group">
       <label>User Status</label>
       <select class="form-control" formArrayName="status">
-        <option *ngFor="let status of componentStatus | objectKeys">{{status}}</option>
+        <option *ngFor="let status of componentStatus | objectKeys" [ngValue]="status">{{status}}</option>
       </select>
     </div>
 
