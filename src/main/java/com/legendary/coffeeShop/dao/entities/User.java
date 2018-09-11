@@ -1,11 +1,16 @@
 package com.legendary.coffeeShop.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -28,14 +33,13 @@ public class User {
     private String username;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserStatus status;
 
     @NotBlank
     @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-
-    @Column(name = "creation_time")
-    private Timestamp creationTime;
 
     @Column(name = "is_admin")
     private boolean isAdmin;

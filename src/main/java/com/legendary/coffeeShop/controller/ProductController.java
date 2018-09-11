@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,11 +20,15 @@ import java.util.NoSuchElementException;
 @RequestMapping("/product")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    private final ValidationService validationService;
 
     @Autowired
-    private ValidationService validationService;
+    public ProductController(ProductService productService, ValidationService validationService) {
+        this.productService = productService;
+        this.validationService = validationService;
+    }
 
     @GetMapping
     @ResponseBody
@@ -31,9 +36,9 @@ public class ProductController {
         return productService.getProducts();
     }
 
-    @GetMapping("/type/{productType}")
+    @GetMapping("getByType")
     @ResponseBody
-    public ResponseEntity getProductsByType(@PathVariable String productType) {
+    public ResponseEntity getProductsByType(@RequestParam String productType) {
         try {
             validationService.validateProductType(productType);
         } catch (InputMismatchException err) {
@@ -43,9 +48,9 @@ public class ProductController {
                 .body(productService.getProductsByType(productType));
     }
 
-    @GetMapping("/name/{productName}")
+    @GetMapping("/name")
     @ResponseBody
-    public ResponseEntity getProductsByName(@PathVariable String productName) {
+    public ResponseEntity getProductsByName(@RequestParam String productName) {
         Product product = productService.getProduct(productName);
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -87,11 +92,11 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{displayName}")
+    @PostMapping("/delete")
     @ResponseBody
-    public ResponseEntity deleteProduct(@PathVariable String displayName) {
+    public ResponseEntity deleteProduct(@RequestParam String productType) {
         try {
-            productService.deleteProduct(displayName);
+            productService.deleteProduct(productType);
             return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
         }
         catch (NoSuchElementException err) {
@@ -100,11 +105,11 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/components/{productName}")
+    @GetMapping("/components")
     @ResponseBody
     public ResponseEntity getProductComponents(@PathVariable String productName) {
         try {
-            List<Component> components = productService.getProductComponents(productName);
+            List<Component> components = new ArrayList<>();
             return ResponseEntity.status(HttpStatus.OK).body(components);
         }
         catch (NoSuchElementException err) {

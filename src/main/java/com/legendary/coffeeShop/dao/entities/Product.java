@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,8 +27,12 @@ public class Product {
     private String description;
 
     @Column(name = "product_type")
-    @NotNull
+    @NotBlank
     private ProductType productType;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "Component_types", joinColumns = {@JoinColumn(name = "component_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
+    Set<Component> productComponents = new HashSet<>();
 
     @Column
     private double price;

@@ -1,6 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.service.ComponentService;
 import com.legendary.coffeeShop.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +11,29 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/component")
 public class ComponentController {
 
-    @Autowired
-    private ComponentService componentService;
+    private final ComponentService componentService;
+
+    private final ValidationService validationService;
 
     @Autowired
-    private ValidationService validationService;
+    public ComponentController(ComponentService componentService, ValidationService validationService) {
+        this.componentService = componentService;
+        this.validationService = validationService;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @ResponseBody
+    public List<Component> getComponents() {
+        return componentService.getComponents();
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
@@ -30,7 +43,7 @@ public class ComponentController {
             validationService.validateComponentForm(componentForm);
             componentService.createComponent(componentForm);
             return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
-        } catch (InputMismatchException|IllegalArgumentException err) {
+        } catch (InputMismatchException | IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         }
     }
@@ -49,7 +62,7 @@ public class ComponentController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{name}")
+    @PostMapping("/delete")
     @ResponseBody
     public ResponseEntity deleteComponent(@PathVariable String name) {
         try {

@@ -1,33 +1,32 @@
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouterModule} from '@angular/router';
-
 import {appRoutes} from './routers';
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {JwtInterceptor} from './interceptor/jwt-interceptor';
-import {HTTP_INTERCEPTORS} from '@angular/common/http';
-import {ErrorInterceptor} from './interceptor/error-interceptor';
-import {HomeModule} from './home/home.module';
+import {ShellModule} from './shell/shell.module';
+import {HttpClientModule} from '@angular/common/http';
+import {httpInterceptorProviders} from './core/interceptors/interceptor-providers';
+import {AppErrorHandler} from './shell/app-error-handler';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     CoreModule,
     SharedModule,
-    HomeModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    ShellModule,
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    httpInterceptorProviders,
   ],
   bootstrap: [AppComponent]
 })

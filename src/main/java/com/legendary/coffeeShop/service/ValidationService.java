@@ -33,6 +33,7 @@ public class ValidationService {
             throw new InputMismatchException("Some product details are missing or invalid.");
         }
     }
+
     public void validateComponentForm(ComponentForm componentForm) {
         if (isComponentInvalid(componentForm)) {
             throw new InputMismatchException("Some component details are missing or invalid.");
@@ -72,8 +73,7 @@ public class ValidationService {
     }
 
     private boolean isComponentInvalid(ComponentForm componentForm) {
-        return StringUtils.isEmpty(componentForm.getName())
-                || isEmptyStringIncluded(componentForm.getProductDisplayName().toArray(new String[0]))
+        return StringUtils.isEmpty(componentForm.getType())
                 || componentForm.getAmount() < 0
                 || componentForm.getPrice() < 0
                 ;

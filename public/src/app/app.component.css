@@ -2,10 +2,12 @@
   height: 100%;
   width: 100%;
   margin: auto;
-  background: url('../assets/images/Coffee_Beans_Background-727176932.jpg') no-repeat top center;
+  background: url('../assets/images/Coffee_Beans_Background-727176932-min.jpg') no-repeat top center;
   position: fixed;
+  z-index: 0;
 
 }
 
 .main {
+  z-index: 1;
 }

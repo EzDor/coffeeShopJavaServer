@@ -1,0 +1,22 @@
+.admin-table-row-image{
+  width: 200px;
+  height: auto;
+  max-width: 200px;
+}
+
+.item-details-key{
+  padding-left: 15%;
+}
+
+.item-buttons-wrapper{
+  margin-top: 40px;
+}
+.item-button{
+  margin: 10px auto;
+  width: 100px;
+  display: block;
+}
+
+/*.add-new-item-button{*/
+  /*width: 80px;*/
+/*}*/

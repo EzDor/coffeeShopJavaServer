@@ -1,0 +1,13 @@
+<mat-toolbar class="nav-bar" color="primary" *ngIf="isLoggedIn$ | async as isLoggedIn$">
+  <div class="nav-bar-logo">
+    <app-coffee-shop-logo></app-coffee-shop-logo>
+  </div>
+  <span>
+    CoffeeShop
+  </span>
+  <span class="fill-remaining-space"></span>
+  <button mat-button (click)="redirectToHomePage()">Home</button>
+  <button mat-button (click)="redirectToAdminPage()" *ngIf="isAdmin$ | async as isAdmin$">Manage</button>
+  <button mat-button>Cart</button>
+  <button mat-button (click)="logout()">Logout</button>
+</mat-toolbar>

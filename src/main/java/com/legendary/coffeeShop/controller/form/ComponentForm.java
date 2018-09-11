@@ -13,9 +13,11 @@ public class ComponentForm {
 
     private String name;
 
+    private String type;
+
     private double price;
 
-    private List<String> productDisplayName;
-
     private String componentStatus;
+
+    private String image;
 }

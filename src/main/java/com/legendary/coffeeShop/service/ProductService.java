@@ -2,11 +2,9 @@ package com.legendary.coffeeShop.service;
 
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.dao.entities.ProductStatus;
 import com.legendary.coffeeShop.dao.entities.ProductType;
-import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +16,12 @@ import java.util.NoSuchElementException;
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    private ComponentRepository componentRepository;
-
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     /*********************************
      * Public Functions
@@ -62,9 +60,9 @@ public class ProductService {
      * Create new product by the given form
      */
     public void createProduct(ProductForm productForm) {
-        if (getProduct(productForm.getDisplayName()) != null) {
-            throw new IllegalArgumentException(String .format("Cannot create product, product with name %s " +
-                    "already exist", productForm.getDisplayName()));
+        if (getProduct(productForm.getProductType()) != null) {
+            throw new IllegalArgumentException(String.format("Cannot create product, product with name %s " +
+                    "already exist", productForm.getProductType()));
         }
 
         Product product = prepareProduct(new Product(), productForm);
@@ -99,13 +97,13 @@ public class ProductService {
     /**
      * Get components list of the given product name
      */
-    public List<Component> getProductComponents(String productName) {
-        Product product = getProduct(productName);
-        if (product == null) {
-           throw new NoSuchElementException(String.format("Product %s not found.", productName));
-        }
-        return componentRepository.findByProductTypes_id(product.getId());
-    }
+//    public List<Component> getProductComponents(String productName) {
+//        Product product = getProduct(productName);
+//        if (product == null) {
+//            throw new NoSuchElementException(String.format("Product %s not found.", productName));
+//        }
+//        return componentRepository.findByProductTypes_id(product.getId());
+//    }
 
     /*********************************
      * Private Functions
@@ -134,8 +132,7 @@ public class ProductService {
                 product.setStatus(ProductStatus.ACTIVE);
             else
                 product.setStatus(productStatus);
-        }
-        else
+        } else
             product.setStatus(ProductStatus.valueOf(status.toUpperCase()));
         return product;
     }

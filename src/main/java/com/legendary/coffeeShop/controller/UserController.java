@@ -2,15 +2,18 @@ package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.NewUserForm;
 import com.legendary.coffeeShop.controller.form.UpdateUserForm;
+import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.service.UserService;
 import com.legendary.coffeeShop.service.ValidationService;
+import com.legendary.coffeeShop.utils.CommonConstants;
+import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.InputMismatchException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -18,39 +21,65 @@ import java.util.NoSuchElementException;
 @RequestMapping("users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final ValidationService validationService;
+
+    private final CommonConstants commonConstants;
 
     @Autowired
-    private ValidationService validationService;
+    public UserController(UserService userService, ValidationService validationService, CommonConstants commonConstants) {
+        this.userService = userService;
+        this.validationService = validationService;
+        this.commonConstants = commonConstants;
+    }
+
+    @GetMapping
+    @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<User> getUsers() {
+        return userService.getUsers();
+    }
 
 
     @PostMapping("/signUp")
     @ResponseBody
-    public ResponseEntity addNewUser(@RequestBody NewUserForm userForm) {
+    public Status addNewUser(@RequestBody NewUserForm userForm) {
         try {
             validationService.validateUserForm(userForm);
             userService.createUser(userForm);
-            return ResponseEntity.status(HttpStatus.OK).body("User created successfully");
+            return new Status(Status.OK, "User created successfully");
         } catch (IllegalArgumentException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+            return new Status(err);
         }
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public ResponseEntity updateUser(@RequestBody UpdateUserForm userForm){
+    public Status updateUser(@RequestBody UpdateUserForm userForm, HttpServletRequest request) {
         try {
-            validationService.validateUserForm(userForm.getUpdatedUserDetails());
-            userService.updateUser(userForm);
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+            NewUserForm newUserForm = userForm.getUpdatedUserDetails();
+            newUserForm.setPassword(userForm.getPassword());
+            validationService.validateUserForm(newUserForm);
+            userService.updateUser(userForm, request.isUserInRole(commonConstants.getAdminPermission()));
+        } catch (NoSuchElementException | IllegalAccessException err) {
+            return new Status(err);
         }
-        catch (NoSuchElementException | IllegalAccessException err){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
-        }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(String.format("User %s updated successfully", userForm.getUsernameToUpdate()));
+        return new Status(Status.OK, "User " + userForm.getUsernameToUpdate() + " updated successfully");
+    }
+
+    @PostMapping("/admin")
+    @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
+    public Status giveAdminPermissions(@RequestBody String username){
+        return userService.giveAdminPermissions(username);
+    }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
+    public Status deleteUser(@RequestBody String username){
+        return userService.deleteUser(username);
     }
 
 }

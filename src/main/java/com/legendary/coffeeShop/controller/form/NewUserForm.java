@@ -1,9 +1,10 @@
 package com.legendary.coffeeShop.controller.form;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class NewUserForm {
 

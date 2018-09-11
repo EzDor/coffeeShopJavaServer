@@ -1,5 +1,6 @@
 package com.legendary.coffeeShop.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,15 +19,14 @@ public class Component {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(unique = true)
+    @Column
+    private String type;
+
+    @Column
     private String name;
 
     @Column
     private double price;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "product_types", joinColumns = {@JoinColumn(name = "component_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
-    private List<Product> productTypes;
 
     @Column
     private ComponentStatus status;

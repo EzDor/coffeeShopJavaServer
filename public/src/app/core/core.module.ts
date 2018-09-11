@@ -1,29 +1,17 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
-import {RouterModule} from '@angular/router';
-import {NavBarComponent} from './nav-bar/nav-bar.component';
-import {HttpClientModule} from '@angular/common/http';
-import {SharedModule} from '../shared/shared.module';
-import {AuthenticationService} from './auth/auth.service';
-import {UserService} from '../users/user.service';
+import {SharedModule} from 'src/app/shared/shared.module';
+
 
 
 @NgModule({
   imports: [
-    HttpClientModule,
-    RouterModule,
-    SharedModule
+    SharedModule,
   ],
   exports: [
-    NavBarComponent,
-    HttpClientModule,
-    RouterModule
   ],
   providers: [
-    AuthenticationService,
-    UserService,
   ],
   declarations: [
-    NavBarComponent,
   ]
 })
 

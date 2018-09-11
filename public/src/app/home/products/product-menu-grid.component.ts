@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Constants} from '../../model/constants';
-import {ProductService} from './product.service';
-import {Product} from '../../model/product.model';
+import {Constants} from '../../models/constants';
+import {ProductService} from '../../core/services/product.service';
+import {Product} from '../../models/product.model';
 
 @Component({
   selector: 'app-product-menu-grid',
