@@ -5,15 +5,13 @@ import com.legendary.coffeeShop.controller.form.UpdateComponentForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.service.ComponentService;
 import com.legendary.coffeeShop.service.ValidationService;
+import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.NoSuchElementException;
+
 
 @RestController
 @RequestMapping("/component")
@@ -39,38 +37,28 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public ResponseEntity createComponent(@RequestBody NewComponentForm newComponentForm) {
-        try {
-            validationService.validateComponentForm(newComponentForm);
-            componentService.createComponent(newComponentForm);
-            return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
-        } catch (InputMismatchException | IllegalArgumentException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
-        }
+    public Status createComponent(@RequestBody NewComponentForm newComponentForm) {
+        validationService.validateComponentForm(newComponentForm);
+        componentService.createComponent(newComponentForm);
+        return new Status("Component created successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
-    public ResponseEntity updateComponent(@RequestBody UpdateComponentForm updateComponentForm) {
-        try {
-            validationService.validateComponentForm(updateComponentForm.getUpdatedComponentDetails());
-            componentService.updateComponent(updateComponentForm);
-            return ResponseEntity.status(HttpStatus.OK).body("Component created successfully.");
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-        }
+    public Status updateComponent(@RequestBody UpdateComponentForm updateComponentForm) {
+
+        validationService.validateComponentForm(updateComponentForm.getUpdatedComponentDetails());
+        componentService.updateComponent(updateComponentForm);
+        return new Status("Component created successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/delete")
     @ResponseBody
-    public ResponseEntity deleteComponent(@PathVariable String name) {
-        try {
-            componentService.deleteComponent(name);
-            return ResponseEntity.status(HttpStatus.OK).body("component deleted successfully.");
-        } catch (NoSuchElementException err) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
-        }
+    public Status deleteComponent(@RequestBody String name) {
+
+        componentService.deleteComponent(name);
+        return new Status("component deleted successfully.");
     }
 }

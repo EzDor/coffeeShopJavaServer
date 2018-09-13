@@ -17,7 +17,7 @@ public class NewComponentForm {
 
     private double price;
 
-    private String componentStatus;
-
     private String image;
+
+    private String status;
 }

@@ -14,7 +14,7 @@ public class Status {
 
     private String status;
     private String type;
-    private String msg;
+    private String message;
     private boolean success = false;
     private String error;
     private Map<String, Object> data = new HashMap<String, Object>();
@@ -28,27 +28,19 @@ public class Status {
         data.put(key, value);
     }
 
-    public Status(String status) {
-        this.status = status;
-        if (status.equals(OK))
-            success = true;
-    }
-
-    public Status(String status, String msg) {
-        this.status = status;
-        this.msg = msg;
-
-        if (status.equals(OK))
-            success = true;
+    public Status(String message) {
+        this.status = OK;
+        this.message = message;
+        this.success = true;
     }
 
     public Status(Exception exception){
         this.status = ERROR;
         this.type = exception.getClass().toString();
-        this.msg = exception.getMessage();
+        this.message = exception.getMessage();
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

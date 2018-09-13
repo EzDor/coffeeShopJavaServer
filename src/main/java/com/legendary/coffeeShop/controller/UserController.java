@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @RestController
@@ -45,40 +44,33 @@ public class UserController {
     @PostMapping("/signUp")
     @ResponseBody
     public Status addNewUser(@RequestBody NewUserForm userForm) {
-        try {
-            validationService.validateUserForm(userForm);
-            userService.createUser(userForm);
-            return new Status(Status.OK, "User created successfully");
-        } catch (IllegalArgumentException err) {
-            return new Status(err);
-        }
+        validationService.validateUserForm(userForm);
+        userService.createUser(userForm);
+        return new Status("User created successfully");
     }
 
     @PostMapping("/update")
     @ResponseBody
     public Status updateUser(@RequestBody UpdateUserForm userForm, HttpServletRequest request) {
-        try {
-            NewUserForm newUserForm = userForm.getUpdatedUserDetails();
-            newUserForm.setPassword(userForm.getPassword());
-            validationService.validateUserForm(newUserForm);
-            userService.updateUser(userForm, request.isUserInRole(commonConstants.getAdminPermission()));
-        } catch (NoSuchElementException | IllegalAccessException err) {
-            return new Status(err);
-        }
-        return new Status(Status.OK, "User " + userForm.getUsernameToUpdate() + " updated successfully");
+
+        NewUserForm newUserForm = userForm.getUpdatedUserDetails();
+        newUserForm.setPassword(userForm.getPassword());
+        validationService.validateUserForm(newUserForm);
+        userService.updateUser(userForm, request.isUserInRole(commonConstants.getAdminPermission()));
+        return new Status("User " + userForm.getUsernameToUpdate() + " updated successfully");
     }
 
     @PostMapping("/admin")
     @ResponseBody
     @PreAuthorize("hasRole('ADMIN')")
-    public Status giveAdminPermissions(@RequestBody String username){
+    public Status giveAdminPermissions(@RequestBody String username) {
         return userService.giveAdminPermissions(username);
     }
 
     @PostMapping("/delete")
     @ResponseBody
     @PreAuthorize("hasRole('ADMIN')")
-    public Status deleteUser(@RequestBody String username){
+    public Status deleteUser(@RequestBody String username) {
         return userService.deleteUser(username);
     }
 

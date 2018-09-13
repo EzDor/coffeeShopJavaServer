@@ -158,7 +158,7 @@ export class AdminService {
   }
 
   private deleteComponent(): Observable<any> {
-    const user: User = <User> this._selectedRow;
-    return this.userService.deleteUser(user.username);
+    const component: Component = <Component> this._selectedRow;
+    return this.componentsService.deleteComponent(component.type);
   }
 }

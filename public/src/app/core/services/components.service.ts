@@ -29,4 +29,8 @@ export class ComponentsService {
     return this.http.post(this.apiPrefix + Constants.UPDATE_COMPONENTS_API_CALL, updatedComponent);
   }
 
+  public deleteComponent(componentType: string) {
+    return this.http.post(this.apiPrefix + Constants.DELETE_COMPONENTS_API_CALL, componentType);
+  }
+
 }

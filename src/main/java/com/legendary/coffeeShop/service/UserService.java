@@ -7,20 +7,15 @@ import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.Status;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -58,30 +53,28 @@ public class UserService implements UserDetailsService {
     /**
      * Create new user from the given form
      */
-    public void createUser(NewUserForm userForm) {
+    public Status createUser(NewUserForm userForm) {
         if (getUser(userForm.getUsername()) != null) {
             throw new IllegalArgumentException("Cannot create user, username " + userForm.getUsername() + " already exist");
         }
         User user = new User();
         user = prepareUser(user, userForm);
         userRepository.save(user);
-
+        return new Status("User created successfully");
     }
 
 
     /**
      * Update given user according to user form
-     *
-     * @throws IllegalAccessException if username or password is wrong
      */
-    public void updateUser(UpdateUserForm userForm, boolean isAdmin) throws IllegalAccessException {
+    public void updateUser(UpdateUserForm userForm, boolean isAdmin) {
         User user = getUser(userForm.getUsernameToUpdate());
         if (user == null) {
             throw new NoSuchElementException(String.format("Cannot update user %s. User Not Found",
                     userForm.getUsernameToUpdate()));
         }
         if (!isAdmin && !passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
-            throw new IllegalAccessException(String.format("Cannot update user %s. Wrong username or password",
+            throw new IllegalArgumentException(String.format("Cannot update user %s. Wrong username or password",
                     userForm.getUsernameToUpdate()));
         }
         user = prepareUser(user, userForm.getUpdatedUserDetails());
@@ -103,12 +96,11 @@ public class UserService implements UserDetailsService {
     public Status giveAdminPermissions(String username) {
         User user = getUser(username);
         if (user == null) {
-            return new Status(new NoSuchElementException(String.format("Cannot update user %s. User Not Found",
-                    username)));
+            throw new NoSuchElementException(String.format("Cannot update user %s. User Not Found", username));
         }
         user.setAdmin(true);
         userRepository.save(user);
-        return new Status(Status.OK, "User permissions is updated to admin");
+        return new Status("User permissions is updated to admin");
     }
 
     public Status deleteUser(String username) {
@@ -118,7 +110,7 @@ public class UserService implements UserDetailsService {
         }
         user.setStatus(UserStatus.DISCARDED);
         userRepository.save(user);
-        return new Status(Status.OK, "User is deleted successfully");
+        return new Status("User is deleted successfully");
     }
 
     /*********************************

@@ -43,7 +43,7 @@ export class EditComponentDialogFormComponent implements OnInit {
   public submitForm(): void {
     this.loading = true;
     if (this.component) {
-      this.updateUser();
+      this.updateComponent();
     }
     else {
       this.createComponent();
@@ -68,7 +68,7 @@ export class EditComponentDialogFormComponent implements OnInit {
     );
   }
 
-  private updateUser(): void {
+  private updateComponent(): void {
     const updatedComponent: UpdateComponent = {
       componentTypeToUpdate: this.component.type,
       updatedComponentDetails: this.componentForm.value
@@ -96,7 +96,7 @@ export class EditComponentDialogFormComponent implements OnInit {
         type: [this.component.type, Validators.required],
         price: [this.component.price, Validators.required],
         amount: [this.component.amount, Validators.required],
-        status: [this.component.componentStatus],
+        status: [this.component.status],
         image: [this.component.image, Validators.required],
       }
     );
@@ -108,7 +108,7 @@ export class EditComponentDialogFormComponent implements OnInit {
       type: ['', Validators.required],
       price: ['', Validators.required],
       amount: ['', Validators.required],
-      status: [''],
+      status: [ComponentStatus.ACTIVE],
       image: ['', Validators.required],
     });
   }

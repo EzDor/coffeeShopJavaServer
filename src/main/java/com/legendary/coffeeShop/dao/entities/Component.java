@@ -33,6 +33,9 @@ public class Component {
 
     @Column
     private int amount;
+
+    @Column
+    private String image;
     
 
 }

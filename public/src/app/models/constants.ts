@@ -60,5 +60,6 @@ export class Constants {
   public static readonly GET_COMPONENTS_API_CALL: string = '/component';
   public static readonly CREATE_COMPONENTS_API_CALL: string = '/component/create';
   public static readonly UPDATE_COMPONENTS_API_CALL: string = '/component/update';
+  public static readonly DELETE_COMPONENTS_API_CALL: string = '/component/delete';
 
 }

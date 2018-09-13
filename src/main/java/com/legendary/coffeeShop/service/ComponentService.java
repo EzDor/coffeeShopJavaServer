@@ -39,11 +39,7 @@ public class ComponentService {
                     newComponentForm.getType()));
         }
         component = prepareComponent(new Component(), newComponentForm);
-        if (component != null) {
-            componentRepository.save(component);
-        } else {
-            throw new IllegalArgumentException("Component was not created successfully");
-        }
+        componentRepository.save(component);
     }
 
     /**
@@ -95,7 +91,8 @@ public class ComponentService {
         component.setAmount(newComponentForm.getAmount());
         component.setPrice(newComponentForm.getPrice());
         component.setType(newComponentForm.getType());
-        component.setStatus(getComponentStatus(newComponentForm.getComponentStatus()));
+        component.setImage(newComponentForm.getImage());
+        component.setStatus(getComponentStatus(newComponentForm.getStatus()));
 
         return component;
     }

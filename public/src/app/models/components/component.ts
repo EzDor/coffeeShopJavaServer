@@ -9,7 +9,7 @@ export interface Component {
 
   price: number;
 
-  componentStatus: ComponentStatus;
+  status: ComponentStatus;
 
   image: string;
 }
