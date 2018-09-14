@@ -26,12 +26,12 @@ public class Product {
     @Column
     private String description;
 
-    @Column(name = "product_type")
+    @Column(name = "product_type", unique = true)
     @NotBlank
-    private ProductType productType;
+    private String productType;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "Component_types", joinColumns = {@JoinColumn(name = "component_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
+    @JoinTable(name = "product_components", joinColumns = {@JoinColumn(name = "component_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
     Set<Component> productComponents = new HashSet<>();
 
     @Column
@@ -39,5 +39,8 @@ public class Product {
 
     @Column
     private ProductStatus status;
+
+    @Column
+    private String image;
 
 }

@@ -5,9 +5,8 @@ import {User} from 'src/app/models/users/user.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserService} from 'src/app/core/services/user.service';
 import {UpdateUser} from 'src/app/models/users/update-user';
-import {from, Observable} from 'rxjs';
-import {concatMap} from 'rxjs/operators';
 import {Constants} from '../../../models/constants';
+import {UserStatus} from '../../../models/users/user-status.enum';
 
 @Component({
   selector: 'app-edit-user-dialog-form',
@@ -19,12 +18,14 @@ export class EditUserDialogFormComponent implements OnInit {
   public userForm: FormGroup;
   public loading: boolean;
   public user: User;
+  public userStatus;
 
   constructor(private dialogService: DialogService,
               private adminService: AdminService,
               private formBuilder: FormBuilder,
               private userService: UserService) {
     this.loading = false;
+    this.userStatus = UserStatus;
   }
 
   ngOnInit() {
@@ -63,7 +64,7 @@ export class EditUserDialogFormComponent implements OnInit {
   private addUser(): void {
     const newUser: User = this.userForm.value;
     this.userService.createUser(newUser).subscribe(
-      res => this.successfulResponse(newUser),
+      () => () => this.editComplete(),
       error => this.showError(error)
     );
   }
@@ -75,24 +76,11 @@ export class EditUserDialogFormComponent implements OnInit {
       usernameToUpdate: this.user.username,
     };
 
+    // hack tired to change the validation at the server for empty password to admin update user.
+    updatedUser.updatedUserDetails.password = Constants.ADMIN_UPDATE_USER_PASSWORD_KEY;
+
     this.userService.updateUser(updatedUser).subscribe(
-      res => this.successfulResponse(this.userForm.value),
-      error => this.showError(error)
-    );
-  }
-
-  private successfulResponse(user: User): void {
-    if (user.admin) {
-      this.updateAdminPermissions(user.username);
-    }
-    else {
-      this.editComplete();
-    }
-  }
-
-  private updateAdminPermissions(username: string): void {
-    this.userService.updateUserPermissions(username).subscribe(
-      res => this.editComplete(),
+      () => this.editComplete(),
       error => this.showError(error)
     );
   }
@@ -112,6 +100,7 @@ export class EditUserDialogFormComponent implements OnInit {
         firstName: [this.user.firstName, Validators.required],
         lastName: [this.user.lastName, Validators.required],
         username: [this.user.username, Validators.required],
+        status: [this.user.status],
         admin: [this.user.admin],
       }
     );
@@ -122,6 +111,7 @@ export class EditUserDialogFormComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       username: ['', Validators.required],
+      status: [UserStatus.ACTIVE],
       admin: [''],
       password: ['', Validators.required],
     });

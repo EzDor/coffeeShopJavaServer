@@ -30,12 +30,8 @@ export class UserService {
     return this.http.post(this.apiPrefix + Constants.UPDATE_USER_API_CALL, user);
   }
 
-  public updateUserPermissions(username: string) {
-    return this.http.post(this.apiPrefix + Constants.UPDATE_USER_PERMISSIONS_API_CALL, username);
-  }
-
   public deleteUser(username: string) {
-    return this.http.post(this.apiPrefix + Constants.DELETE_USER_API_CALL + '/avi', username);
+    return this.http.post(this.apiPrefix + Constants.DELETE_USER_API_CALL, username);
   }
 
 }

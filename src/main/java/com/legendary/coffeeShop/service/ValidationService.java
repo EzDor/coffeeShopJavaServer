@@ -1,10 +1,9 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.NewComponentForm;
+import com.legendary.coffeeShop.controller.form.ComponentForm;
 import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.controller.form.NewUserForm;
-import com.legendary.coffeeShop.dao.entities.ProductType;
+import com.legendary.coffeeShop.controller.form.UserForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,8 +15,8 @@ public class ValidationService {
     /*********************************
      * Public Functions
      *********************************/
-    public void validateUserForm(NewUserForm newUserForm) {
-        if (isUserInvalid(newUserForm)) {
+    public void validateUserForm(UserForm userForm) {
+        if (isUserInvalid(userForm)) {
             throw new InputMismatchException("Username and password are missing or invalid.");
         }
     }
@@ -28,23 +27,12 @@ public class ValidationService {
         }
     }
 
-    public void validateUpdateProductForm(ProductForm productForm) {
-        if (isUpdateProductInvalid(productForm)) {
-            throw new InputMismatchException("Some product details are missing or invalid.");
-        }
-    }
-
-    public void validateComponentForm(NewComponentForm newComponentForm) {
-        if (isComponentInvalid(newComponentForm)) {
+    public void validateComponentForm(ComponentForm componentForm) {
+        if (isComponentInvalid(componentForm)) {
             throw new InputMismatchException("Some component details are missing or invalid.");
         }
     }
 
-    public void validateProductType(String productType) {
-        if (isProductTypeNotExists(productType)) {
-            throw new InputMismatchException("Some component details are missing or invalid.");
-        }
-    }
 
     public void validateOrderForm(OrderForm orderForm) {
         if (isOrderInvalid(orderForm)) {
@@ -56,27 +44,26 @@ public class ValidationService {
     /*********************************
      * Private Functions
      *********************************/
-    private boolean isUserInvalid(NewUserForm newUserForm) {
-        return isEmptyStringIncluded(newUserForm.getUsername(), newUserForm.getPassword())
-                || isContainsWhitespace(newUserForm.getUsername(), newUserForm.getPassword())
-                || isContainsNotAllowedCharacters(newUserForm.getUsername());
+    private boolean isUserInvalid(UserForm userForm) {
+        return isEmptyStringIncluded(userForm.getUsername(), userForm.getPassword())
+                || isContainsWhitespace(userForm.getUsername(), userForm.getPassword())
+                || isContainsNotAllowedCharacters(userForm.getUsername());
     }
 
     private boolean isProductInvalid(ProductForm productForm) {
-        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName())
-                || isProductTypeNotExists(productForm.getProductType());
+        return isEmptyStringIncluded(productForm.getType(), productForm.getName(), productForm.getDescription())
+                || isContainsNotAllowedCharacters(productForm.getType())
+                || isContainsWhitespace(productForm.getType());
 
     }
 
-    private boolean isUpdateProductInvalid(ProductForm productForm) {
-        return StringUtils.isEmpty(productForm.getDisplayName());
-    }
-
-    private boolean isComponentInvalid(NewComponentForm newComponentForm) {
-        return StringUtils.isEmpty(newComponentForm.getType())
-                || newComponentForm.getAmount() < 0
-                || newComponentForm.getPrice() < 0
-                ;
+    private boolean isComponentInvalid(ComponentForm componentForm) {
+        return isEmptyStringIncluded(componentForm.getType(), componentForm.getName())
+                || isContainsWhitespace(componentForm.getType())
+                || isContainsNotAllowedCharacters(componentForm.getType())
+                || componentForm.getStatus() == null
+                || componentForm.getAmount() < 0
+                || componentForm.getPrice() < 0;
     }
 
     private boolean isOrderInvalid(OrderForm orderForm) {
@@ -104,14 +91,6 @@ public class ValidationService {
         return false;
     }
 
-    private boolean isProductTypeNotExists(String productType) {
-        for (ProductType pType : ProductType.values()) {
-            if (pType.name().equals(productType.toUpperCase())) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     private boolean isContainsNotAllowedCharacters(String... strings) {
         for (String string : strings) {

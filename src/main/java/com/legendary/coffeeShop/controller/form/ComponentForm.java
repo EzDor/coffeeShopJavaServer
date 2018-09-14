@@ -1,13 +1,12 @@
 package com.legendary.coffeeShop.controller.form;
 
+import com.legendary.coffeeShop.dao.entities.ComponentStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
-public class NewComponentForm {
+public class ComponentForm {
 
     private int amount;
 
@@ -19,5 +18,5 @@ public class NewComponentForm {
 
     private String image;
 
-    private String status;
+    private ComponentStatus status;
 }

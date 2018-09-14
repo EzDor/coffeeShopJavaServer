@@ -11,6 +11,6 @@ export class AppErrorHandler implements ErrorHandler {
   handleError(error: any): void {
     const dialogService = this.injector.get(DialogService);
     dialogService.showErrorMessage(error);
-    throw error;
+    console.log(error);
   }
 }

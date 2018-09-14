@@ -50,12 +50,15 @@ export class Constants {
   public static readonly SIGN_UP_API_CALL: string = '/users/signUp';
   public static readonly GET_USERS_API_CALL: string = '/users/';
   public static readonly UPDATE_USER_API_CALL: string = '/users/update';
-  public static readonly UPDATE_USER_PERMISSIONS_API_CALL: string = '/users/admin';
   public static readonly DELETE_USER_API_CALL: string = '/users/delete';
   // Login
   public static readonly LOGIN_API_CALL: string = '/login';
   // Product
-  public static readonly GET_PRODUCTS_API_CALL: string = '/product';
+  public static readonly GET_ALL_PRODUCTS_API_CALL: string = '/product';
+  public static readonly GET_ACTIVE_PRODUCTS_API_CALL: string = '/product/active';
+  public static readonly UPDATE_PRODUCT_API_CALL: string = '/product/update';
+  public static readonly CREATE_PRODUCT_API_CALL: string = '/product/create';
+  public static readonly DELETE_PRODUCT_API_CALL: string = '/product/delete';
   // Component
   public static readonly GET_COMPONENTS_API_CALL: string = '/component';
   public static readonly CREATE_COMPONENTS_API_CALL: string = '/component/create';

@@ -7,6 +7,7 @@ import {AdminService} from '../../core/services/admin.service';
 import {NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {ConfirmDeleteFormComponent} from '../../shared/shared-dialog-forms/confirm-delete-form/confirm-delete-form.component';
 import {EditComponentDialogFormComponent} from '../../shared/shared-dialog-forms/edit-component-dialog-form/edit-component-dialog-form.component';
+import {EditProductDialogFormComponent} from '../../shared/shared-dialog-forms/edit-product-dialog-form/edit-product-dialog-form.component';
 
 
 @Component({
@@ -51,16 +52,16 @@ export class AdminDataTableComponent implements OnInit {
     this.adminService.updateSelectedRow(id);
     switch (this.currentTab$.getValue()) {
 
-      case AdminTabs.user:
-        this.dialogService.openDialog(EditUserDialogFormComponent, this.adminDialogOptions);
-        break;
-
       case AdminTabs.product:
-        this.dialogService.openDialog(EditComponentDialogFormComponent, this.adminDialogOptions);
+        this.dialogService.openDialog(EditProductDialogFormComponent, this.adminDialogOptions);
         break;
 
       case AdminTabs.component:
         this.dialogService.openDialog(EditComponentDialogFormComponent, this.adminDialogOptions);
+        break;
+
+      case AdminTabs.user:
+        this.dialogService.openDialog(EditUserDialogFormComponent, this.adminDialogOptions);
         break;
 
       default:

@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
-import com.legendary.coffeeShop.controller.form.NewComponentForm;
-import com.legendary.coffeeShop.controller.form.UpdateComponentForm;
+import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.UpdatedComponentForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.service.ComponentService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -37,19 +37,19 @@ public class ComponentController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public Status createComponent(@RequestBody NewComponentForm newComponentForm) {
-        validationService.validateComponentForm(newComponentForm);
-        componentService.createComponent(newComponentForm);
+    public Status createComponent(@RequestBody ComponentForm componentForm) {
+        validationService.validateComponentForm(componentForm);
+        componentService.createComponent(componentForm);
         return new Status("Component created successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
-    public Status updateComponent(@RequestBody UpdateComponentForm updateComponentForm) {
+    public Status updateComponent(@RequestBody UpdatedComponentForm updatedComponentForm) {
 
-        validationService.validateComponentForm(updateComponentForm.getUpdatedComponentDetails());
-        componentService.updateComponent(updateComponentForm);
+        validationService.validateComponentForm(updatedComponentForm.getUpdatedComponentDetails());
+        componentService.updateComponent(updatedComponentForm);
         return new Status("Component created successfully.");
     }
 

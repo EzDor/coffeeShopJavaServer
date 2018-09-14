@@ -19,7 +19,7 @@ public class Component {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
+    @Column(unique = true)
     private String type;
 
     @Column

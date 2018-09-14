@@ -14,12 +14,13 @@ export class AdminPageComponent implements OnInit {
 
   public adminTabs: MenuItem[];
   public activeItem: MenuItem;
+  public defaultTab: AdminTabs;
 
   constructor(private adminService: AdminService) {
   }
 
   ngOnInit() {
-    const defaultTab: AdminTabs = this.adminService.defaultTab;
+    this.defaultTab = this.adminService.defaultTab;
     this.adminTabs = [
       {
         label: Constants.ADMIN_TAB_PRODUCT_LABEL,
@@ -38,7 +39,7 @@ export class AdminPageComponent implements OnInit {
       },
     ];
 
-    this.activeItem = this.adminTabs[defaultTab];
+    this.activeItem = this.adminTabs[this.defaultTab];
   }
 
   public updateCurrentTab(tab: AdminTabs) {

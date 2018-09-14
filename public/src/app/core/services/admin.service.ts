@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from 'src/app/models/users/user.model';
-import {Product} from 'src/app/models/product.model';
+import {Product} from 'src/app/models/products/product.model';
 import {Component} from 'src/app/models/components/component';
 import {AdminTabs} from 'src/app/models/admin/admin-tabs.enum';
 import {UserService} from 'src/app/core/services/user.service';
@@ -23,7 +23,7 @@ export class AdminService {
     private userService: UserService,
     private productService: ProductService,
     private componentsService: ComponentsService) {
-    this._defaultTab = AdminTabs.component;
+    this._defaultTab = AdminTabs.product;
     this.initDefaults();
     this.subscribeToData();
   }
@@ -111,7 +111,7 @@ export class AdminService {
         break;
 
       default:
-        this.initDefaults();
+        throw Error('Error while trying to update data table.')
     }
   }
 
@@ -142,7 +142,7 @@ export class AdminService {
   }
 
   private initDefaults(): void {
-    this._searchBy = new BehaviorSubject<string>(Constants.ADMIN_TABLE_SEARCH_KEY_COMPONENT);
+    this._searchBy = new BehaviorSubject<string>(Constants.ADMIN_TABLE_SEARCH_KEY_PRODUCT);
     this._currentTableData = new BehaviorSubject<User[] | Product[] | Component[]>([]);
     this._currentTab = new BehaviorSubject<AdminTabs>(this._defaultTab);
   }

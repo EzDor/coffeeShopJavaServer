@@ -1,11 +1,12 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.NewUserForm;
-import com.legendary.coffeeShop.controller.form.UpdateUserForm;
+import com.legendary.coffeeShop.controller.form.UserForm;
+import com.legendary.coffeeShop.controller.form.UpdatedUserForm;
 import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.dao.entities.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
+import com.legendary.coffeeShop.utils.CommonUtils;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,7 +42,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = getUser(username);
+        User user = getActiveUser(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
@@ -50,68 +51,38 @@ public class UserService implements UserDetailsService {
     }
 
 
-    /**
-     * Create new user from the given form
-     */
-    public Status createUser(NewUserForm userForm) {
-        if (getUser(userForm.getUsername()) != null) {
-            throw new IllegalArgumentException("Cannot create user, username " + userForm.getUsername() + " already exist");
-        }
+    public Status createUser(UserForm userForm, boolean isAdminRequest) {
+        isUserNameExists(userForm);
         User user = new User();
-        user = prepareUser(user, userForm);
+        user = prepareUser(user, userForm, isAdminRequest, true);
         userRepository.save(user);
         return new Status("User created successfully");
     }
 
 
-    /**
-     * Update given user according to user form
-     */
-    public void updateUser(UpdateUserForm userForm, boolean isAdmin) {
-        User user = getUser(userForm.getUsernameToUpdate());
-        if (user == null) {
-            throw new NoSuchElementException(String.format("Cannot update user %s. User Not Found",
-                    userForm.getUsernameToUpdate()));
-        }
-        if (!isAdmin && !passwordEncoder.matches(userForm.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException(String.format("Cannot update user %s. Wrong username or password",
-                    userForm.getUsernameToUpdate()));
-        }
-        user = prepareUser(user, userForm.getUpdatedUserDetails());
+    public void updateUser(UpdatedUserForm updatedUserForm, boolean isAdminRequest) {
+
+        User user = getUserToUpdate(updatedUserForm.getUsernameToUpdate(), isAdminRequest);
+        isUserExists(updatedUserForm.getUsernameToUpdate(), user);
+        passwordValidation(updatedUserForm, isAdminRequest, user);
+        user = prepareUser(user, updatedUserForm.getUpdatedUserDetails(), isAdminRequest, !isAdminRequest);
         userRepository.save(user);
     }
 
-
-    /**
-     * Get user by given name
-     */
-    public User getUser(String username) {
-        return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
-    }
 
     public List<User> getUsers() {
-        return userRepository.findAllByStatusOrderById(UserStatus.ACTIVE);
+        return userRepository.findAll(CommonUtils.sortAscBy(commonConstants.getUserSortKey()));
     }
 
-    public Status giveAdminPermissions(String username) {
-        User user = getUser(username);
-        if (user == null) {
-            throw new NoSuchElementException(String.format("Cannot update user %s. User Not Found", username));
-        }
-        user.setAdmin(true);
-        userRepository.save(user);
-        return new Status("User permissions is updated to admin");
-    }
 
     public Status deleteUser(String username) {
         User user = getUser(username);
-        if (user == null) {
-            return new Status(new NoSuchElementException("Cannot update user " + username + " User Not Found"));
-        }
+        isUserExists(username, user);
         user.setStatus(UserStatus.DISCARDED);
         userRepository.save(user);
-        return new Status("User is deleted successfully");
+        return new Status("User is discarded successfully");
     }
+
 
     /*********************************
      * Private Functions
@@ -120,22 +91,53 @@ public class UserService implements UserDetailsService {
     /**
      * Update User object by the given form
      */
-    private User prepareUser(User user, NewUserForm userForm) {
+    private User prepareUser(User user, UserForm userForm, boolean isAdminRequest, boolean updatePassword) {
         user.setUsername(userForm.getUsername().toLowerCase());
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
-        user.setStatus(UserStatus.ACTIVE);
-        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
-        user.setAdmin(false);
+        user.setStatus(userForm.getStatus());
+        user.setAdmin(userForm.isAdmin() && isAdminRequest);
+
+        if (updatePassword) {
+            user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        }
 
         return user;
     }
 
-    /**
-     * Check user permission
-     */
     private String getUserPermission(User user) {
         return user.isAdmin() ? commonConstants.getAdminPermission() : commonConstants.getUserPermission();
     }
 
+    private User getActiveUser(String username) {
+        return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
+    }
+
+    private User getUser(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    private User getUserToUpdate(String username, boolean isAdminRequest) {
+        return isAdminRequest ? getUser(username) : getActiveUser(username);
+    }
+
+    private void isUserExists(String username, User user) {
+        if (user == null) {
+            throw new NoSuchElementException(String.format("Cannot update user %s. User Not Found",
+                    username));
+        }
+    }
+
+    private void passwordValidation(UpdatedUserForm updatedUserForm, boolean isAdminRequest, User user) {
+        if (!isAdminRequest && !passwordEncoder.matches(updatedUserForm.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException(String.format("Cannot update user %s. Wrong username or password",
+                    updatedUserForm.getUsernameToUpdate()));
+        }
+    }
+
+    private void isUserNameExists(UserForm userForm) {
+        if (getActiveUser(userForm.getUsername()) != null) {
+            throw new IllegalArgumentException("Cannot create user, username " + userForm.getUsername() + " already exist");
+        }
+    }
 }

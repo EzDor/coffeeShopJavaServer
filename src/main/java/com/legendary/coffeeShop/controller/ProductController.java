@@ -1,10 +1,12 @@
 package com.legendary.coffeeShop.controller;
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
+import com.legendary.coffeeShop.controller.form.UpdatedProductForm;
 import com.legendary.coffeeShop.dao.entities.Component;
 import com.legendary.coffeeShop.dao.entities.Product;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
+import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,65 +32,43 @@ public class ProductController {
         this.validationService = validationService;
     }
 
+    @GetMapping("active")
+    @ResponseBody
+    public List<Product> getActiveProducts() {
+        return productService.getActiveProducts();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @ResponseBody
     public List<Product> getProducts() {
         return productService.getProducts();
     }
 
-    @GetMapping("getByType")
+    @GetMapping("type")
     @ResponseBody
-    public ResponseEntity getProductsByType(@RequestParam String productType) {
-        try {
-            validationService.validateProductType(productType);
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
-        }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.getProductsByType(productType));
-    }
-
-    @GetMapping("/name")
-    @ResponseBody
-    public ResponseEntity getProductsByName(@RequestParam String productName) {
-        Product product = productService.getProduct(productName);
-        if (product == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(String.format("Product with name %s was not found", productName));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(product);
+    public Product getProduct(@RequestParam String productType) {
+        return productService.getProduct(productType);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     @ResponseBody
-    public ResponseEntity createProduct(@RequestBody ProductForm productForm) {
-        try {
-            validationService.validateProductForm(productForm);
-            productService.createProduct(productForm);
-            return ResponseEntity.status(HttpStatus.OK).body("Product was created successfully.");
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-        } catch (IllegalArgumentException err){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(err.getMessage());
-        }
+    public Status createProduct(@RequestBody ProductForm productForm) {
+        validationService.validateProductForm(productForm);
+        productService.createProduct(productForm);
+        return new Status("Product was created successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     @ResponseBody
-    public ResponseEntity updateProduct(@RequestBody ProductForm productForm) {
-        try {
-            validationService.validateUpdateProductForm(productForm);
-            productService.updateProduct(productForm);
-            return ResponseEntity.status(HttpStatus.OK).body("Product was updated successfully.");
-        } catch (InputMismatchException err) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-        } catch (NoSuchElementException err) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(err.getMessage());
-        }
+    public Status updateProduct(@RequestBody UpdatedProductForm updatedProductForm) {
+
+        validationService.validateProductForm(updatedProductForm.getUpdatedProductDetails());
+        productService.updateProduct(updatedProductForm);
+        return new Status("Product was updated successfully.");
+
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -98,22 +78,10 @@ public class ProductController {
         try {
             productService.deleteProduct(productType);
             return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
-        }
-        catch (NoSuchElementException err) {
+        } catch (NoSuchElementException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(err.getMessage());
         }
     }
 
-    @GetMapping("/components")
-    @ResponseBody
-    public ResponseEntity getProductComponents(@PathVariable String productName) {
-        try {
-            List<Component> components = new ArrayList<>();
-            return ResponseEntity.status(HttpStatus.OK).body(components);
-        }
-        catch (NoSuchElementException err) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
-        }
-    }
 }

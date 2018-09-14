@@ -4,11 +4,13 @@ import {EditUserDialogFormComponent} from './edit-user-dialog-form/edit-user-dia
 import {SharedModule} from 'src/app/shared/shared.module';
 import {MessageService} from 'primeng/api';
 import {EditComponentDialogFormComponent} from './edit-component-dialog-form/edit-component-dialog-form.component';
+import {EditProductDialogFormComponent} from './edit-product-dialog-form/edit-product-dialog-form.component';
 
 const components = [
   ConfirmDeleteFormComponent,
   EditUserDialogFormComponent,
   EditComponentDialogFormComponent,
+  EditProductDialogFormComponent
 ];
 
 @NgModule({

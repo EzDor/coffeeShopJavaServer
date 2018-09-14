@@ -33,7 +33,6 @@ public class User {
     private String username;
 
     @Column
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserStatus status;
 
     @NotBlank

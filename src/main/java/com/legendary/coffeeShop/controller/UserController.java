@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
-import com.legendary.coffeeShop.controller.form.NewUserForm;
-import com.legendary.coffeeShop.controller.form.UpdateUserForm;
+import com.legendary.coffeeShop.controller.form.UserForm;
+import com.legendary.coffeeShop.controller.form.UpdatedUserForm;
 import com.legendary.coffeeShop.dao.entities.User;
 import com.legendary.coffeeShop.service.UserService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -43,29 +43,21 @@ public class UserController {
 
     @PostMapping("/signUp")
     @ResponseBody
-    public Status addNewUser(@RequestBody NewUserForm userForm) {
+    public Status addNewUser(@RequestBody UserForm userForm, HttpServletRequest request) {
         validationService.validateUserForm(userForm);
-        userService.createUser(userForm);
+        userService.createUser(userForm, request.isUserInRole(commonConstants.getAdminPermission()));
         return new Status("User created successfully");
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public Status updateUser(@RequestBody UpdateUserForm userForm, HttpServletRequest request) {
+    public Status updateUser(@RequestBody UpdatedUserForm updatedUserForm, HttpServletRequest request) {
 
-        NewUserForm newUserForm = userForm.getUpdatedUserDetails();
-        newUserForm.setPassword(userForm.getPassword());
-        validationService.validateUserForm(newUserForm);
-        userService.updateUser(userForm, request.isUserInRole(commonConstants.getAdminPermission()));
-        return new Status("User " + userForm.getUsernameToUpdate() + " updated successfully");
+        validationService.validateUserForm(updatedUserForm.getUpdatedUserDetails());
+        userService.updateUser(updatedUserForm, request.isUserInRole(commonConstants.getAdminPermission()));
+        return new Status("User " + updatedUserForm.getUsernameToUpdate() + " updated successfully");
     }
 
-    @PostMapping("/admin")
-    @ResponseBody
-    @PreAuthorize("hasRole('ADMIN')")
-    public Status giveAdminPermissions(@RequestBody String username) {
-        return userService.giveAdminPermissions(username);
-    }
 
     @PostMapping("/delete")
     @ResponseBody

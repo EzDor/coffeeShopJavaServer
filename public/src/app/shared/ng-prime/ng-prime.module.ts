@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {
+  AutoCompleteModule,
   ButtonModule,
   DialogModule,
   DropdownModule,
@@ -11,31 +12,23 @@ import {
 import {DataViewModule} from 'primeng/dataview';
 import {ToastModule} from 'primeng/toast';
 
+const modules = [
+  TabViewModule,
+  TabMenuModule,
+  DataViewModule,
+  PanelModule,
+  DialogModule,
+  DropdownModule,
+  TabViewModule,
+  InputTextModule,
+  ButtonModule,
+  ToastModule,
+  AutoCompleteModule,
+];
+
 @NgModule({
-  imports: [
-    TabViewModule,
-    TabMenuModule,
-    DataViewModule,
-    PanelModule,
-    DialogModule,
-    DropdownModule,
-    TabViewModule,
-    InputTextModule,
-    ButtonModule,
-    ToastModule,
-  ],
-  exports: [
-    TabViewModule,
-    TabMenuModule,
-    DataViewModule,
-    PanelModule,
-    DialogModule,
-    DropdownModule,
-    TabViewModule,
-    InputTextModule,
-    ButtonModule,
-    ToastModule,
-  ]
+  imports: modules,
+  exports: modules
 })
 export class NgPrimeModule {
 }

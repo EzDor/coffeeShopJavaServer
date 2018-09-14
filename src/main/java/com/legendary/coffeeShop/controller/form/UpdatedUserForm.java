@@ -5,13 +5,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UpdateUserForm {
+public class UpdatedUserForm {
 
     private String usernameToUpdate;
 
     private String password;
 
-    private NewUserForm updatedUserDetails;
+    private UserForm updatedUserDetails;
 
 
 }

@@ -1,0 +1,11 @@
+.product-component-selection{
+  padding: 0;
+}
+
+.product-component-selection-input{
+  width: 450px;
+}
+
+.product-component-selection-label{
+  display: block;
+}

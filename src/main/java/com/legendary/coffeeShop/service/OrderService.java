@@ -33,7 +33,7 @@ public class OrderService {
 //     * Get current order of specific user, create new one if doesn't exists
 //     */
 //    public Order getOrder(String username) {
-//        User user = userService.getUser(username);
+//        User user = userService.getActiveUser(username);
 //        if (user == null) {
 //            throw new NoSuchElementException(String.format("User %s not found", username));
 //        }
@@ -51,7 +51,7 @@ public class OrderService {
 //     * Get all orders of specific user
 //     */
 //    public List<Order> getAllOrders(String username) {
-//        User user = userService.getUser(username);
+//        User user = userService.getActiveUser(username);
 //        if (user == null) {
 //            throw new NoSuchElementException(String.format("User %s not found", username));
 //        }
