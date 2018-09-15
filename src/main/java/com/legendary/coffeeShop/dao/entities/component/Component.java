@@ -1,13 +1,9 @@
-package com.legendary.coffeeShop.dao.entities;
+package com.legendary.coffeeShop.dao.entities.component;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data

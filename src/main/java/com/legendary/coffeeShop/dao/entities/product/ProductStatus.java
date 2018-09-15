@@ -1,6 +1,6 @@
-package com.legendary.coffeeShop.dao.entities;
+package com.legendary.coffeeShop.dao.entities.product;
 
-public enum UserStatus {
+public enum ProductStatus {
     ACTIVE("ACTIVE"),
     DISCARDED("DISCARDED");
 
@@ -8,7 +8,7 @@ public enum UserStatus {
 
     private final String text;
 
-    UserStatus(final String text) {
+    ProductStatus(final String text) {
         this.text = text;
     }
 

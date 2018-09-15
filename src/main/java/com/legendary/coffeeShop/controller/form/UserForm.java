@@ -1,8 +1,7 @@
 package com.legendary.coffeeShop.controller.form;
 
-import com.legendary.coffeeShop.dao.entities.UserStatus;
+import com.legendary.coffeeShop.dao.entities.user.UserStatus;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data

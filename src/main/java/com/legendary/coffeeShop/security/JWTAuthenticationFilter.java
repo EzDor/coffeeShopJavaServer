@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.legendary.coffeeShop.dao.entities.User;
+import com.legendary.coffeeShop.dao.entities.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,5 +1,6 @@
-package com.legendary.coffeeShop.dao.entities;
+package com.legendary.coffeeShop.dao.entities.order;
 
+import com.legendary.coffeeShop.dao.entities.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ public class Order {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_orders", nullable = false)
+    @JoinColumn(name = "user_to_orders", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)

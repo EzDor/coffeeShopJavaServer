@@ -1,13 +1,6 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.dao.entities.Component;
-import com.legendary.coffeeShop.dao.entities.OrderItem;
-import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class OrderItemService {

@@ -1,12 +1,12 @@
-package com.legendary.coffeeShop.dao.entities;
+package com.legendary.coffeeShop.dao.entities.order;
 
+import com.legendary.coffeeShop.dao.entities.product.Product;
+import com.legendary.coffeeShop.dao.entities.component.Component;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -19,11 +19,11 @@ public class OrderItem {
     private int id;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "item_components", joinColumns = {@JoinColumn(name = "product_id")}, inverseJoinColumns = {@JoinColumn(name = "component_id")})
+    @JoinTable(name = "order_item_components")
     private List<Component> components;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "order_item_product", nullable = false)
     private Product product;
 
     @Column

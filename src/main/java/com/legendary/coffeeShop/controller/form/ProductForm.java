@@ -1,12 +1,10 @@
 package com.legendary.coffeeShop.controller.form;
 
-import com.legendary.coffeeShop.dao.entities.ProductStatus;
+import com.legendary.coffeeShop.dao.entities.product.ProductStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor

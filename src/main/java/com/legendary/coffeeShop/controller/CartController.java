@@ -1,19 +1,11 @@
 package com.legendary.coffeeShop.controller;
 
 
-import com.legendary.coffeeShop.controller.form.OrderForm;
-import com.legendary.coffeeShop.dao.entities.Order;
-import com.legendary.coffeeShop.dao.entities.OrderStatus;
 import com.legendary.coffeeShop.service.OrderItemService;
 import com.legendary.coffeeShop.service.OrderService;
 import com.legendary.coffeeShop.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @RestController

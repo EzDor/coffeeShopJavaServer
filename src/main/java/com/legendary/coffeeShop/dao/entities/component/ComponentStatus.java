@@ -1,4 +1,4 @@
-package com.legendary.coffeeShop.dao.entities;
+package com.legendary.coffeeShop.dao.entities.component;
 
 public enum ComponentStatus {
     ACTIVE("ACTIVE"),

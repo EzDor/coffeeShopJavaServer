@@ -3,9 +3,9 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
 import com.legendary.coffeeShop.controller.form.UpdatedProductForm;
-import com.legendary.coffeeShop.dao.entities.Component;
-import com.legendary.coffeeShop.dao.entities.Product;
-import com.legendary.coffeeShop.dao.entities.ProductStatus;
+import com.legendary.coffeeShop.dao.entities.component.Component;
+import com.legendary.coffeeShop.dao.entities.product.Product;
+import com.legendary.coffeeShop.dao.entities.product.ProductStatus;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
@@ -13,7 +13,6 @@ import com.legendary.coffeeShop.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;

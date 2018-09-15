@@ -1,8 +1,8 @@
 package com.legendary.coffeeShop.dao.repositories;
 
-import com.legendary.coffeeShop.dao.entities.Order;
-import com.legendary.coffeeShop.dao.entities.OrderStatus;
-import com.legendary.coffeeShop.dao.entities.User;
+import com.legendary.coffeeShop.dao.entities.order.Order;
+import com.legendary.coffeeShop.dao.entities.order.OrderStatus;
+import com.legendary.coffeeShop.dao.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

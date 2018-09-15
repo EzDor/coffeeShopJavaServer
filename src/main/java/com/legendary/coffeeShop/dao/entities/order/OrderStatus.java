@@ -1,4 +1,4 @@
-package com.legendary.coffeeShop.dao.entities;
+package com.legendary.coffeeShop.dao.entities.order;
 
 public enum OrderStatus {
     IN_PROGRESS("IN_PROGRESS"),

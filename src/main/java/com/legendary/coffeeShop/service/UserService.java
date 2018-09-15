@@ -2,8 +2,8 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.UserForm;
 import com.legendary.coffeeShop.controller.form.UpdatedUserForm;
-import com.legendary.coffeeShop.dao.entities.User;
-import com.legendary.coffeeShop.dao.entities.UserStatus;
+import com.legendary.coffeeShop.dao.entities.user.User;
+import com.legendary.coffeeShop.dao.entities.user.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.CommonUtils;

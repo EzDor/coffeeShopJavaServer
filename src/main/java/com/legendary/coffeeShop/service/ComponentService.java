@@ -2,9 +2,9 @@ package com.legendary.coffeeShop.service;
 
 import com.legendary.coffeeShop.controller.form.ComponentForm;
 import com.legendary.coffeeShop.controller.form.UpdatedComponentForm;
-import com.legendary.coffeeShop.dao.entities.Component;
-import com.legendary.coffeeShop.dao.entities.ComponentStatus;
-import com.legendary.coffeeShop.dao.entities.Product;
+import com.legendary.coffeeShop.dao.entities.component.Component;
+import com.legendary.coffeeShop.dao.entities.component.ComponentStatus;
+import com.legendary.coffeeShop.dao.entities.product.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
