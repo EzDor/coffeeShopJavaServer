@@ -1,20 +1,25 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from 'src/app/models/users/user.model';
-import {Product} from 'src/app/models/products/product.model';
-import {Component} from 'src/app/models/components/component';
+import {User} from 'src/app/models/user/user';
+import {Product} from 'src/app/models/product/product';
+import {Component} from 'src/app/models/component/component';
 import {AdminTabs} from 'src/app/models/admin/admin-tabs.enum';
 import {UserService} from 'src/app/core/services/user.service';
 import {ProductService} from 'src/app/core/services/product.service';
 import {Constants} from 'src/app/models/constants';
-import {CoreModule} from '../core.module';
+import {CoreModule} from 'src/app/core/core.module';
 import {ComponentsService} from './components.service';
+import {UserDisplayKeys} from 'src/app/models/user/user-display-keys';
+import {ProductDisplayKeys} from 'src/app/models/product/product-display-keys';
+import {ComponentDisplayKeys} from 'src/app/models/component/component-display-keys';
+import {map} from 'rxjs/operators';
 
 @Injectable({providedIn: CoreModule})
 export class AdminService {
 
   private _currentTab: BehaviorSubject<AdminTabs>;
   private _currentTableData: BehaviorSubject<any[]>;
+  private _rowDisplayKeys: BehaviorSubject<ComponentDisplayKeys | ProductDisplayKeys | UserDisplayKeys>;
   private _searchBy: BehaviorSubject<string>;
   private _selectedRow: User | Product | Component;
   private readonly _defaultTab: AdminTabs;
@@ -43,6 +48,10 @@ export class AdminService {
 
   public get selectedRow(): User | Product | Component {
     return this._selectedRow;
+  }
+
+  public get rowDisplayKeys(): BehaviorSubject<ComponentDisplayKeys | ProductDisplayKeys | UserDisplayKeys> {
+    return this._rowDisplayKeys;
   }
 
   public updateSelectedRow(id?: number): void {
@@ -111,12 +120,13 @@ export class AdminService {
         break;
 
       default:
-        throw Error('Error while trying to update data table.')
+        throw Error('Error while trying to update data table.');
     }
   }
 
   private initUsersTable(): void {
     this._searchBy.next(Constants.ADMIN_TABLE_SEARCH_KEY_USERS);
+    this._rowDisplayKeys.next(Constants.USER_DISPLAY_KEYS);
     this.userService.users.subscribe(
       (users: User[]) => {
         this._currentTableData.next(users);
@@ -125,15 +135,25 @@ export class AdminService {
 
   private initProductsTable(): void {
     this._searchBy.next(Constants.ADMIN_TABLE_SEARCH_KEY_PRODUCT);
-    this.productService.getProducts().subscribe(
-      (products: Product[]) => {
-        this._currentTableData.next(products);
-      }
-    );
+    this._rowDisplayKeys.next(Constants.PRODUCT_DISPLAY_KEYS);
+    this.productService.getProducts()
+      .subscribe(
+        (products: Product[]) => {
+          this.mapProductComponentToProductType(products);
+          this._currentTableData.next(products);
+        }
+      );
+  }
+
+  private mapProductComponentToProductType(products: Product[]) {
+    products.map(product => {
+      product.componentsTypes = product.productComponents.map(component => component.type);
+    });
   }
 
   private initComponentsTable(): void {
     this._searchBy.next(Constants.ADMIN_TABLE_SEARCH_KEY_COMPONENT);
+    this._rowDisplayKeys.next(Constants.COMPONENT_DISPLAY_KEYS);
     this.componentsService.getComponents().subscribe(
       (components: Component[]) => {
         this._currentTableData.next(components);
@@ -145,6 +165,7 @@ export class AdminService {
     this._searchBy = new BehaviorSubject<string>(Constants.ADMIN_TABLE_SEARCH_KEY_PRODUCT);
     this._currentTableData = new BehaviorSubject<User[] | Product[] | Component[]>([]);
     this._currentTab = new BehaviorSubject<AdminTabs>(this._defaultTab);
+    this._rowDisplayKeys = new BehaviorSubject<ProductDisplayKeys | ComponentDisplayKeys | UserDisplayKeys>(Constants.USER_DISPLAY_KEYS);
   }
 
   private deleteUser(): Observable<any> {
@@ -153,8 +174,8 @@ export class AdminService {
   }
 
   private deleteProduct(): Observable<any> {
-    const user: User = <User> this._selectedRow;
-    return this.userService.deleteUser(user.username);
+    const product: Product = <Product> this._selectedRow;
+    return this.productService.deleteProduct(product.type);
   }
 
   private deleteComponent(): Observable<any> {

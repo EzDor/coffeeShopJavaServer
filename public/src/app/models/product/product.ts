@@ -1,5 +1,5 @@
 import {ProductStatus} from './product-status.enum';
-import {Component} from '../components/component';
+import {Component} from '../component/component';
 
 export interface Product {
 
@@ -8,7 +8,7 @@ export interface Product {
   description: string;
   price: number;
   componentsTypes?: string[];
-  components?: Component[];
+  productComponents?: Component[];
   status: ProductStatus;
   image: string;
 

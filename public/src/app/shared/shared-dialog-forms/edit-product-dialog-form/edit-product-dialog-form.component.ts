@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Product} from 'src/app/models/products/product.model';
+import {Product} from 'src/app/models/product/product';
 import {DialogService} from 'src/app/core/services/dialog.service';
 import {AdminService} from 'src/app/core/services/admin.service';
 import {ComponentsService} from 'src/app/core/services/components.service';
-import {ProductStatus} from 'src/app/models/products/product-status.enum';
-import {UpdatedProduct} from 'src/app/models/products/updated-product';
+import {ProductStatus} from 'src/app/models/product/product-status.enum';
 import {ProductService} from 'src/app/core/services/product.service';
-import {Component as Comp} from 'src/app/models/components/component';
+import {Component as Comp} from 'src/app/models/component/component';
+import {UpdatedProduct} from '../../../models/product/updated-product';
 
 @Component({
   selector: 'app-edit-product-dialog-form',
@@ -20,9 +20,9 @@ export class EditProductDialogFormComponent implements OnInit {
   public loading: boolean;
   public product: Product;
   public availableComponents: Comp[];
-  public chosenComponents: Comp[];
   public productStatus;
   public filteredComponents: string[];
+
 
   constructor(private dialogService: DialogService,
               private adminService: AdminService,
@@ -40,8 +40,8 @@ export class EditProductDialogFormComponent implements OnInit {
       (components: Comp[]) => {
         this.availableComponents = components;
       },
-      err => {
-        throw err;
+      error => {
+        this.showError(error);
       }
     );
   }
@@ -57,7 +57,7 @@ export class EditProductDialogFormComponent implements OnInit {
     const filtered: string[] = [];
     for (let i = 0; i < this.availableComponents.length; i++) {
       const componentType = this.availableComponents[i].type;
-      if (componentType.indexOf(query.toLowerCase()) >= 0) {
+      if (componentType.indexOf(query.toLowerCase()) >= 0 && !this.productForm.value.componentsTypes.includes(componentType)) {
         filtered.push(componentType);
       }
     }
@@ -101,15 +101,15 @@ export class EditProductDialogFormComponent implements OnInit {
   }
 
   private updateProduct(): void {
-    // const updatedComponent: UpdatedProduct = {
-    //   componentTypeToUpdate: this.component.type,
-    //   updatedComponentDetails: this.productForm.value
-    // };
-    //
-    // this.componentsService.updateComponent(updatedComponent).subscribe(
-    //   res => this.editComplete(),
-    //   error => this.showError(error)
-    // );
+    const updatedProduct: UpdatedProduct = {
+      productTypeToUpdate: this.product.type,
+      updatedProductDetails: this.productForm.value
+    };
+
+    this.productService.updateProduct(updatedProduct).subscribe(
+      res => this.editComplete(),
+      error => this.showError(error)
+    );
   }
 
   private editComplete(): void {
@@ -129,7 +129,7 @@ export class EditProductDialogFormComponent implements OnInit {
         price: [this.product.price, Validators.required],
         description: [this.product.description, Validators.required],
         image: [this.product.image, Validators.required],
-        componentsTypes: [this.product.image, Validators.required],
+        componentsTypes: [this.product.componentsTypes, Validators.required],
         status: [this.product.status],
       }
     );

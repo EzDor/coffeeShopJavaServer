@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'src/app/core/services/dialog.service';
 import {AdminService} from 'src/app/core/services/admin.service';
-import {Component as Comp} from 'src/app/models/components/component';
+import {Component as Comp} from 'src/app/models/component/component';
 import {ComponentsService} from '../../../core/services/components.service';
-import {ComponentStatus} from '../../../models/components/component-status.enum';
-import {UpdateComponent} from '../../../models/components/update-component';
+import {ComponentStatus} from '../../../models/component/component-status.enum';
+import {UpdateComponent} from '../../../models/component/update-component';
 
 @Component({
   selector: 'app-edit-component-dialog-form',

@@ -39,7 +39,7 @@ public class ProductService {
      *********************************/
 
     public Product getProduct(String productType) {
-        return productRepository.findByProductType(productType);
+        return productRepository.findByType(productType);
     }
 
     public List<Product> getActiveProducts() {
@@ -79,7 +79,7 @@ public class ProductService {
     public void deleteProduct(String type) {
         Product product = getProduct(type);
         if (product == null) {
-            throw new NoSuchElementException(String.format("Cannot delete product, product with name %s " +
+            throw new NoSuchElementException(String.format("Cannot delete product, product with type %s " +
                     "was not found", type));
         }
         product.setStatus(ProductStatus.DISCARDED);
@@ -93,8 +93,8 @@ public class ProductService {
 
     private Product prepareProduct(Product product, ProductForm productForm) {
 
-        product.setProductType(productForm.getType().toLowerCase());
-        product.setDisplayName(productForm.getName());
+        product.setType(productForm.getType().toLowerCase());
+        product.setName(productForm.getName());
         product.setDescription(productForm.getDescription());
         product.setPrice(productForm.getPrice());
         product.setStatus(productForm.getStatus());

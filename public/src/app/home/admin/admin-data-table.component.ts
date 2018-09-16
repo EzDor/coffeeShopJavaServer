@@ -3,11 +3,14 @@ import {BehaviorSubject} from 'rxjs';
 import {AdminTabs} from '../../models/admin/admin-tabs.enum';
 import {DialogService} from '../../core/services/dialog.service';
 import {EditUserDialogFormComponent} from '../../shared/shared-dialog-forms/edit-user-dialog-form/edit-user-dialog-form.component';
-import {AdminService} from '../../core/services/admin.service';
+import {AdminService} from 'src/app/core/services/admin.service';
 import {NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
-import {ConfirmDeleteFormComponent} from '../../shared/shared-dialog-forms/confirm-delete-form/confirm-delete-form.component';
-import {EditComponentDialogFormComponent} from '../../shared/shared-dialog-forms/edit-component-dialog-form/edit-component-dialog-form.component';
-import {EditProductDialogFormComponent} from '../../shared/shared-dialog-forms/edit-product-dialog-form/edit-product-dialog-form.component';
+import {ConfirmDeleteFormComponent} from 'src/app/shared/shared-dialog-forms/confirm-delete-form/confirm-delete-form.component';
+import {EditComponentDialogFormComponent} from 'src/app/shared/shared-dialog-forms/edit-component-dialog-form/edit-component-dialog-form.component';
+import {EditProductDialogFormComponent} from 'src/app/shared/shared-dialog-forms/edit-product-dialog-form/edit-product-dialog-form.component';
+import {ComponentDisplayKeys} from '../../models/component/component-display-keys';
+import {ProductDisplayKeys} from '../../models/product/product-display-keys';
+import {UserDisplayKeys} from '../../models/user/user-display-keys';
 
 
 @Component({
@@ -25,6 +28,8 @@ export class AdminDataTableComponent implements OnInit {
 
   private _searchBy$: BehaviorSubject<string>;
 
+  private _rowDisplayKeys$: BehaviorSubject<ComponentDisplayKeys | ProductDisplayKeys | UserDisplayKeys>;
+
   constructor(private adminService: AdminService, private dialogService: DialogService) {
     this.adminDialogOptions = {centered: true};
   }
@@ -33,19 +38,19 @@ export class AdminDataTableComponent implements OnInit {
     this.currentTab$ = this.adminService.currentTab;
     this._displayData$ = this.adminService.currentTableData;
     this._searchBy$ = this.adminService.searchBy;
-
-    // open dialog auto to develop....
-    // this.displayData$.subscribe(data => {
-    //     this.showDialog();
-    // });
+    this._rowDisplayKeys$ = this.adminService.rowDisplayKeys;
   }
 
-  get displayData$(): BehaviorSubject<any[]> {
+  public get displayData$(): BehaviorSubject<any[]> {
     return this._displayData$;
   }
 
-  get searchBy$(): BehaviorSubject<string> {
+  public get searchBy$(): BehaviorSubject<string> {
     return this._searchBy$;
+  }
+
+  public get rowDisplayKeys$(): ComponentDisplayKeys | ProductDisplayKeys | UserDisplayKeys {
+    return this._rowDisplayKeys$.value;
   }
 
   public showDialog(id?: number): void {

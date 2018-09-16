@@ -11,6 +11,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findFirstByProductComponentsContains(Component component);
-    Product findByProductType(String productType);
+    Product findByType(String type);
     List<Product> findAllByStatus(ProductStatus status, Sort sort);
 }

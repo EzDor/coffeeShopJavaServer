@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
 import {UserService} from '../core/services/user.service';
-import {User} from '../models/users/user.model';
+import {User} from '../models/user/user.model';
 import {Constants} from '../models/constants';
 
 @Component({

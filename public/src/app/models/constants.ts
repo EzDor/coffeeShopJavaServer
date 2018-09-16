@@ -1,3 +1,7 @@
+import {UserDisplayKeys} from './user/user-display-keys';
+import {ProductDisplayKeys} from './product/product-display-keys';
+import {ComponentDisplayKeys} from './component/component-display-keys';
+
 export class Constants {
 
   /****************************
@@ -51,6 +55,14 @@ export class Constants {
   public static readonly GET_USERS_API_CALL: string = '/users/';
   public static readonly UPDATE_USER_API_CALL: string = '/users/update';
   public static readonly DELETE_USER_API_CALL: string = '/users/delete';
+  public static readonly USER_DISPLAY_KEYS: UserDisplayKeys = {
+    id: 'Id',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    username: 'User Name',
+    admin: 'Admin',
+    status: 'Status',
+  };
   // Login
   public static readonly LOGIN_API_CALL: string = '/login';
   // Product
@@ -59,10 +71,27 @@ export class Constants {
   public static readonly UPDATE_PRODUCT_API_CALL: string = '/product/update';
   public static readonly CREATE_PRODUCT_API_CALL: string = '/product/create';
   public static readonly DELETE_PRODUCT_API_CALL: string = '/product/delete';
-  // Component
+  public static readonly PRODUCT_DISPLAY_KEYS: ProductDisplayKeys = {
+    id: 'Id',
+    name: 'Name',
+    type: 'Product Type',
+    description: 'Description',
+    price: 'Price',
+    componentsTypes: 'Components Types',
+    status: 'Status',
+  };
+// Component
   public static readonly GET_COMPONENTS_API_CALL: string = '/component';
   public static readonly CREATE_COMPONENTS_API_CALL: string = '/component/create';
   public static readonly UPDATE_COMPONENTS_API_CALL: string = '/component/update';
   public static readonly DELETE_COMPONENTS_API_CALL: string = '/component/delete';
+  public static readonly COMPONENT_DISPLAY_KEYS: ComponentDisplayKeys = {
+    id: 'Id',
+    name: 'Name',
+    type: 'Component Type',
+    price: 'Price',
+    amount: 'Amount',
+    status: 'Status',
+  };
 
 }

@@ -12,22 +12,22 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "display_name", unique = true)
-    private String displayName;
+    @Column
+    private String name;
 
     @Column
     private String description;
 
-    @Column(name = "product_type", unique = true)
+    @Column(unique = true)
     @NotBlank
-    private String productType;
+    private String type;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "product_components")

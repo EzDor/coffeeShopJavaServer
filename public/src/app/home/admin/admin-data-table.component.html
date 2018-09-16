@@ -24,9 +24,9 @@
           <img class="admin-table-row-image" src="{{item.image || '/assets/images/user.png'}}">
         </div>
         <div class="ui-g-6 ui-g-nopad car-details">
-          <div class="ui-g" *ngFor="let itemKey of item | objectKeys">
-            <div class="ui-g-6 item-details-key">{{itemKey}}</div>
-            <div class="ui-g-6 item-details-value"><b>{{item[itemKey]}}</b></div>
+          <div class="ui-g" *ngFor="let key of rowDisplayKeys$ | objectKeys">
+            <div class="ui-g-6 item-details-key">{{rowDisplayKeys$[key]}}</div>
+            <div class="ui-g-6 item-details-value"><b>{{item[key]}}</b></div>
           </div>
         </div>
         <div class="ui-g-3">

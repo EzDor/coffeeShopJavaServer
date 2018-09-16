@@ -1,22 +1,25 @@
-.admin-table-row-image{
+.admin-table-row-image {
   width: 200px;
   height: auto;
   max-width: 200px;
 }
 
-.item-details-key{
+.item-details-key {
   padding-left: 15%;
 }
 
-.item-buttons-wrapper{
+.item-buttons-wrapper {
   margin-top: 40px;
 }
-.item-button{
+
+.item-button {
   margin: 10px auto;
   width: 100px;
   display: block;
 }
 
-/*.add-new-item-button{*/
-  /*width: 80px;*/
-/*}*/
+.item-details-value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

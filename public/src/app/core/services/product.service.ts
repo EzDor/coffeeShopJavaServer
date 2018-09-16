@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Constants} from '../../models/constants';
+import {Constants} from 'src/app/models/constants';
 import {HttpClient} from '@angular/common/http';
-import {Product} from '../../models/products/product.model';
+import {Product} from 'src/app/models/product/product';
 import {Observable} from 'rxjs';
-import {CoreModule} from '../core.module';
-import {UpdatedProduct} from '../../models/products/updated-product';
+import {CoreModule} from 'src/app/core/core.module';
+import {UpdatedProduct} from 'src/app/models/product/updated-product';
 
 @Injectable({
   providedIn: CoreModule

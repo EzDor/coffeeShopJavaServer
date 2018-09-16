@@ -3,8 +3,8 @@ import {CoreModule} from '../core.module';
 import {HttpClient} from '@angular/common/http';
 import {Constants} from '../../models/constants';
 import {Observable} from 'rxjs';
-import {Component} from '../../models/components/component';
-import {UpdateComponent} from '../../models/components/update-component';
+import {Component} from '../../models/component/component';
+import {UpdateComponent} from '../../models/component/update-component';
 
 @Injectable({
   providedIn: CoreModule

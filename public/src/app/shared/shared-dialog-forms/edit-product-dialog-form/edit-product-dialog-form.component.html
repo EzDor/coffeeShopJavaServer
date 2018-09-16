@@ -47,7 +47,8 @@
                       [minLength]="1" placeholder="Please choose your component" [multiple]="true"
                       class="product-component-selection-content"
                       formControlName="componentsTypes"
-                      [inputStyle]="{'width':'450px'}" #autocomplete>
+                      [autoHighlight]="true"
+                      [inputStyleClass]="'product-component-selection-input'" #autocomplete>
       </p-autoComplete>
     </div>
 
