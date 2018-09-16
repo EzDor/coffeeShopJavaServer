@@ -14,19 +14,15 @@ export class ProductMenuGridComponent implements OnInit {
 
   public gridCols: number;
   public rowHeight: number;
-  private products: Product[];
-
-  tiles: Tile[] = [
-    {text: 'One', cols: Constants.NUM_OF_GRID_COL_FOR_CARD, rows: Constants.NUM_OF_GRID_ROWS_FOR_CARD, color: 'lightblue'},
-    {text: 'Two', cols: Constants.NUM_OF_GRID_COL_FOR_CARD, rows: Constants.NUM_OF_GRID_ROWS_FOR_CARD, color: 'lightgreen'},
-    {text: 'Three', cols: Constants.NUM_OF_GRID_COL_FOR_CARD, rows: Constants.NUM_OF_GRID_ROWS_FOR_CARD, color: 'lightpink'},
-    {text: 'Four', cols: Constants.NUM_OF_GRID_COL_FOR_CARD, rows: Constants.NUM_OF_GRID_ROWS_FOR_CARD, color: '#DDBDF1'},
-    {text: 'Five', cols: Constants.NUM_OF_GRID_COL_FOR_CARD, rows: Constants.NUM_OF_GRID_ROWS_FOR_CARD, color: 'blue'},
-  ];
+  public cardCols: number;
+  public cardRows: number;
+  public products: Product[];
 
   constructor(private productService: ProductService) {
     this.gridCols = Constants.NUM_OF_GRID_COL;
     this.rowHeight = Constants.GRID_HEIGHT;
+    this.cardCols = Constants.NUM_OF_GRID_COL_FOR_CARD;
+    this.cardRows = Constants.NUM_OF_GRID_ROWS_FOR_CARD;
   }
 
   ngOnInit() {
@@ -34,16 +30,8 @@ export class ProductMenuGridComponent implements OnInit {
       .subscribe(
         products => {
           this.products = products;
-          console.log(products);
         }
       );
   }
 
-}
-
-export interface Tile {
-  color: string;
-  cols: number;
-  rows: number;
-  text: string;
 }

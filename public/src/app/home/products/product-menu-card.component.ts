@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Product} from '../../models/product/product';
 
 @Component({
   selector: 'app-product-menu-card',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductMenuCardComponent implements OnInit {
 
-  constructor() { }
+  @Input() product: Product;
+
+  constructor() {
+  }
 
   ngOnInit() {
+  }
+
+  public openOrderDialog() {
+    console.log('DORRRRRRR');
   }
 
 }

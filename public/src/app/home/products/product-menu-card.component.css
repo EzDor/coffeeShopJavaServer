@@ -1,18 +1,20 @@
 .product-menu-card-wrapper {
   max-width: 500px;
-  background-color: rgba(0,0,0, 0.4);
+  background-color: #0202027a;
   border-radius: 5%;
   color: gainsboro;
   padding: 15px;
+  margin: auto;
+  height: 95%;
 }
 
 .product-menu-card-image {
-  width: 300px;
+  width: 250px;
   margin: 0;
 }
 
 .product-menu-card-image-wrapper {
-  height: 250px;
+  padding: 10px;
 }
 
 .product-menu-card-wrapper{
@@ -29,4 +31,8 @@
 
 .mat-card-image:first-child {
   margin: 0;
+}
+
+.product-menu-card-title {
+  margin-bottom: 0;
 }
