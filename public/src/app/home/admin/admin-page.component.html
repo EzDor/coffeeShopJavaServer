@@ -1,0 +1,10 @@
+<div class="admin-grid-wrapper ui-g">
+  <div class="admin-grid-content ui-g-12 ui-g-nopad">
+    <div class="admin-tabs-wrapper ui-g-12 ui-g-nopad">
+      <p-tabMenu class="admin-tabs-menu" [model]="adminTabs" [activeItem]="adminTabs[defaultTab]"></p-tabMenu>
+    </div>
+    <div class="admin-table-wrapper ui-g-12 ui-g-nopad">
+      <app-admin-data-table></app-admin-data-table>
+    </div>
+  </div>
+</div>

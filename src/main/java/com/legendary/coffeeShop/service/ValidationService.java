@@ -1,7 +1,9 @@
 package com.legendary.coffeeShop.service;
 
+import com.legendary.coffeeShop.controller.form.ComponentForm;
+import com.legendary.coffeeShop.controller.form.OrderForm;
 import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.controller.form.NewUserForm;
+import com.legendary.coffeeShop.controller.form.UserForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -13,8 +15,8 @@ public class ValidationService {
     /*********************************
      * Public Functions
      *********************************/
-    public void validateUserForm(NewUserForm newUserForm) {
-        if (isUserInvalid(newUserForm)) {
+    public void validateUserForm(UserForm userForm) {
+        if (isUserInvalid(userForm)) {
             throw new InputMismatchException("Username and password are missing or invalid.");
         }
     }
@@ -25,22 +27,51 @@ public class ValidationService {
         }
     }
 
+    public void validateComponentForm(ComponentForm componentForm) {
+        if (isComponentInvalid(componentForm)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
+
+    public void validateOrderForm(OrderForm orderForm) {
+        if (isOrderInvalid(orderForm)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
+
+
     /*********************************
      * Private Functions
      *********************************/
-    private boolean isUserInvalid(NewUserForm newUserForm) {
-        return isEmptyStringIncluded(newUserForm.getUsername(), newUserForm.getPassword())
-                || isContainsWhitespace(newUserForm.getUsername(), newUserForm.getPassword())
-                || isContainsNotAllowedCharacters(newUserForm.getUsername());
+    private boolean isUserInvalid(UserForm userForm) {
+        return isEmptyStringIncluded(userForm.getUsername(), userForm.getPassword())
+                || isContainsWhitespace(userForm.getUsername(), userForm.getPassword())
+                || isContainsNotAllowedCharacters(userForm.getUsername());
     }
 
     private boolean isProductInvalid(ProductForm productForm) {
-        return isEmptyStringIncluded(productForm.getProductType(), productForm.getDisplayName(), productForm.getDescription())
-                || isContainsWhitespace(productForm.getProductType())
-                || isContainsNotAllowedCharacters(productForm.getProductType());
+        return isEmptyStringIncluded(productForm.getType(), productForm.getName(), productForm.getDescription())
+                || isContainsNotAllowedCharacters(productForm.getType())
+                || isContainsWhitespace(productForm.getType());
 
     }
 
+    private boolean isComponentInvalid(ComponentForm componentForm) {
+        return isEmptyStringIncluded(componentForm.getType(), componentForm.getName())
+                || isContainsWhitespace(componentForm.getType())
+                || isContainsNotAllowedCharacters(componentForm.getType())
+                || componentForm.getStatus() == null
+                || componentForm.getAmount() < 0
+                || componentForm.getPrice() < 0;
+    }
+
+    private boolean isOrderInvalid(OrderForm orderForm) {
+        return isEmptyStringIncluded(orderForm.getProductName())
+                || isEmptyStringIncluded(orderForm.getComponentsNames().toArray(new String[0]))
+                || orderForm.getPrice() < 0
+                ;
+    }
 
     private boolean isEmptyStringIncluded(String... strings) {
         for (String string : strings) {
@@ -59,6 +90,7 @@ public class ValidationService {
         }
         return false;
     }
+
 
     private boolean isContainsNotAllowedCharacters(String... strings) {
         for (String string : strings) {

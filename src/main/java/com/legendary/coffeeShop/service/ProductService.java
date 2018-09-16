@@ -2,81 +2,115 @@ package com.legendary.coffeeShop.service;
 
 
 import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.dao.entities.Product;
-import com.legendary.coffeeShop.dao.entities.ProductStatus;
+import com.legendary.coffeeShop.controller.form.UpdatedProductForm;
+import com.legendary.coffeeShop.dao.entities.component.Component;
+import com.legendary.coffeeShop.dao.entities.product.Product;
+import com.legendary.coffeeShop.dao.entities.product.ProductStatus;
+import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
-import com.legendary.coffeeShop.dao.repositories.OrderItemRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
-import com.legendary.coffeeShop.utils.Status;
+import com.legendary.coffeeShop.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
+
 
 @Service
 public class ProductService {
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+    private final ProductRepository productRepository;
+    private final CommonConstants commonConstants;
+    private final ComponentRepository componentRepository;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private CommonConstants commonConstants;
+    public ProductService(ProductRepository productRepository, CommonConstants commonConstants, ComponentRepository componentRepository) {
+        this.productRepository = productRepository;
+        this.commonConstants = commonConstants;
+        this.componentRepository = componentRepository;
+    }
 
 
     /*********************************
      * Public Functions
      *********************************/
 
-    public Set<Product> getProducts() {
-        return new HashSet<>(productRepository.findAllByStatus(ProductStatus.ACTIVE));
+    public Product getProduct(String productType) {
+        return productRepository.findByType(productType);
     }
 
-    public Status createProduct(ProductForm productForm) {
+    public List<Product> getActiveProducts() {
+        return productRepository.findAllByStatus(ProductStatus.ACTIVE, CommonUtils.sortAscBy(commonConstants.getProductSortKey()));
+    }
 
-        if (getProduct(productForm.getProductType()) != null) {
-            return new Status(Status.ERROR, "Cannot create product, productType " + productForm.getProductType() + " is already exist");
+    public List<Product> getProducts() {
+        return productRepository.findAll(CommonUtils.sortAscBy(commonConstants.getProductSortKey()));
+    }
+
+    public void createProduct(ProductForm productForm) {
+        if (getProduct(productForm.getType()) != null) {
+            throw new IllegalArgumentException(String.format("Cannot create product, product with type %s " +
+                    "already exist", productForm.getType()));
         }
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
-        return new Status(Status.OK, "Product is created successfully.");
     }
 
-    public Status updateProduct(ProductForm productForm) {
-        Product product = getProduct(productForm.getProductTypeToUpdate());
+    /**
+     * Update product with new data
+     */
+    public void updateProduct(UpdatedProductForm updatedProductForm) {
+        Product product = getProduct(updatedProductForm.getProductTypeToUpdate());
         if (product == null) {
-            return new Status(Status.ERROR, "Cannot update product, product with productType " + productForm.getProductTypeToUpdate() + " is not found");
+            throw new NoSuchElementException(String.format("Cannot update product, product with type %s " +
+                    "was not found", updatedProductForm.getProductTypeToUpdate()));
         }
-        product = prepareProduct(product, productForm);
+        product = prepareProduct(product, updatedProductForm.getUpdatedProductDetails());
         productRepository.save(product);
-        return new Status(Status.OK, "Product is updated successfully.");
-
     }
+
+    /**
+     * Delete product with the given name
+     */
+    public void deleteProduct(String type) {
+        Product product = getProduct(type);
+        if (product == null) {
+            throw new NoSuchElementException(String.format("Cannot delete product, product with type %s " +
+                    "was not found", type));
+        }
+        product.setStatus(ProductStatus.DISCARDED);
+        productRepository.save(product);
+    }
+
 
     /*********************************
      * Private Functions
      *********************************/
 
     private Product prepareProduct(Product product, ProductForm productForm) {
-        product.setProductType(productForm.getProductType());
-        product.setDisplayName(productForm.getDisplayName());
+
+        product.setType(productForm.getType().toLowerCase());
+        product.setName(productForm.getName());
         product.setDescription(productForm.getDescription());
         product.setPrice(productForm.getPrice());
-        product.setStatus(ProductStatus.ACTIVE);
+        product.setStatus(productForm.getStatus());
+        product.setImage(productForm.getImage());
+        product.setProductComponents(getComponentsByType(productForm.getComponentsTypes()));
+
         return product;
     }
 
-
-    private Product getProduct(String productType) {
-        if(StringUtils.isEmpty(productType)){
-            return null;
+    private Set<Component> getComponentsByType(List<String> componentTypes) {
+        Set<Component> components = new HashSet<>(componentRepository.findAllByTypeIn(componentTypes));
+        if (componentTypes.size() != components.size()) {
+            throw new IllegalArgumentException("Cannot update product, some components is not exist.");
         }
-        return productRepository.findByProductTypeAndStatus(productType.toLowerCase(), ProductStatus.ACTIVE);
+
+        return components;
     }
 
 }

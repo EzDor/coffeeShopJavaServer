@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
-import {UserService} from '../users/user.service';
-import {User} from '../model/user.model';
-import {Constants} from '../model/constants';
+import {UserService} from '../core/services/user.service';
+import {User} from '../models/user/user.model';
+import {Constants} from '../models/constants';
 
 @Component({
   styleUrls: ['./register.component.css'],
@@ -37,26 +37,25 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  registerUser(user) {
+  public registerUser(user) {
     this.saving = true;
     this.saveAndRedirect(user);
   }
 
-  cancel() {
+  public cancel() {
     this.router.navigate(['/']);
   }
 
   private saveAndRedirect(user: User) {
     this.userService.createUser(user)
-      .subscribe(() => {
+      .subscribe((body) => {
+          console.log(body);
           this.saving = false;
-          this.router.navigate([Constants.SIGN_IN_COMPONENT_PATH]);
+          this.router.navigate([Constants.SIGN_IN_COMPONENT_FULL_PATH]);
+        },
+        (err) => {
+          throw err;
         }
       );
-    // this.userRepository.saveUser(user)
-    //   .subscribe(
-    //     null,
-    //     () => this.saving = false,
-    //     () => this.router.navigate(['/catalog']));
   }
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthenticationService} from '../core/auth/auth.service';
+import {AuthenticationService} from '../core/services/auth.service';
 import {first} from 'rxjs/operators';
 
 @Component({
@@ -9,29 +9,6 @@ import {first} from 'rxjs/operators';
   templateUrl: './sign-in.component.html'
 })
 export class SignInComponent implements OnInit {
-  /*loginForm: FormGroup;
-  submitted: boolean;
-  invalidLogin: boolean;
-
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthenticationService) {
-    this.submitted = false;
-    this.invalidLogin = false;
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    if (this.loginForm.invalid) {
-      return;
-    }
-    this.authService.login(this.loginForm.controls.username.value, this.loginForm.controls.password.value);
-  }
-
-  ngOnInit() {
-    this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
-  }*/
 
   loginForm: FormGroup;
   loading = false;
@@ -80,6 +57,7 @@ export class SignInComponent implements OnInit {
         },
         error => {
           this.loading = false;
+          throw error;
         });
   }
 

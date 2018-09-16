@@ -84,6 +84,7 @@ em {
   display: block;
   font-size: 15px;
   margin-top: 10px;
+  color: saddlebrown;
 }
 
 .login-buttons-wrapper {
@@ -98,6 +99,10 @@ em {
   width: 15%;
   height: 15%;
   margin: 10px auto -10px;
+}
+
+.login-button{
+  background-color: saddlebrown;
 }
 
 

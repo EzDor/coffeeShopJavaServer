@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.legendary.coffeeShop.dao.entities.User;
+import com.legendary.coffeeShop.dao.entities.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -78,8 +78,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> jsonResponse = new HashMap<>();
-            jsonResponse.put("username", user.getUsername());
-            jsonResponse.put("token", prepareToken(token));
+            jsonResponse.put(SecurityConstants.USERNAME_KEY, user.getUsername());
+            jsonResponse.put(SecurityConstants.TOKEN_KEY, prepareToken(token));
 
             response.getWriter().write(objectMapper.writeValueAsString(jsonResponse));
         } catch (IOException e) {

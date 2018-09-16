@@ -1,11 +1,13 @@
 import {Routes} from '@angular/router';
-import {HomeComponent} from './home/home.component';
-import {AuthGuard} from './core/auth/auth.guard';
+import {AuthGuard} from './core/guards/auth.guard';
+import {Constants} from './models/constants';
+import {AdminGuard} from './core/guards/admin.guard';
 
 export const appRoutes: Routes = [
-  {path: 'login', loadChildren: './login/login.module#LoginModule'},
-  {path: '', component: HomeComponent, canActivate: [AuthGuard]},
+  {path: Constants.LOGIN_PATH, loadChildren: Constants.LOGIN_LAZY_MODULE_PATH},
+  {path: Constants.HOME_PATH, loadChildren: Constants.HOME_LAZY_MODULE_PATH, canActivate: [AuthGuard]},
+  {path: Constants.ADMIN_COMPONENT_PATH, loadChildren: Constants.ADMIN_LAZY_MODULE_PATH, canActivate: [AuthGuard, AdminGuard]},
 
   // otherwise redirect to home
-  {path: '**', redirectTo: ''}
+  {path: Constants.OTHERWISE_PATH, redirectTo: Constants.HOME_PATH}
 ];
