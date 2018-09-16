@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DialogService} from 'src/app/core/services/dialog.service';
 import {AdminService} from 'src/app/core/services/admin.service';
-import {User} from 'src/app/models/user/user.model';
+import {User} from 'src/app/models/user/user';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserService} from 'src/app/core/services/user.service';
 import {UpdateUser} from 'src/app/models/user/update-user';

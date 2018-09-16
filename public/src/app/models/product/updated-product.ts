@@ -1,4 +1,4 @@
-import {Product} from './product.model';
+import {Product} from './product';
 
 export interface UpdatedProduct {
   updatedProductDetails: Product;
