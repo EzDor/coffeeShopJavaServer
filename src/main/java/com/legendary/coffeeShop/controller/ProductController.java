@@ -7,16 +7,13 @@ import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
 import com.legendary.coffeeShop.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("product")
 public class ProductController {
 
     private final ProductService productService;
@@ -29,11 +26,6 @@ public class ProductController {
         this.validationService = validationService;
     }
 
-    @GetMapping("active")
-    @ResponseBody
-    public List<Product> getActiveProducts() {
-        return productService.getActiveProducts();
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -42,6 +34,14 @@ public class ProductController {
         return productService.getProducts();
     }
 
+
+    @GetMapping("active")
+    @ResponseBody
+    public List<Product> getActiveProducts() {
+        return productService.getActiveProducts();
+    }
+
+
     @GetMapping("type")
     @ResponseBody
     public Product getProduct(@RequestParam String productType) {
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/create")
+    @PostMapping("create")
     @ResponseBody
     public Status createProduct(@RequestBody ProductForm productForm) {
         validationService.validateProductForm(productForm);
@@ -58,7 +58,7 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/update")
+    @PostMapping("update")
     @ResponseBody
     public Status updateProduct(@RequestBody UpdatedProductForm updatedProductForm) {
 
@@ -69,16 +69,11 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/delete")
+    @PostMapping("delete")
     @ResponseBody
-    public ResponseEntity deleteProduct(@RequestParam String productType) {
-        try {
-            productService.deleteProduct(productType);
-            return ResponseEntity.status(HttpStatus.OK).body("Product was deleted successfully.");
-        } catch (NoSuchElementException err) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(err.getMessage());
-        }
+    public Status deleteProduct(@RequestBody String productType) {
+        productService.deleteProduct(productType);
+        return new Status("Product was deleted successfully.");
     }
 
 }
