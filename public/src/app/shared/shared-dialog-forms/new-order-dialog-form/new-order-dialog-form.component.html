@@ -1,0 +1,37 @@
+<div class="modal-header" xmlns="http://www.w3.org/1999/html">
+  <h4 class="modal-title">{{product.name}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="new-order-product-description">
+    {{product.description}}
+  </div>
+  <hr>
+
+  <form class="new-order-form" [formGroup]="newOrderForm">
+    <div class="form-check new-order-component-wrapper" *ngFor="let component of availableComponents"
+         [ngClass]="{'out-of-stock': isOutOfStock(component)}">
+      <div class="new-order-component-checkbox-wrapper">
+        <input [formControlName]="component.type" class="form-check-input new-order-component-checkbox" type="checkbox"
+               (change)="checkboxChange($event, component.price)">
+        <label class="form-check-label new-order-component-label">{{component.name}}</label>
+      </div>
+      <img [src]="component.image" class="new-order-component-image" [ngbTooltip]="getTooltip(component)">
+      <div class="form-check-label new-order-component-price"
+           *ngIf="component.price > 0">Additional Price: {{component.price}}
+      </div>
+    </div>
+
+  </form>
+</div>
+<div class="modal-footer">
+  <div class="new-order-total-price">Total Price: {{price}}</div>
+  <button type="button" class="btn btn-outline-danger" (click)="close()" *ngIf="!loading">Cancel</button>
+  <button type="submit" class="btn btn-outline-primary" (click)="submitForm()" *ngIf="!loading"
+          [disabled]="isFieldInvalid()">Submit
+  </button>
+  <app-loading-spinner [loading]="false"></app-loading-spinner>
+</div>
+

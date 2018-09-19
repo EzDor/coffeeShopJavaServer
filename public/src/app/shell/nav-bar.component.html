@@ -8,6 +8,6 @@
   <span class="fill-remaining-space"></span>
   <button mat-button (click)="redirectToHomePage()">Home</button>
   <button mat-button (click)="redirectToAdminPage()" *ngIf="isAdmin$ | async as isAdmin$">Manage</button>
-  <button mat-button>Cart</button>
+  <button mat-button (click)="redirectToCartPage()">Cart</button>
   <button mat-button (click)="logout()">Logout</button>
 </mat-toolbar>

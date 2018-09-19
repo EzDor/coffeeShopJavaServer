@@ -1,4 +1,4 @@
-package com.legendary.coffeeShop.controller.form;
+package com.legendary.coffeeShop.controller.form.user;
 
 import com.legendary.coffeeShop.dao.entities.user.UserStatus;
 import lombok.Data;

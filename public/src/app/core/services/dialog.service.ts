@@ -26,10 +26,10 @@ export class DialogService {
   public showErrorMessage(error) {
     let errorMessage = 'Some error was occurred.';
     if (error) {
-      errorMessage = error.statusText || error.message || error;
+      errorMessage = error.message || error;
     }
     this.dismissDialog();
-    this.messageService.add({key: 'myKey1', severity: 'error', summary: 'Error', detail: errorMessage, life: 5000});
+    this.messageService.add({key: 'global-error-tag', severity: 'error', summary: 'Error', detail: errorMessage, life: 5000});
   }
 
   public closeDialog(): void {

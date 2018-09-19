@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Constants} from '../../models/constants';
-import {ProductService} from '../../core/services/product.service';
-import {Product} from '../../models/product/product';
+import {Constants} from '@models/constants';
+import {ProductService} from '@services/product.service';
+import {Product} from '@models/product/product';
+import {NewOrderDialogFormComponent} from '@dialogs/new-order-dialog-form/new-order-dialog-form.component';
+import {DialogService} from '@services/dialog.service';
 
 @Component({
   selector: 'app-product-menu-grid',
@@ -18,7 +20,7 @@ export class ProductMenuGridComponent implements OnInit {
   public cardRows: number;
   public products: Product[];
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private dialogService: DialogService) {
     this.gridCols = Constants.NUM_OF_GRID_COL;
     this.rowHeight = Constants.GRID_HEIGHT;
     this.cardCols = Constants.NUM_OF_GRID_COL_FOR_CARD;
@@ -26,12 +28,17 @@ export class ProductMenuGridComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.productService.getProducts()
+    this.productService.getActiveProducts()
       .subscribe(
-        products => {
+        (products: Product[]) => {
           this.products = products;
         }
       );
+  }
+
+  private beLazy() {
+    this.productService.selectedProduct = this.products[0];
+    this.dialogService.openDialog(NewOrderDialogFormComponent, {centered: true, size: 'lg'});
   }
 
 }

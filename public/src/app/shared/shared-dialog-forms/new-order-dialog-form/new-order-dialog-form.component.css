@@ -1,0 +1,34 @@
+.new-order-component-image {
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin: auto;
+}
+
+.new-order-component-wrapper {
+  display: inline-block;
+  width: 255px;
+  height: 255px;
+  padding: 15px;
+}
+
+.new-order-component-price {
+  font-size: 11px;
+  position: absolute;
+  width: 190px;
+  text-align: center;
+}
+
+.new-order-component-checkbox-wrapper {
+  width: 150px;
+  margin: auto;
+}
+
+.new-order-total-price{
+  position: absolute;
+  left: 30px;
+}
+
+.out-of-stock{
+  opacity: 0.5;
+}

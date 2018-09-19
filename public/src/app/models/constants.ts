@@ -32,25 +32,33 @@ export class Constants {
   /****************************
    * Internal routing paths
    ****************************/
+  public static readonly LOGIN_LAZY_MODULE_PATH: string = '@app/login/login.module#LoginModule';
   public static readonly SIGN_IN_COMPONENT_FULL_PATH: string = 'login/sign-in';
+  public static readonly REGISTER_COMPONENT_FULL_PATH: string = '/login/register';
   public static readonly SIGN_IN_COMPONENT_PATH: string = 'sign-in';
   public static readonly REGISTER_COMPONENT_PATH: string = 'register';
-  public static readonly HOME_PATH: string = '';
   public static readonly LOGIN_PATH: string = 'login';
-  public static readonly HOME_LAZY_MODULE_PATH: string = './home/home.module#HomeModule';
-  public static readonly ADMIN_LAZY_MODULE_PATH: string = './home/admin/admin.module#AdminModule';
-  public static readonly LOGIN_LAZY_MODULE_PATH: string = './login/login.module#LoginModule';
-  public static readonly OTHERWISE_PATH: string = '**';
+
+  public static readonly HOME_PATH: string = '';
+  public static readonly HOME_LAZY_MODULE_PATH: string = '@app/home/home.module#HomeModule';
+
+  public static readonly ADMIN_LAZY_MODULE_PATH: string = '@app/home/admin/admin.module#AdminModule';
   public static readonly ADMIN_COMPONENT_PATH: string = 'admin';
+
+  public static readonly CART_COMPONENT_PATH: string = 'cart';
+
+  public static readonly OTHERWISE_PATH: string = '**';
 
 
   /****************************
    * Server API calls
    ****************************/
-    // General
+
+  /* General */
   public static readonly BASE_URL: string = 'http://localhost:8081';
   public static readonly API_PREFIX: string = '/api';
-  // Users
+
+  /* Users */
   public static readonly SIGN_UP_API_CALL: string = '/users/signUp';
   public static readonly GET_USERS_API_CALL: string = '/users/';
   public static readonly UPDATE_USER_API_CALL: string = '/users/update';
@@ -63,9 +71,11 @@ export class Constants {
     admin: 'Admin',
     status: 'Status',
   };
-  // Login
+
+  /* Login */
   public static readonly LOGIN_API_CALL: string = '/login';
-  // Product
+
+  /* Product */
   public static readonly GET_ALL_PRODUCTS_API_CALL: string = '/product';
   public static readonly GET_ACTIVE_PRODUCTS_API_CALL: string = '/product/active';
   public static readonly UPDATE_PRODUCT_API_CALL: string = '/product/update';
@@ -80,7 +90,8 @@ export class Constants {
     componentsTypes: 'Components Types',
     status: 'Status',
   };
-// Component
+
+  /* Component */
   public static readonly GET_COMPONENTS_API_CALL: string = '/component';
   public static readonly CREATE_COMPONENTS_API_CALL: string = '/component/create';
   public static readonly UPDATE_COMPONENTS_API_CALL: string = '/component/update';
@@ -93,5 +104,13 @@ export class Constants {
     amount: 'Amount',
     status: 'Status',
   };
+
+  /* Cart */
+  public static readonly GET_ACTIVE_CART_API_CALL: string = '/cart';
+  public static readonly ADD_ITEM_TO_CART_API_CALL: string = '/cart/add';
+  public static readonly CHECKOUT_CART_API_CALL: string = '/cart/checkout';
+  public static readonly UPDATE_ITEM_ON_CART_API_CALL: string = '/cart/update';
+  public static readonly DELETE_ITEM_FROM_CART_API_CALL: string = '/cart/delete';
+  public static readonly GET_ARCHIVE_ORDERS_FROM_CART_API_CALL: string = '/cart/archive';
 
 }

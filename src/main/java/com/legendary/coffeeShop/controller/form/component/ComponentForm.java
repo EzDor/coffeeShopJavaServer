@@ -1,4 +1,4 @@
-package com.legendary.coffeeShop.controller.form;
+package com.legendary.coffeeShop.controller.form.component;
 
 import com.legendary.coffeeShop.dao.entities.component.ComponentStatus;
 import lombok.Getter;

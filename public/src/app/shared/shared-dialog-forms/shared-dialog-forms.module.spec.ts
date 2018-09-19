@@ -1,4 +1,4 @@
-import { SharedDialogFormsModule } from './shared-forms.module';
+import { SharedDialogFormsModule } from './shared-dialog-forms.module';
 
 describe('SharedFormsModule', () => {
   let sharedFormsModule: SharedDialogFormsModule;

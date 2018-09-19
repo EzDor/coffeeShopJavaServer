@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.controller;
 
-import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.controller.form.UpdatedProductForm;
+import com.legendary.coffeeShop.controller.form.product.ProductForm;
+import com.legendary.coffeeShop.controller.form.product.UpdatedProductForm;
 import com.legendary.coffeeShop.dao.entities.product.Product;
 import com.legendary.coffeeShop.service.ProductService;
 import com.legendary.coffeeShop.service.ValidationService;
@@ -42,11 +42,11 @@ public class ProductController {
     }
 
 
-    @GetMapping("type")
-    @ResponseBody
-    public Product getProduct(@RequestParam String productType) {
-        return productService.getProduct(productType);
-    }
+//    @GetMapping("type")
+//    @ResponseBody
+//    public Product getProduct(@RequestParam String productType) {
+//        return productService.getProduct(productType);
+//    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("create")

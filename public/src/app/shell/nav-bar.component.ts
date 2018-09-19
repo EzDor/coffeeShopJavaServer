@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthenticationService} from '../core/services/auth.service';
+import {AuthenticationService} from '@services/auth.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {Constants} from '../models/constants';
+import {Constants} from '@models/constants';
 
 
 @Component({
@@ -35,5 +35,9 @@ export class NavBarComponent implements OnInit {
 
   public redirectToHomePage() {
     this.router.navigate([Constants.HOME_PATH]);
+  }
+
+  public redirectToCartPage() {
+    this.router.navigate([Constants.CART_COMPONENT_PATH]);
   }
 }

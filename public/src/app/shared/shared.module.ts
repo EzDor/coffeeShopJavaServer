@@ -8,7 +8,7 @@ import {NgPrimeModule} from './ng-prime/ng-prime.module';
 import {RouterModule} from '@angular/router';
 import {ObjectKeysPipe} from './pipes/object-keys.pipe';
 import {NgBootstrapModule} from './ng-bootstrap/ng-bootstrap.module';
-import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
+import {EnumToArrayPipe} from './pipes/enum-to-array.pipe';
 
 
 @NgModule({

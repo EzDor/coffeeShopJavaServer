@@ -1,19 +1,14 @@
 import {NgModule} from '@angular/core';
-import {RouterModule} from '@angular/router';
-
-import {SharedModule} from '../shared/shared.module';
+import {SharedModule} from '@shared/shared.module';
 import {RegisterComponent} from './register.component';
 import {SignInComponent} from './sign-in.component';
 import {LoginLogoComponent} from './login-logo.component';
-import {Constants} from '../models/constants';
+import {LoginRoutingModule} from '@app/login/login-routing.module';
 
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild([
-      {path: Constants.REGISTER_COMPONENT_PATH, component: RegisterComponent},
-      {path: Constants.SIGN_IN_COMPONENT_PATH, component: SignInComponent},
-    ])
+    LoginRoutingModule,
   ],
   declarations: [
     RegisterComponent,

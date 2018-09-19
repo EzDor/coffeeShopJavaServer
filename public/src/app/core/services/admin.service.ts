@@ -12,7 +12,6 @@ import {ComponentsService} from './components.service';
 import {UserDisplayKeys} from 'src/app/models/user/user-display-keys';
 import {ProductDisplayKeys} from 'src/app/models/product/product-display-keys';
 import {ComponentDisplayKeys} from 'src/app/models/component/component-display-keys';
-import {map} from 'rxjs/operators';
 
 @Injectable({providedIn: CoreModule})
 export class AdminService {

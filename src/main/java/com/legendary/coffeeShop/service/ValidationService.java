@@ -1,9 +1,10 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.ComponentForm;
-import com.legendary.coffeeShop.controller.form.OrderForm;
-import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.controller.form.UserForm;
+import com.legendary.coffeeShop.controller.form.component.ComponentForm;
+import com.legendary.coffeeShop.controller.form.order.CreditCardForm;
+import com.legendary.coffeeShop.controller.form.order.OrderForm;
+import com.legendary.coffeeShop.controller.form.product.ProductForm;
+import com.legendary.coffeeShop.controller.form.user.UserForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,6 +41,11 @@ public class ValidationService {
         }
     }
 
+    public void validateCreditCardForm(CreditCardForm creditCardForm) {
+        if (isCreditCardInvalid(creditCardForm)) {
+            throw new InputMismatchException("Some component details are missing or invalid.");
+        }
+    }
 
     /*********************************
      * Private Functions
@@ -53,7 +59,9 @@ public class ValidationService {
     private boolean isProductInvalid(ProductForm productForm) {
         return isEmptyStringIncluded(productForm.getType(), productForm.getName(), productForm.getDescription())
                 || isContainsNotAllowedCharacters(productForm.getType())
-                || isContainsWhitespace(productForm.getType());
+                || isContainsWhitespace(productForm.getType())
+                || productForm.getStatus() == null
+                || productForm.getPrice() < 0;
 
     }
 
@@ -67,10 +75,13 @@ public class ValidationService {
     }
 
     private boolean isOrderInvalid(OrderForm orderForm) {
-        return isEmptyStringIncluded(orderForm.getProductName())
-                || isEmptyStringIncluded(orderForm.getComponentsNames().toArray(new String[0]))
-                || orderForm.getPrice() < 0
-                ;
+        String[] componentsTypes = orderForm.getComponentsTypes().toArray(new String[0]);
+        return isEmptyStringIncluded(orderForm.getProductType())
+                || isEmptyStringIncluded(componentsTypes);
+    }
+
+    private boolean isCreditCardInvalid(CreditCardForm creditCardForm) {
+        return isEmptyStringIncluded(creditCardForm.getCreditNumber(), creditCardForm.getExpireDate(), creditCardForm.getCvv());
     }
 
     private boolean isEmptyStringIncluded(String... strings) {

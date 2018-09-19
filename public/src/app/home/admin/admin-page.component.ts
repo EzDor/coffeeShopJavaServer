@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {Constants} from '../../models/constants';
-import {BehaviorSubject} from 'rxjs';
-import {AdminTabs} from '../../models/admin/admin-tabs.enum';
-import {AdminService} from '../../core/services/admin.service';
+import {Constants} from '@models/constants';
+import {AdminTabs} from '@models/admin/admin-tabs.enum';
+import {AdminService} from '@services/admin.service';
 
 @Component({
   selector: 'app-admin-page',

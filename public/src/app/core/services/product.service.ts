@@ -13,6 +13,8 @@ export class ProductService {
 
   private readonly apiPrefix: string;
 
+  private _selectedProduct: Product;
+
   constructor(private http: HttpClient) {
     this.apiPrefix = Constants.BASE_URL + Constants.API_PREFIX;
   }
@@ -36,5 +38,15 @@ export class ProductService {
 
   public deleteProduct(productType: string) {
     return this.http.post(this.apiPrefix + Constants.DELETE_PRODUCT_API_CALL, productType);
+  }
+
+
+  public get selectedProduct(): Product {
+    return this._selectedProduct;
+  }
+
+
+  public set selectedProduct(product: Product) {
+    this._selectedProduct = product;
   }
 }

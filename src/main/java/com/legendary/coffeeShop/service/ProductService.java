@@ -1,19 +1,17 @@
 package com.legendary.coffeeShop.service;
 
 
-import com.legendary.coffeeShop.controller.form.ProductForm;
-import com.legendary.coffeeShop.controller.form.UpdatedProductForm;
+import com.legendary.coffeeShop.controller.form.product.ProductForm;
+import com.legendary.coffeeShop.controller.form.product.UpdatedProductForm;
 import com.legendary.coffeeShop.dao.entities.component.Component;
 import com.legendary.coffeeShop.dao.entities.product.Product;
 import com.legendary.coffeeShop.dao.entities.product.ProductStatus;
-import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
 import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -24,13 +22,17 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CommonConstants commonConstants;
-    private final ComponentRepository componentRepository;
+    private final ComponentService componentService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, CommonConstants commonConstants, ComponentRepository componentRepository) {
+    public ProductService(
+            ProductRepository productRepository,
+            CommonConstants commonConstants,
+            ComponentService componentService) {
+
         this.productRepository = productRepository;
         this.commonConstants = commonConstants;
-        this.componentRepository = componentRepository;
+        this.componentService = componentService;
     }
 
 
@@ -38,9 +40,6 @@ public class ProductService {
      * Public Functions
      *********************************/
 
-    public Product getProduct(String productType) {
-        return productRepository.findByType(productType);
-    }
 
     public List<Product> getActiveProducts() {
         return productRepository.findAllByStatus(ProductStatus.ACTIVE, CommonUtils.sortAscBy(commonConstants.getProductSortKey()));
@@ -58,6 +57,10 @@ public class ProductService {
 
         Product product = prepareProduct(new Product(), productForm);
         productRepository.save(product);
+    }
+
+    Product getProduct(String productType) {
+        return productRepository.findByType(productType);
     }
 
     /**
@@ -105,9 +108,10 @@ public class ProductService {
     }
 
     private Set<Component> getComponentsByType(List<String> componentTypes) {
-        Set<Component> components = new HashSet<>(componentRepository.findAllByTypeIn(componentTypes));
+        Set<Component> components = componentService.getComponentsByType(componentTypes);
         if (componentTypes.size() != components.size()) {
-            throw new IllegalArgumentException("Cannot update product, some components is not exist.");
+            throw new IllegalArgumentException("Cannot update product, some components is not exist, discarded or out of" +
+                    " stock. Please make sure all the components is ready to use");
         }
 
         return components;

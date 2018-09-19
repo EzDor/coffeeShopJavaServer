@@ -1,7 +1,7 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.UserForm;
-import com.legendary.coffeeShop.controller.form.UpdatedUserForm;
+import com.legendary.coffeeShop.controller.form.user.UserForm;
+import com.legendary.coffeeShop.controller.form.user.UpdatedUserForm;
 import com.legendary.coffeeShop.dao.entities.user.User;
 import com.legendary.coffeeShop.dao.entities.user.UserStatus;
 import com.legendary.coffeeShop.dao.repositories.UserRepository;
@@ -83,6 +83,10 @@ public class UserService implements UserDetailsService {
         return new Status("User is discarded successfully");
     }
 
+    public User getActiveUser(String username) {
+        return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
+    }
+
 
     /*********************************
      * Private Functions
@@ -107,10 +111,6 @@ public class UserService implements UserDetailsService {
 
     private String getUserPermission(User user) {
         return user.isAdmin() ? commonConstants.getAdminPermission() : commonConstants.getUserPermission();
-    }
-
-    private User getActiveUser(String username) {
-        return userRepository.findByUsernameAndStatus(username.toLowerCase(), UserStatus.ACTIVE);
     }
 
     private User getUser(String username) {

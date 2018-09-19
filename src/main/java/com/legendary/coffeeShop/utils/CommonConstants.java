@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 @Getter
 public class CommonConstants {
 
-    @Value("${test_common_constants}")
-    private String testCommonConstants;
-
     @Value("${user_service.admin_permission}")
     private String adminPermission;
 

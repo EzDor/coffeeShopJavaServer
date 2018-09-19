@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../core/services/auth.service';
 import {first} from 'rxjs/operators';
+import {Constants} from '@models/constants';
 
 @Component({
   styleUrls: ['./sign-in.component.css'],
@@ -14,6 +15,7 @@ export class SignInComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
+  registerLink: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,7 +32,9 @@ export class SignInComponent implements OnInit {
     });
 
     // get return url from route parameters or default to '/'
+    // TODO return url to constants
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.registerLink = Constants.REGISTER_COMPONENT_FULL_PATH;
   }
 
   public isFieldInvalid(field: string) { // {6}

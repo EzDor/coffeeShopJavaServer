@@ -24,7 +24,7 @@
 
         <div class="login-buttons-wrapper" *ngIf="!loading">
           <button class="login-button" mat-raised-button color="primary" [disabled]="loginForm.invalid">Login</button>
-          <a [routerLink]="['/login/register']" class="btn btn-link register-button">Register</a>
+          <a [routerLink]="[registerLink]" class="btn btn-link register-button">Register</a>
         </div>
         <app-loading-spinner [loading]="loading"></app-loading-spinner>
 

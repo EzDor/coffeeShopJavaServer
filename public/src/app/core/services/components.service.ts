@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {CoreModule} from '../core.module';
 import {HttpClient} from '@angular/common/http';
-import {Constants} from '../../models/constants';
+import {Constants} from '@models/constants';
 import {Observable} from 'rxjs';
-import {Component} from '../../models/component/component';
-import {UpdateComponent} from '../../models/component/update-component';
+import {Component} from '@models/component/component';
+import {UpdateComponent} from '@models/component/update-component';
 
 @Injectable({
   providedIn: CoreModule

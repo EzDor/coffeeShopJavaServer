@@ -1,20 +1,20 @@
 package com.legendary.coffeeShop.service;
 
-import com.legendary.coffeeShop.controller.form.ComponentForm;
-import com.legendary.coffeeShop.controller.form.UpdatedComponentForm;
+import com.legendary.coffeeShop.controller.form.component.ComponentForm;
+import com.legendary.coffeeShop.controller.form.component.UpdatedComponentForm;
 import com.legendary.coffeeShop.dao.entities.component.Component;
 import com.legendary.coffeeShop.dao.entities.component.ComponentStatus;
-import com.legendary.coffeeShop.dao.entities.product.Product;
 import com.legendary.coffeeShop.dao.repositories.ComponentRepository;
-import com.legendary.coffeeShop.dao.repositories.ProductRepository;
 import com.legendary.coffeeShop.utils.CommonConstants;
 import com.legendary.coffeeShop.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 
 @Service
@@ -22,14 +22,14 @@ public class ComponentService {
 
     private final CommonConstants commonConstants;
     private final ComponentRepository componentRepository;
-    private final ProductRepository productRepository;
-
 
     @Autowired
-    public ComponentService(CommonConstants commonConstants, ComponentRepository componentRepository, ProductRepository productRepository) {
+    public ComponentService(
+            CommonConstants commonConstants,
+            ComponentRepository componentRepository) {
+
         this.commonConstants = commonConstants;
         this.componentRepository = componentRepository;
-        this.productRepository = productRepository;
     }
 
     /*********************************
@@ -69,25 +69,32 @@ public class ComponentService {
     }
 
 
-    public Component getComponent(String componentType) {
+    public List<Component> getComponents() {
+        return componentRepository.findAll(CommonUtils.sortAscBy(commonConstants.getComponentSortKey()));
+    }
+
+
+    Set<Component> getComponentsByType(List<String> componentTypes) {
+        return new HashSet<>(componentRepository.findAllByTypeInAndStatus(componentTypes, ComponentStatus.ACTIVE));
+    }
+
+    void decreaseAmount(Set<Component> components) {
+        for (Component component : components) {
+            decreaseAmount(component);
+        }
+        componentRepository.saveAll(components);
+    }
+
+    /*********************************
+     * Private Functions
+     *********************************/
+
+    private Component getComponent(String componentType) {
         if (StringUtils.isEmpty(componentType)) {
             return null;
         }
         return componentRepository.findByType(componentType.toLowerCase());
     }
-
-    public List<Component> getComponents() {
-        return componentRepository.findAll(CommonUtils.sortAscBy(commonConstants.getComponentSortKey()));
-    }
-
-//    public Set<Component> getComponentsByType(Set<String> componentTypes) {
-//        List<Component> componentList = componentRepository.findAllByTypeIn(new ArrayList<>(componentTypes));
-//        return new HashSet<>(componentList);
-//    }
-
-    /*********************************
-     * Private Functions
-     *********************************/
 
     private Component prepareComponent(Component component, ComponentForm componentForm) {
         component.setName(componentForm.getName());
@@ -102,19 +109,15 @@ public class ComponentService {
 
 
     private void decreaseAmount(Component component) {
-        int newAmount = component.getAmount() - 1;
-        if (newAmount < 0)
-            throw new IllegalStateException(String.format("Component %s is out of stock", component.getName()));
 
-        if (newAmount == 0) {
+        int newAmount = component.getAmount() - 1;
+        if (newAmount < 0) {
+            throw new IllegalStateException(String.format("Component %s is out of stock", component.getType()));
+        }
+        else if (newAmount == 0) {
             component.setStatus(ComponentStatus.OUT_OF_STOCK);
         }
-        component.setAmount(newAmount - 1);
-        componentRepository.save(component);
-    }
 
-    private boolean isProductContainComponent(Component component) {
-        Product product = productRepository.findFirstByProductComponentsContains(component);
-        return product != null;
+        component.setAmount(newAmount);
     }
 }

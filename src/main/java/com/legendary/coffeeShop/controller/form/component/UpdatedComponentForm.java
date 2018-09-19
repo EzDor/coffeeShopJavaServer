@@ -1,4 +1,4 @@
-package com.legendary.coffeeShop.controller.form;
+package com.legendary.coffeeShop.controller.form.component;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
