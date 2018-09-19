@@ -29,7 +29,7 @@ public class Product {
     @NotBlank
     private String type;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "product_components")
     Set<Component> productComponents = new HashSet<>();
 

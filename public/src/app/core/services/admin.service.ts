@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from 'src/app/models/user/user';
-import {Product} from 'src/app/models/product/product';
-import {Component} from 'src/app/models/component/component';
-import {AdminTabs} from 'src/app/models/admin/admin-tabs.enum';
-import {UserService} from 'src/app/core/services/user.service';
-import {ProductService} from 'src/app/core/services/product.service';
-import {Constants} from 'src/app/models/constants';
-import {CoreModule} from 'src/app/core/core.module';
-import {ComponentsService} from './components.service';
-import {UserDisplayKeys} from 'src/app/models/user/user-display-keys';
-import {ProductDisplayKeys} from 'src/app/models/product/product-display-keys';
-import {ComponentDisplayKeys} from 'src/app/models/component/component-display-keys';
+import {User} from '@models/user/user';
+import {Product} from '@models/product/product';
+import {Component} from '@models/component/component';
+import {AdminTabs} from '@models/admin/admin-tabs.enum';
+import {UserService} from '@services/user.service';
+import {ProductService} from '@services/product.service';
+import {Constants} from '@models/constants';
+import {CoreModule} from '@core/core.module';
+import {ComponentsService} from '@services/components.service';
+import {UserDisplayKeys} from '@models/user/user-display-keys';
+import {ProductDisplayKeys} from '@models/product/product-display-keys';
+import {ComponentDisplayKeys} from '@models/component/component-display-keys';
 
 @Injectable({providedIn: CoreModule})
 export class AdminService {

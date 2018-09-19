@@ -21,8 +21,9 @@ export class ConfirmDeleteFormComponent implements OnInit {
 
   public submitForm(): void {
     this.loading = true;
+    // TODO change to be generic by cart service
     this.adminService.deleteSelectedRow().subscribe(
-      res => this.onComplete(),
+      () => this.onComplete(),
       error => this.showError(error)
     );
   }
@@ -36,9 +37,9 @@ export class ConfirmDeleteFormComponent implements OnInit {
   }
 
   private onComplete(): void {
+    this.adminService.refreshDataTable();
     this.loading = false;
     this.close();
-    this.adminService.refreshDataTable();
   }
 
   private showError(error: any): void {

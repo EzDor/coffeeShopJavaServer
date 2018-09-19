@@ -1,44 +1,163 @@
 import {Injectable} from '@angular/core';
 import {CoreModule} from '@core/core.module';
 import {Constants} from '@models/constants';
-import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {ProductDisplayKeys} from '@models/product/product-display-keys';
+import {UserService} from '@services/user.service';
+import {ProductService} from '@services/product.service';
+import {ComponentsService} from '@services/components.service';
+import {OrderService} from '@services/order.service';
+import {CartTabs} from '@models/cart/cart-tabs.enum';
 import {Order} from '@models/cart/order';
-import {Observable} from 'rxjs';
 import {OrderItem} from '@models/cart/order-item';
-import {UpdatedOrderItem} from '@models/cart/updated-order-item';
-import {CreditCard} from '@models/cart/credit-card';
+import {OrderItemDisplayKeys} from '@models/cart/order-item-display-keys';
 
 @Injectable({providedIn: CoreModule})
 export class CartService {
 
-  private readonly apiPrefix: string;
+  private _currentTab: BehaviorSubject<CartTabs>;
+  private _currentTableData: BehaviorSubject<any[]>;
+  private _rowDisplayKeys: BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys>;
+  private _searchBy: BehaviorSubject<string>;
+  private _selectedItem: OrderItem | Order;
+  private readonly _defaultTab: CartTabs;
 
-  constructor(private http: HttpClient) {
-    this.apiPrefix = Constants.BASE_URL + Constants.API_PREFIX;
+  constructor(
+    private userService: UserService,
+    private productService: ProductService,
+    private componentsService: ComponentsService,
+    private orderService: OrderService) {
+    this._defaultTab = CartTabs.Cart;
+    this.initDefaults();
+    this.subscribeToData();
   }
 
-  public getActiveCart(): Observable<Order> {
-    return this.http.get<Order>(this.apiPrefix + Constants.GET_ACTIVE_CART_API_CALL);
+  public updateTab(tab: CartTabs) {
+    this._currentTab.next(tab);
   }
 
-  public addItemToCart(orderItem: OrderItem) {
-    return this.http.post(this.apiPrefix + Constants.ADD_ITEM_TO_CART_API_CALL, orderItem);
+
+  public get currentTab(): BehaviorSubject<CartTabs> {
+    return this._currentTab;
   }
 
-  public getArchiveOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.apiPrefix + Constants.GET_ARCHIVE_ORDERS_FROM_CART_API_CALL);
+  public get currentTableData(): BehaviorSubject<Order[] | OrderItem[]> {
+    return this._currentTableData;
   }
 
-  public updateCart(updatedOrderItem: UpdatedOrderItem) {
-    return this.http.post(this.apiPrefix + Constants.UPDATE_ITEM_ON_CART_API_CALL, updatedOrderItem);
+  public get selectedItem(): Order | OrderItem {
+    return this._selectedItem;
   }
 
-  public deleteItemFromCart(orderItemId: number) {
-    this.http.post(this.apiPrefix + Constants.DELETE_ITEM_FROM_CART_API_CALL, orderItemId);
+  public set selectedItem(value: OrderItem | Order) {
+    this._selectedItem = value;
   }
 
-  public checkout(creditCard: CreditCard) {
-    return this.http.post(this.apiPrefix + Constants.CHECKOUT_CART_API_CALL, creditCard);
+  public get rowDisplayKeys(): BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys> {
+    return this._rowDisplayKeys;
+  }
+
+  public updateSelectedRowById(id?: number): void {
+    if (id) {
+      const tableDataArray: any[] = this._currentTableData.getValue();
+      this._selectedItem = tableDataArray.find(x => x.id === id);
+    }
+    else {
+      this._selectedItem = null;
+    }
+  }
+
+  public deleteSelectedRow(): Observable<any> {
+    switch (this._currentTab.getValue()) {
+
+      case CartTabs.Cart:
+        return this.deleteItemFromCart();
+
+      default:
+        throw new Error('Some data is missing try to refresh the page');
+    }
+  }
+
+  public get defaultTab(): CartTabs {
+    return this._defaultTab;
+  }
+
+  public get searchBy(): BehaviorSubject<string> {
+    return this._searchBy;
+  }
+
+  public refreshDataTable(): void {
+    this.updateTableData(this._currentTab.getValue());
+  }
+
+
+  /*********************************
+   * Private Functions
+   *********************************/
+
+  private subscribeToData(): void {
+    this._currentTab.subscribe((tab: CartTabs) => {
+      this.updateTableData(tab);
+    });
+  }
+
+  private updateTableData(currentTab: CartTabs) {
+    switch (currentTab) {
+
+      case CartTabs.Cart:
+        this.initCartTable();
+        break;
+
+      case CartTabs.History:
+        this.initHistoryTable();
+        break;
+
+      default:
+        throw new Error('Error while trying to update data table.');
+    }
+  }
+
+  private initCartTable(): void {
+    this._searchBy.next(Constants.CART_TABLE_SEARCH_KEY);
+    this._rowDisplayKeys.next(Constants.ORDER_ITEM_DISPLAY_KEYS);
+    this.orderService.getActiveCart()
+      .subscribe(
+        (order: Order) => {
+          this.mapOrderItems(order.orderItems);
+          order.orderItems.sort((x, y) => x.id - y.id);
+          this._currentTableData.next(order.orderItems);
+        });
+  }
+
+  private initHistoryTable(): void {
+    this._searchBy.next(Constants.CART_TABLE_SEARCH_KEY_HISTORY);
+    this._rowDisplayKeys.next(Constants.ORDER_ITEM_DISPLAY_KEYS);
+    this.orderService.getArchiveOrders()
+      .subscribe(
+        (orders: Order[]) => {
+          orders.sort((x, y) => x.updateTime.getDate() - y.updateTime.getDate());
+          this._currentTableData.next(orders);
+        }
+      );
+  }
+
+  private mapOrderItems(orderItems: OrderItem[]) {
+    orderItems.map(orderItem => {
+      orderItem.componentsTypes = orderItem.components.map(component => component.type);
+      orderItem.productType = orderItem.product.type;
+    });
+  }
+
+  private initDefaults(): void {
+    this._searchBy = new BehaviorSubject<string>(Constants.CART_TABLE_SEARCH_KEY);
+    this._currentTableData = new BehaviorSubject<OrderItem[] | Order[]>([]);
+    this._currentTab = new BehaviorSubject<CartTabs>(this._defaultTab);
+    this._rowDisplayKeys = new BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys>(Constants.ORDER_ITEM_DISPLAY_KEYS);
+  }
+
+  private deleteItemFromCart(): Observable<any> {
+    const orderItem: OrderItem = <OrderItem> this.selectedItem;
+    return this.orderService.deleteItemFromCart(orderItem.id);
   }
 
 }

@@ -3,10 +3,11 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Component as Comp} from '@models/component/component';
 import {DialogService} from '@services/dialog.service';
 import {Product} from '@models/product/product';
-import {ProductService} from '@services/product.service';
 import {ComponentStatus} from '@models/component/component-status.enum';
 import {OrderItem} from '@models/cart/order-item';
+import {OrderService} from '@services/order.service';
 import {CartService} from '@services/cart.service';
+import {UpdatedOrderItem} from '@models/cart/updated-order-item';
 
 @Component({
   selector: 'app-new-order-dialog-form',
@@ -21,18 +22,23 @@ export class NewOrderDialogFormComponent implements OnInit {
   public availableComponents: Comp[];
   public price: number;
 
+  private isExistsItem: boolean;
+  private orderItem: OrderItem;
+
   constructor(private dialogService: DialogService,
               private formBuilder: FormBuilder,
-              private productService: ProductService,
-              private cartService: CartService) {
+              private cartService: CartService,
+              private orderService: OrderService) {
     this.loading = false;
     this.availableComponents = [];
   }
 
   ngOnInit() {
-    this.product = this.productService.selectedProduct;
+    this.orderItem = <OrderItem> this.cartService.selectedItem;
+    this.product = this.orderItem.product;
     this.price = this.product.price;
-    this.initNewOrderForm();
+    this.isExistsItem = !!this.orderItem.id;
+    this.isExistsItem ? this.initExistOrderForm() : this.initNewOrderForm();
     this.availableComponents.sort();
   }
 
@@ -48,12 +54,9 @@ export class NewOrderDialogFormComponent implements OnInit {
     this.loading = true;
     const formValues = this.newOrderForm.value;
     const orderItem = this.getOrderItem(formValues);
-
-    this.cartService.addItemToCart(orderItem).subscribe(
-      () => this.editComplete(),
-      (error) => this.showError(error)
-    );
+    this.isExistsItem ? this.updateItemOnCart(orderItem) : this.addItemToCart(orderItem);
   }
+
 
   public isFieldInvalid(): boolean {
     return !Object.values(this.newOrderForm.value).includes(true);
@@ -80,11 +83,13 @@ export class NewOrderDialogFormComponent implements OnInit {
     }
   }
 
+
   /*********************************
    * Private Functions
    *********************************/
 
   private editComplete(): void {
+    this.cartService.refreshDataTable();
     this.loading = false;
     this.close();
   }
@@ -95,16 +100,34 @@ export class NewOrderDialogFormComponent implements OnInit {
 
 
   private initNewOrderForm(): void {
+    const formControlsObject: any = {};
+    this.product.productComponents.forEach(
+      (component: Comp) => {
+        this.updateComponent(component, formControlsObject, false);
+      }
+    );
+    this.newOrderForm = this.formBuilder.group(formControlsObject);
+  }
+
+  private initExistOrderForm(): void {
     const formControlsObject = {};
     this.product.productComponents.forEach(
       (component: Comp) => {
-        if (this.isComponentAvailable(component)) {
-          this.availableComponents.push(component);
-          formControlsObject[component.type] = [{value: '', disabled: this.isOutOfStock(component)}];
+        const isComponentChecked: boolean = this.orderItem.componentsTypes.includes(component.type);
+        this.updateComponent(component, formControlsObject, isComponentChecked);
+        if (isComponentChecked) {
+          this.price += component.price;
         }
       }
     );
     this.newOrderForm = this.formBuilder.group(formControlsObject);
+  }
+
+  private updateComponent(component: Comp, formControlsObject: any, state: boolean) {
+    if (this.isComponentAvailable(component)) {
+      this.availableComponents.push(component);
+      formControlsObject[component.type] = [{value: state, disabled: this.isOutOfStock(component)}];
+    }
   }
 
 
@@ -123,4 +146,21 @@ export class NewOrderDialogFormComponent implements OnInit {
     return orderItem;
   }
 
+  private addItemToCart(orderItem: OrderItem) {
+    this.orderService.addItemToCart(orderItem).subscribe(
+      () => this.editComplete(),
+      (error) => this.showError(error)
+    );
+  }
+
+  private updateItemOnCart(orderItem: OrderItem) {
+    const updatedOrderItem: UpdatedOrderItem = {
+      orderDetails: orderItem,
+      orderItemId: this.orderItem.id
+    };
+    this.orderService.updateCart(updatedOrderItem).subscribe(
+      () => this.editComplete(),
+      (error) => this.showError(error)
+    );
+  }
 }

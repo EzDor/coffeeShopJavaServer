@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {AdminTabs} from '@models/admin/admin-tabs.enum';
-import {AdminService} from '@services/admin.service';
 import {Constants} from '@models/constants';
+import {CartTabs} from '@models/cart/cart-tabs.enum';
+import {CartService} from '@services/cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -11,38 +11,33 @@ import {Constants} from '@models/constants';
 })
 export class CartComponent implements OnInit {
 
-  public adminTabs: MenuItem[];
+  public cartTabs: MenuItem[];
   public activeItem: MenuItem;
-  public defaultTab: AdminTabs;
+  public defaultTab: CartTabs;
 
-  constructor(private adminService: AdminService) {
+  constructor(private cartService: CartService) {
   }
 
   ngOnInit() {
-    this.defaultTab = this.adminService.defaultTab;
-    this.adminTabs = [
+    this.defaultTab = this.cartService.defaultTab;
+    this.cartTabs = [
       {
-        label: Constants.ADMIN_TAB_PRODUCT_LABEL,
-        icon: Constants.ADMIN_TAB_PRODUCT_ICON,
-        command: () => this.updateCurrentTab(AdminTabs.product)
+        label: Constants.CART_TAB_LABEL,
+        icon: Constants.CART_TAB_ICON,
+        command: () => this.updateCurrentTab(CartTabs.Cart)
       },
       {
-        label: Constants.ADMIN_TAB_COMPONENT_LABEL,
-        icon: Constants.ADMIN_TAB_COMPONENT_ICON,
-        command: () => this.updateCurrentTab(AdminTabs.component)
-      },
-      {
-        label: Constants.ADMIN_TAB_USERS_LABEL,
-        icon: Constants.ADMIN_TAB_USERS_ICON,
-        command: () => this.updateCurrentTab(AdminTabs.user)
-      },
+        label: Constants.CART_TAB_HISTORY_LABEL,
+        icon: Constants.CART_TAB_HISTORY_ICON,
+        command: () => this.updateCurrentTab(CartTabs.History)
+      }
     ];
 
-    this.activeItem = this.adminTabs[this.defaultTab];
+    this.activeItem = this.cartTabs[this.defaultTab];
   }
 
-  public updateCurrentTab(tab: AdminTabs) {
-    this.adminService.updateTab(tab);
+  public updateCurrentTab(tab: CartTabs) {
+    this.cartService.updateTab(tab);
   }
 
 

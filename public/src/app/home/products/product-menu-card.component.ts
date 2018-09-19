@@ -4,6 +4,8 @@ import {DialogService} from '../../core/services/dialog.service';
 import {NewOrderDialogFormComponent} from '../../shared/shared-dialog-forms/new-order-dialog-form/new-order-dialog-form.component';
 import {NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {ProductService} from '../../core/services/product.service';
+import {CartService} from '@services/cart.service';
+import {OrderItem} from '@models/cart/order-item';
 
 @Component({
   selector: 'app-product-menu-card',
@@ -16,7 +18,7 @@ export class ProductMenuCardComponent implements OnInit {
 
   private readonly newOrderDialogOptions: NgbModalOptions;
 
-  constructor(private dialogService: DialogService, private productService: ProductService) {
+  constructor(private dialogService: DialogService, private cartService: CartService) {
     this.newOrderDialogOptions = {centered: true, size: 'lg'};
   }
 
@@ -24,7 +26,10 @@ export class ProductMenuCardComponent implements OnInit {
   }
 
   public openOrderDialog() {
-    this.productService.selectedProduct = this.product;
+    const orderItem: OrderItem = {
+      product: this.product
+    };
+    this.cartService.selectedItem = orderItem;
     this.dialogService.openDialog(NewOrderDialogFormComponent, this.newOrderDialogOptions);
   }
 

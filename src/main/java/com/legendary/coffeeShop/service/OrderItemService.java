@@ -31,15 +31,14 @@ public class OrderItemService {
 
 
     public OrderItem createOrderItem(OrderForm orderForm) {
-        OrderItem orderItem = prepareOrderItem(orderForm, new OrderItem());
-        //save(orderItem);
+        OrderItem orderItem = new OrderItem();
+        prepareOrderItem(orderForm, orderItem);
         return orderItem;
     }
 
     public void updateOrderItem(int orderItemId, OrderForm orderForm, Set<OrderItem> orderItems) {
         OrderItem orderItem = getAndValidateOrderItem(orderItemId, orderItems);
         prepareOrderItem(orderForm, orderItem);
-        orderItemRepository.save(orderItem);
     }
 
     public void deleteOrderItem(int orderItemId, Set<OrderItem> orderItems) {
@@ -55,10 +54,6 @@ public class OrderItemService {
             componentService.decreaseAmount(components);
         }
         orderItemRepository.saveAll(orderItems);
-    }
-
-    void save(OrderItem orderItem){
-        orderItemRepository.save(orderItem);
     }
 
     /*********************************
@@ -101,6 +96,7 @@ public class OrderItemService {
         orderItem.setComponents(components);
         orderItem.setProduct(product);
         orderItem.setPrice(price);
+        orderItemRepository.save(orderItem);
         return orderItem;
     }
 

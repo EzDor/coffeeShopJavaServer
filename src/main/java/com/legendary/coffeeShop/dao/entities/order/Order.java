@@ -1,5 +1,6 @@
 package com.legendary.coffeeShop.dao.entities.order;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.legendary.coffeeShop.dao.entities.user.User;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class Order {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "order_to_order_items")
+    @JsonManagedReference
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @Column(name = "creation_time")
