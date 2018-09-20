@@ -4,6 +4,7 @@ import {SharedModule} from '@shared/shared.module';
 import {SharedDialogFormsModule} from '@dialogs/shared-dialog-forms.module';
 import {AppErrorHandler} from './app-error-handler';
 import {ConfirmDeleteAdminTableFormComponent} from '@dialogs/confirm-delete-form/confirm-delete-admin-table-form.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {ConfirmDeleteAdminTableFormComponent} from '@dialogs/confirm-delete-form
     NavBarComponent
   ],
   declarations: [
-    NavBarComponent
+    NavBarComponent,
+    NotFoundComponent
   ],
   entryComponents: [
     ConfirmDeleteAdminTableFormComponent
