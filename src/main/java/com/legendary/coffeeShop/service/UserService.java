@@ -53,6 +53,9 @@ public class UserService implements UserDetailsService {
 
     public Status createUser(UserForm userForm, boolean isAdminRequest) {
         isUserNameExists(userForm);
+        if (userForm.getStatus() == null) {
+            userForm.setStatus(UserStatus.ACTIVE);
+        }
         User user = new User();
         user = prepareUser(user, userForm, isAdminRequest, true);
         userRepository.save(user);
