@@ -7,4 +7,5 @@ export interface OrderItem {
   components?: Component[];
   componentsTypes?: string[];
   productType?: string;
+  price?: number;
 }

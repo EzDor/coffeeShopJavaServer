@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {DialogService} from '../../../core/services/dialog.service';
-import {AdminService} from '../../../core/services/admin.service';
-import {throwError} from 'rxjs';
+import {DialogService} from '@services/dialog.service';
+import {AdminService} from '@services/admin.service';
 
 @Component({
-  selector: 'app-confirm-delete-form',
-  templateUrl: './confirm-delete-form.component.html',
-  styleUrls: ['./confirm-delete-form.component.css']
+  selector: 'app-confirm-delete-admin-table-form',
+  templateUrl: './confirm-delete-admin-table-form.component.html',
+  styleUrls: ['./confirm-delete-admin-table-form.component.css']
 })
-export class ConfirmDeleteFormComponent implements OnInit {
+export class ConfirmDeleteAdminTableFormComponent implements OnInit {
 
   public loading: boolean;
 
@@ -21,7 +20,6 @@ export class ConfirmDeleteFormComponent implements OnInit {
 
   public submitForm(): void {
     this.loading = true;
-    // TODO change to be generic by cart service
     this.adminService.deleteSelectedRow().subscribe(
       () => this.onComplete(),
       error => this.showError(error)

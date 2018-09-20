@@ -2,6 +2,7 @@ import {UserDisplayKeys} from './user/user-display-keys';
 import {ProductDisplayKeys} from './product/product-display-keys';
 import {ComponentDisplayKeys} from './component/component-display-keys';
 import {OrderItemDisplayKeys} from '@models/cart/order-item-display-keys';
+import {OrderDisplayKeys} from '@models/cart/order-display-keys';
 
 export class Constants {
 
@@ -39,6 +40,8 @@ export class Constants {
   public static readonly CART_TAB_HISTORY_ICON: string = 'fa fa-history';
   public static readonly CART_TABLE_SEARCH_KEY: string = 'type';
   public static readonly CART_TABLE_SEARCH_KEY_HISTORY: string = 'type';
+  public static readonly CART_TABLE_PRIMARY_BUTTON_KEY: string = 'Edit';
+  public static readonly CART_TABLE_HISTORY_BUTTON_KEY: string = 'Details';
 
 
   /****************************
@@ -49,6 +52,13 @@ export class Constants {
     productType: 'Type',
     price: 'Price',
     componentsTypes: 'Chosen Components',
+  };
+
+  public static readonly ORDER_DISPLAY_KEYS: OrderDisplayKeys = {
+    id: 'Item Id',
+    displayDate: 'Date',
+    price: 'Price',
+    orderItemProducts: 'Items',
   };
 
   /****************************

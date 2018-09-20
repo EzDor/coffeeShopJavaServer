@@ -1,5 +1,6 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {SharedModule} from 'src/app/shared/shared.module';
+import {MessageService} from 'primeng/api';
 
 
 
@@ -10,8 +11,7 @@ import {SharedModule} from 'src/app/shared/shared.module';
   exports: [
   ],
   providers: [
-  ],
-  declarations: [
+    MessageService,
   ]
 })
 

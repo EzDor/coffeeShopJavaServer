@@ -38,6 +38,20 @@ public class OrderService {
 
     }
 
+    public Order getCartOrder(String username) {
+        User user = getUser(username);
+        Order order = getActiveOrder(user);
+        if (order == null) {
+            order = new Order();
+        }
+        return order;
+    }
+
+    public List<Order> getUserArchiveOrders(String username) {
+        User user = getUser(username);
+        return orderRepository.findAllByUserAndOrderStatus(user, OrderStatus.DONE);
+    }
+
     @Transactional
     public void addItemToOrder(OrderForm orderForm, String username) {
         OrderItem newOrderItem = orderItemService.createOrderItem(orderForm);
@@ -56,17 +70,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public Order getCartOrder(String username) {
-        User user = getUser(username);
-        Order order = getActiveOrder(user);
-        return order;
-    }
-
-    public List<Order> getUserArchiveOrders(String username) {
-        User user = getUser(username);
-        return orderRepository.findAllByUserAndOrderStatus(user, OrderStatus.DONE);
-    }
-
+    @Transactional
     public void deleteOrderItem(int orderItemId, String username) {
         Order order = getAndValidateActiveOrder(username);
         Set<OrderItem> orderItems = order.getOrderItems();
@@ -78,6 +82,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    @Transactional
     public void checkout(String username) {
         Order order = getAndValidateActiveOrder(username);
         Set<OrderItem> orderItems = order.getOrderItems();

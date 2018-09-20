@@ -48,7 +48,7 @@ export class AuthenticationService {
   public logout(): void {
     // remove component from local storage to log component out
     localStorage.removeItem(Constants.CURRENT_USER);
-    if (this.isUserLoggedIn) {
+    if (this.isLoggedIn.value) {
       this.isLoggedIn.next(false);
       this.isAdmin.next(false);
       location.reload(true);
@@ -72,7 +72,7 @@ export class AuthenticationService {
   public isUserAuthenticated(): boolean {
     const userOnStorage: LoginResponseParams = this.storageService.getStorageData(Constants.CURRENT_USER);
     if (userOnStorage && !this.jwtHelperService.isTokenExpired(userOnStorage.token)) {
-      this.updateAuthenticationParams(userOnStorage.token)
+      this.updateAuthenticationParams(userOnStorage.token);
       return true;
     }
     return false;

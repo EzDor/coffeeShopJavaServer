@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConfirmDeleteFormComponent } from './confirm-delete-form.component';
+import { CheckoutDialogFormComponent } from './checkout-dialog-form.component';
 
-describe('ConfirmDeleteFormComponent', () => {
-  let component: ConfirmDeleteFormComponent;
-  let fixture: ComponentFixture<ConfirmDeleteFormComponent>;
+describe('CheckoutDialogFormComponent', () => {
+  let component: CheckoutDialogFormComponent;
+  let fixture: ComponentFixture<CheckoutDialogFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConfirmDeleteFormComponent ]
+      declarations: [ CheckoutDialogFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConfirmDeleteFormComponent);
+    fixture = TestBed.createComponent(CheckoutDialogFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

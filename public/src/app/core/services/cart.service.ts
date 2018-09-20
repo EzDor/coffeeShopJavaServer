@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {CoreModule} from '@core/core.module';
 import {Constants} from '@models/constants';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {ProductDisplayKeys} from '@models/product/product-display-keys';
 import {UserService} from '@services/user.service';
 import {ProductService} from '@services/product.service';
 import {ComponentsService} from '@services/components.service';
@@ -11,16 +10,19 @@ import {CartTabs} from '@models/cart/cart-tabs.enum';
 import {Order} from '@models/cart/order';
 import {OrderItem} from '@models/cart/order-item';
 import {OrderItemDisplayKeys} from '@models/cart/order-item-display-keys';
+import {OrderDisplayKeys} from '@models/cart/order-display-keys';
+import {DatePipe} from '@angular/common';
 
 @Injectable({providedIn: CoreModule})
 export class CartService {
 
   private _currentTab: BehaviorSubject<CartTabs>;
   private _currentTableData: BehaviorSubject<any[]>;
-  private _rowDisplayKeys: BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys>;
+  private _rowDisplayKeys: BehaviorSubject<OrderItemDisplayKeys | OrderDisplayKeys>;
   private _searchBy: BehaviorSubject<string>;
   private _selectedItem: OrderItem | Order;
   private readonly _defaultTab: CartTabs;
+  private readonly datePipe: DatePipe;
 
   constructor(
     private userService: UserService,
@@ -30,6 +32,7 @@ export class CartService {
     this._defaultTab = CartTabs.Cart;
     this.initDefaults();
     this.subscribeToData();
+    this.datePipe = new DatePipe('en-US');
   }
 
   public updateTab(tab: CartTabs) {
@@ -53,11 +56,11 @@ export class CartService {
     this._selectedItem = value;
   }
 
-  public get rowDisplayKeys(): BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys> {
+  public get rowDisplayKeys(): BehaviorSubject<OrderItemDisplayKeys | OrderDisplayKeys> {
     return this._rowDisplayKeys;
   }
 
-  public updateSelectedRowById(id?: number): void {
+  public updateSelectedItemById(id?: number): void {
     if (id) {
       const tableDataArray: any[] = this._currentTableData.getValue();
       this._selectedItem = tableDataArray.find(x => x.id === id);
@@ -67,15 +70,11 @@ export class CartService {
     }
   }
 
-  public deleteSelectedRow(): Observable<any> {
-    switch (this._currentTab.getValue()) {
-
-      case CartTabs.Cart:
-        return this.deleteItemFromCart();
-
-      default:
-        throw new Error('Some data is missing try to refresh the page');
+  public deleteSelectedItem(): Observable<any> {
+    if (this.currentTab.value !== CartTabs.Cart) {
+      throw new Error('Some data is missing try to refresh the page');
     }
+    return this.deleteItemFromCart();
   }
 
   public get defaultTab(): CartTabs {
@@ -131,10 +130,11 @@ export class CartService {
 
   private initHistoryTable(): void {
     this._searchBy.next(Constants.CART_TABLE_SEARCH_KEY_HISTORY);
-    this._rowDisplayKeys.next(Constants.ORDER_ITEM_DISPLAY_KEYS);
+    this._rowDisplayKeys.next(Constants.ORDER_DISPLAY_KEYS);
     this.orderService.getArchiveOrders()
       .subscribe(
         (orders: Order[]) => {
+          this.mapOrders(orders);
           orders.sort((x, y) => x.updateTime.getDate() - y.updateTime.getDate());
           this._currentTableData.next(orders);
         }
@@ -152,7 +152,7 @@ export class CartService {
     this._searchBy = new BehaviorSubject<string>(Constants.CART_TABLE_SEARCH_KEY);
     this._currentTableData = new BehaviorSubject<OrderItem[] | Order[]>([]);
     this._currentTab = new BehaviorSubject<CartTabs>(this._defaultTab);
-    this._rowDisplayKeys = new BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys>(Constants.ORDER_ITEM_DISPLAY_KEYS);
+    this._rowDisplayKeys = new BehaviorSubject<OrderItemDisplayKeys | OrderDisplayKeys>(Constants.ORDER_ITEM_DISPLAY_KEYS);
   }
 
   private deleteItemFromCart(): Observable<any> {
@@ -160,4 +160,18 @@ export class CartService {
     return this.orderService.deleteItemFromCart(orderItem.id);
   }
 
+  private mapOrders(orders: Order[]) {
+    orders.map(
+      (order: Order) => {
+        order.displayDate = this.datePipe.transform(order.updateTime);
+        order.price = order.orderItems.map(
+          orderItem => orderItem.price).reduce(
+          (x, y) => {
+            return x + y;
+          });
+        order.orderItemProducts = order.orderItems.map(
+          (orderItem: OrderItem) => orderItem.product.name);
+      }
+    );
+  }
 }

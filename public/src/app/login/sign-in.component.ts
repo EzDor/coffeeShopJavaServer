@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../core/services/auth.service';
 import {first} from 'rxjs/operators';
 import {Constants} from '@models/constants';
+import {DialogService} from '@services/dialog.service';
 
 @Component({
   styleUrls: ['./sign-in.component.css'],
@@ -17,12 +18,11 @@ export class SignInComponent implements OnInit {
   returnUrl: string;
   registerLink: string;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authenticationService: AuthenticationService
-  ) {
+  constructor(private formBuilder: FormBuilder,
+              private route: ActivatedRoute,
+              private router: Router,
+              private dialogService: DialogService,
+              private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -53,16 +53,14 @@ export class SignInComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.loginForm.value)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate([this.returnUrl]);
-        },
-        error => {
-          this.loading = false;
-          throw error;
-        });
+    this.authenticationService.login(this.loginForm.value).subscribe(
+      data => {
+        this.router.navigate([this.returnUrl]);
+      },
+      error => {
+        this.loading = false;
+        throw Error('Username or password is incorrect');
+      });
   }
 
 }

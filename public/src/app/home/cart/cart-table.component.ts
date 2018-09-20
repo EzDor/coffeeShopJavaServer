@@ -1,15 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {BehaviorSubject} from 'rxjs';
-import {ProductDisplayKeys} from '@models/product/product-display-keys';
 import {DialogService} from '@services/dialog.service';
-import {EditProductDialogFormComponent} from '@dialogs/edit-product-dialog-form/edit-product-dialog-form.component';
 import {EditComponentDialogFormComponent} from '@dialogs/edit-component-dialog-form/edit-component-dialog-form.component';
-import {ConfirmDeleteFormComponent} from '@dialogs/confirm-delete-form/confirm-delete-form.component';
 import {CartService} from '@services/cart.service';
 import {CartTabs} from '@models/cart/cart-tabs.enum';
 import {OrderItemDisplayKeys} from '@models/cart/order-item-display-keys';
 import {NewOrderDialogFormComponent} from '@dialogs/new-order-dialog-form/new-order-dialog-form.component';
+import {ConfirmDeleteCartTableFormComponent} from '@dialogs/confirm-delete-form/confirm-delete-cart-table-form.component';
+import {CheckoutDialogFormComponent} from '@dialogs/checkout-dialog-form/checkout-dialog-form.component';
+import {Constants} from '@models/constants';
+import {OrderDisplayKeys} from '@models/cart/order-display-keys';
 
 @Component({
   selector: 'app-cart-table',
@@ -18,16 +19,11 @@ import {NewOrderDialogFormComponent} from '@dialogs/new-order-dialog-form/new-or
 })
 export class CartTableComponent implements OnInit {
 
-
   private readonly cartDialogOptions: NgbModalOptions;
-
   private _displayData$: BehaviorSubject<any[]>;
-
   private currentTab$: BehaviorSubject<CartTabs>;
-
   private _searchBy$: BehaviorSubject<string>;
-
-  private _rowDisplayKeys$: BehaviorSubject<OrderItemDisplayKeys | ProductDisplayKeys>;
+  private _rowDisplayKeys$: BehaviorSubject<OrderItemDisplayKeys | OrderDisplayKeys>;
 
   constructor(private cartService: CartService, private dialogService: DialogService) {
     this.cartDialogOptions = {centered: true, size: 'lg'};
@@ -48,12 +44,12 @@ export class CartTableComponent implements OnInit {
     return this._searchBy$;
   }
 
-  public get rowDisplayKeys$(): OrderItemDisplayKeys | ProductDisplayKeys {
+  public get rowDisplayKeys$(): OrderItemDisplayKeys | OrderDisplayKeys {
     return this._rowDisplayKeys$.value;
   }
 
   public showDialog(id?: number): void {
-    this.cartService.updateSelectedRowById(id);
+    this.cartService.updateSelectedItemById(id);
     switch (this.currentTab$.getValue()) {
 
       case CartTabs.Cart:
@@ -71,17 +67,24 @@ export class CartTableComponent implements OnInit {
   }
 
   public showDeleteDialog(id: number) {
-    this.cartService.updateSelectedRowById(id);
-    this.dialogService.openDialog(ConfirmDeleteFormComponent);
+    this.cartService.updateSelectedItemById(id);
+    this.dialogService.openDialog(ConfirmDeleteCartTableFormComponent);
+  }
+
+  public showCheckoutDialog() {
+    this.dialogService.openDialog(CheckoutDialogFormComponent);
   }
 
   public isCartTab(): boolean {
     return this.currentTab$.value === CartTabs.Cart;
   }
 
-  // TODO constants
-  getOpenDialogButtonText(): string {
-    return this.isCartTab() ? 'Edit' : 'More Details';
+  public isPayable(): boolean {
+    return this.displayData$.value.length > 0 && this.isCartTab();
+  }
+
+  public getOpenDialogButtonText(): string {
+    return this.isCartTab() ? Constants.CART_TABLE_PRIMARY_BUTTON_KEY : Constants.CART_TABLE_HISTORY_BUTTON_KEY;
   }
 
 }

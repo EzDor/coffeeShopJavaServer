@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h4 class="modal-title">Checkout Order</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form class="check-out-order" [formGroup]="checkoutForm">
+    <div class="form-group">
+      <label class="checkout-total-price">Total Price: {{price}}</label>
+    </div>
+    <div class="form-group" aria-invalid="true">
+      <label>Card Number</label>
+      <input type="text" class="form-control" formControlName="creditNumber"
+             placeholder="Please insert your credit card number" required
+             [ngClass]="{'is-invalid':isFieldInvalid('creditNumber')}">
+    </div>
+    <div class="form-group">
+      <label>Expire Date</label>
+      <input type="text" class="form-control" formControlName="expireDate"
+             placeholder="Please insert credit expired date" required
+             [ngClass]="{'is-invalid':isFieldInvalid('expireDate')}">
+    </div>
+    <div class="form-group">
+      <label>CVV</label>
+      <input type="number" class="form-control" formControlName="cvv" placeholder="Please insert your credit card cvv"
+             required
+             [ngClass]="{'is-invalid':isFieldInvalid('cvv')}">
+    </div>
+    <div class="form-group">
+      <label>Please choose your card type</label>
+      <select class="form-control">
+        <option>Visa</option>
+        <option>Master Card</option>
+        <option>Passport Card</option>
+      </select>
+    </div>
+
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-danger" (click)="close()" *ngIf="!loading">Cancel</button>
+  <button type="submit" class="btn btn-outline-primary" (click)="checkout()" *ngIf="!loading"
+          [disabled]="checkoutForm.invalid">Checkout
+  </button>
+  <app-loading-spinner [loading]="loading"></app-loading-spinner>
+</div>
+

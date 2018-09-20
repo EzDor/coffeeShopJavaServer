@@ -10,7 +10,7 @@ import {ProductDisplayKeys} from '@models/product/product-display-keys';
 import {UserDisplayKeys} from '@models/user/user-display-keys';
 import {EditProductDialogFormComponent} from '@dialogs/edit-product-dialog-form/edit-product-dialog-form.component';
 import {EditComponentDialogFormComponent} from '@dialogs/edit-component-dialog-form/edit-component-dialog-form.component';
-import {ConfirmDeleteFormComponent} from '@dialogs/confirm-delete-form/confirm-delete-form.component';
+import {ConfirmDeleteAdminTableFormComponent} from '@dialogs/confirm-delete-form/confirm-delete-admin-table-form.component';
 
 
 @Component({
@@ -77,6 +77,6 @@ export class AdminDataTableComponent implements OnInit {
 
   public showDeleteDialog(id: number) {
     this.adminService.updateSelectedRow(id);
-    this.dialogService.openDialog(ConfirmDeleteFormComponent);
+    this.dialogService.openDialog(ConfirmDeleteAdminTableFormComponent);
   }
 }
