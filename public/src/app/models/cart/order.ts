@@ -5,8 +5,8 @@ import {OrderItem} from '@models/cart/order-item';
 export interface Order {
   id?: number;
   orderStatus: OrderStatus;
-  updateTime: Date;
-  creationTime: Date;
+  updateTime: string;
+  creationTime: string;
   orderItems: OrderItem[];
   price?: number;
   displayDate?: string;

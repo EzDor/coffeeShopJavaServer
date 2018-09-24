@@ -135,7 +135,9 @@ export class CartService {
       .subscribe(
         (orders: Order[]) => {
           this.mapOrders(orders);
-          orders.sort((x, y) => x.updateTime.getDate() - y.updateTime.getDate());
+          orders.sort((x, y) => {
+            return new Date(x.updateTime).getDate() - new Date(y.updateTime).getDate();
+          });
           this._currentTableData.next(orders);
         }
       );

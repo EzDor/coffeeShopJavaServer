@@ -10,14 +10,14 @@
         <mat-form-field class="full-width-input">
           <input type="text" matInput placeholder="Username" formControlName="username" class="form-control" required/>
           <mat-error *ngIf="isFieldInvalid('username')">
-            Please inform your user name
+            Please enter your user name
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width-input">
           <input matInput type="password" placeholder="Password" formControlName="password" required>
           <mat-error *ngIf="isFieldInvalid('password')">
-            Please inform your password
+            Please enter your password
           </mat-error>
         </mat-form-field>
 
