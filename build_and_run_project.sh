@@ -5,8 +5,9 @@ GREEN='\033[0;32m'
 CLIENT_ROOT_FOLDER=public
 
 ./gradlew bootRun &
-npm i --prefix ${CLIENT_ROOT_FOLDER}
-npm start --prefix ${CLIENT_ROOT_FOLDER}
+cd ${CLIENT_ROOT_FOLDER}
+npm i
+npm start
 
 if [ $? -eq 0 ]
          then

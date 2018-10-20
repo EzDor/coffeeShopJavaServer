@@ -1,0 +1,22 @@
+# install (latest versions)
+java jdk
+gradle
+nodejs
+
+# Run
+
+if you have bash installed on your machine - just run the script "build_and_run_project"
+
+otherwise 
+
+1. enter to the terminal
+2. navigate to the project directory
+3. run "gradle bootRun"
+4. open new terminal window
+5. navigate to the project directory
+6. "cd public"
+6. run "npm i" and wait until the installtion process will be done
+7. run "npm start"
+8. navigate to "localhost:4200"
+
+
