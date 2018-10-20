@@ -15,13 +15,14 @@
 .new-order-component-price {
   font-size: 11px;
   position: absolute;
-  width: 190px;
+  width: 225px;
   text-align: center;
 }
 
 .new-order-component-checkbox-wrapper {
   width: 150px;
   margin: auto;
+  text-align: center;
 }
 
 .new-order-total-price{

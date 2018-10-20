@@ -64,7 +64,7 @@ export class EditUserDialogFormComponent implements OnInit {
   private addUser(): void {
     const newUser: User = this.userForm.value;
     this.userService.createUser(newUser).subscribe(
-      () => () => this.editComplete(),
+      () => this.editComplete(),
       error => this.showError(error)
     );
   }

@@ -5,9 +5,11 @@
   <span>
     CoffeeShop
   </span>
+  <div class="hello-user">Welcome
+    <span class="nav-bar-username-hello">{{username$ | async}}</span>, Enjoy!</div>
   <span class="fill-remaining-space"></span>
   <button mat-button (click)="redirectToHomePage()">Home</button>
-  <button mat-button (click)="redirectToAdminPage()" *ngIf="isAdmin$ | async as isAdmin$">Manage</button>
+  <button mat-button (click)="redirectToAdminPage()" *ngIf="isAdmin$ | async">Manage</button>
   <button mat-button (click)="redirectToCartPage()">Cart</button>
   <button mat-button (click)="logout()">Logout</button>
 </mat-toolbar>

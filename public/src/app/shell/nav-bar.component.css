@@ -16,3 +16,14 @@
   width: 100px;
 }
 
+.hello-user{
+  margin-left: 50px;
+  font-size: 17px;
+}
+
+.nav-bar-username-hello{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 200px;
+}
+

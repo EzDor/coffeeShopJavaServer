@@ -15,6 +15,7 @@ export class NavBarComponent implements OnInit {
 
   public isAdmin$: Observable<boolean>;
   public isLoggedIn$: Observable<boolean>;
+  public username$: Observable<string>;
 
   constructor(private authenticationService: AuthenticationService, private router: Router) {
   }
@@ -23,6 +24,7 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
     this.isAdmin$ = this.authenticationService.isUserAdmin;
     this.isLoggedIn$ = this.authenticationService.isUserLoggedIn;
+    this.username$ = this.authenticationService.username;
   }
 
   public logout() {

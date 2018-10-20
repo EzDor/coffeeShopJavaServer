@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
@@ -48,12 +48,12 @@ export class RegisterComponent implements OnInit {
 
   private saveAndRedirect(user: User) {
     this.userService.createUser(user)
-      .subscribe((body) => {
-          console.log(body);
+      .subscribe(() => {
           this.saving = false;
           this.router.navigate([Constants.SIGN_IN_COMPONENT_FULL_PATH]);
         },
         (err) => {
+          this.saving = false;
           throw err;
         }
       );

@@ -16,14 +16,16 @@ import {StorageService} from './storage.service';
 )
 export class AuthenticationService {
 
-  public isLoggedIn: BehaviorSubject<boolean>;
-  public isAdmin: BehaviorSubject<boolean>;
+  private readonly isLoggedIn: BehaviorSubject<boolean>;
+  private readonly isAdmin: BehaviorSubject<boolean>;
+  private readonly currentUsername: BehaviorSubject<string>;
 
   private jwtHelperService: JwtHelperService;
 
   constructor(private http: HttpClient, private storageService: StorageService) {
     this.isLoggedIn = new BehaviorSubject<boolean>(false);
     this.isAdmin = new BehaviorSubject<boolean>(false);
+    this.currentUsername = new BehaviorSubject<string>('');
     this.jwtHelperService = new JwtHelperService();
   }
 
@@ -37,8 +39,7 @@ export class AuthenticationService {
         if (user && user.token) {
           // store component details and jwt token in local storage to keep component logged in between page refreshes
           localStorage.setItem(Constants.CURRENT_USER, JSON.stringify(user));
-          this.isLoggedIn.next(true);
-          this.isAdmin.next(this.isAdminRoleIncluded(user.token));
+          this.updateAuthenticationParams(user);
         }
 
         return user;
@@ -48,13 +49,8 @@ export class AuthenticationService {
   public logout(): void {
     // remove component from local storage to log component out
     localStorage.removeItem(Constants.CURRENT_USER);
-    if (this.isLoggedIn.value) {
-      this.isLoggedIn.next(false);
-      this.isAdmin.next(false);
-      location.reload(true);
-    }
+    this.refreshLoginParams();
   }
-
 
   public get isUserLoggedIn(): BehaviorSubject<boolean> {
     return this.isLoggedIn;
@@ -64,15 +60,20 @@ export class AuthenticationService {
     return this.isAdmin;
   }
 
-  public updateAuthenticationParams(token: string): void {
+  get username(): BehaviorSubject<string> {
+    return this.currentUsername;
+  }
+
+  public updateAuthenticationParams(user: LoginResponseParams): void {
     this.isLoggedIn.next(true);
-    this.isAdmin.next(this.isAdminRoleIncluded(token));
+    this.isAdmin.next(this.isAdminRoleIncluded(user.token));
+    this.currentUsername.next(user.username);
   }
 
   public isUserAuthenticated(): boolean {
     const userOnStorage: LoginResponseParams = this.storageService.getStorageData(Constants.CURRENT_USER);
     if (userOnStorage && !this.jwtHelperService.isTokenExpired(userOnStorage.token)) {
-      this.updateAuthenticationParams(userOnStorage.token);
+      this.updateAuthenticationParams(userOnStorage);
       return true;
     }
     return false;
@@ -81,5 +82,14 @@ export class AuthenticationService {
   private isAdminRoleIncluded(token): boolean {
     const decodedJwtData = this.jwtHelperService.decodeToken(token);
     return decodedJwtData.roles === Constants.ROLE_ADMIN;
+  }
+
+  private refreshLoginParams() {
+    if (this.isLoggedIn.value) {
+      this.isLoggedIn.next(false);
+      this.isAdmin.next(false);
+      this.currentUsername.next('');
+      location.reload(true);
+    }
   }
 }
